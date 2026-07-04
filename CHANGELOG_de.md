@@ -1,5 +1,14 @@
 # Änderungsprotokoll
 
+## [1.4.2] - 2026-07-04
+
+### Behoben
+- Waisenprozess-Schutz: Beim Erfolgspfad wurde agy nie hart beendet — reagierte agy nicht auf Ctrl+C, überlebte es den Wrapper als Waise. Der Exit-Handler killt die PTY jetzt direkt vor jedem Exit.
+- Temp-Workspace und settings.json mit restriktiven Rechten (0o700/0o600); agy-debug.log mit 0o600 plus Klartext-Warnung (alle 6 Sprachen + README).
+- --help in es/zh-Hans/ja/ru um den fehlenden Workspace/--add-dir-Block ergänzt.
+- npm run deploy erzeugt jetzt einen funktionierenden Wrapper auf den Checkout (Bare-Copy war seit dem locales-Split defekt).
+- Details und ältere unveröffentlichte Einträge: siehe CHANGELOG.md (EN).
+
 ## [Unveröffentlicht]
 
 ### Hinzugefügt
