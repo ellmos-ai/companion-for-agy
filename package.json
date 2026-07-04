@@ -20,6 +20,7 @@
     "CHANGELOG.md",
     "CHANGELOG_de.md",
     "ROADMAP.md",
+    "THIRD_PARTY_LICENSES.txt",
     "LICENSE"
   ],
   "scripts": {
