@@ -127,7 +127,7 @@ companion-for-agy --allow "write_file(/my/output/*)" --add-dir "/my/output" \
 | `--timeout <ms>` | Timeout in ms (default: `120000`) |
 | `--json` | Output as JSON object |
 | `--report-file <path>` | Write diagnostic report JSON to a file for `--doctor`, `--platform-smoke`, `--pty-smoke` and `--live-smoke` |
-| `--debug` | Save raw PTY output to `agy-debug.log` |
+| `--debug` | Save raw PTY output to `agy-debug.log` (contains the full session incl. your prompt in clear text — do not commit) |
 | `--doctor` | Print a platform preflight for agy, node-pty and helper artifacts |
 | `--platform-smoke` | Run `--doctor` and `--pty-smoke` as one pre-live platform gate |
 | `--pty-smoke` | Run an auth-free node-pty truecolor smoke for platform validation |

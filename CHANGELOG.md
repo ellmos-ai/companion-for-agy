@@ -3,6 +3,12 @@
 ## [Unreleased]
 
 ### Fixed
+- Orphan-process guard (module review 2026-07-04): on the SUCCESS path the wrapper exited without ever force-killing agy — if agy ignored Ctrl+C (hung tool call, ConPTY signal loss) it survived as an orphan on every automated call. The final-exit handler now kills the PTY right before exiting whenever agy is still alive; error-path timing is unchanged.
+- Temp workspace and settings.json are created with restrictive permissions (0o700/0o600) — on shared /tmp multi-user POSIX hosts they were world-readable (no-op on Windows).
+- agy-debug.log is written with mode 0o600 and both CLI (all 6 languages, new statusDebugLogSensitive) and READMEs now warn that it contains the full session incl. the prompt in clear text.
+- --help in es/zh-Hans/ja/ru was missing the whole Workspace/--add-dir section that en/de already had (implemented since 1.4.0) — added.
+
+### Fixed
 - Replaced the SemVer and Go-duration regex parsers with bounded linear parsing to avoid pathological backtracking on malformed CLI output or timeout values.
 
 ### Added

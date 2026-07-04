@@ -1382,15 +1382,19 @@ if (isMainModule()) {
   // Clean stale workspace from a previous crashed run with same PID
   try { fs.rmSync(tempWorkspace, { recursive: true, force: true }); } catch (_) {}
 
+  // mode 0o700/0o600: /tmp ist auf Mehrbenutzer-POSIX-Systemen geteilt —
+  // ohne restriktive Rechte waere der agy-Arbeitsordner world-readable
+  // (auf Windows wirkungslos, dort gelten ACLs). (Review 2026-07-04)
   if (allAllow.length > 0 || allDeny.length > 0) {
     const geminiDir = path.join(tempWorkspace, '.gemini');
-    fs.mkdirSync(geminiDir, { recursive: true });
+    fs.mkdirSync(geminiDir, { recursive: true, mode: 0o700 });
     const settings = { permissions: {} };
     if (allAllow.length > 0) settings.permissions.allow = allAllow;
     if (allDeny.length > 0) settings.permissions.deny = allDeny;
-    fs.writeFileSync(path.join(geminiDir, 'settings.json'), JSON.stringify(settings, null, 2));
+    fs.writeFileSync(path.join(geminiDir, 'settings.json'),
+      JSON.stringify(settings, null, 2), { mode: 0o600 });
   } else {
-    fs.mkdirSync(tempWorkspace, { recursive: true });
+    fs.mkdirSync(tempWorkspace, { recursive: true, mode: 0o700 });
   }
 
   const promptPrefix = preset.promptPrefix || '';
@@ -1556,8 +1560,20 @@ if (isMainModule()) {
     finalExitTimer = setTimeout(() => {
       if (debug) {
         const debugPath = path.resolve('agy-debug.log');
-        try { fs.writeFileSync(debugPath, rawBuffer, 'utf8'); } catch (_) {}
+        // mode 0o600 + Warnung: enthaelt den kompletten Session-Mitschnitt
+        // inkl. Prompt im Klartext — nicht committen. (Review 2026-07-04)
+        try {
+          fs.writeFileSync(debugPath, rawBuffer, { encoding: 'utf8', mode: 0o600 });
+        } catch (_) {}
         process.stderr.write(getMessage('statusDebugLog', lang, { path: debugPath }));
+        process.stderr.write(getMessage('statusDebugLogSensitive', lang, {}));
+      }
+
+      // Waisen-Schutz: hat agy auf Ctrl+C bis hierher nicht reagiert,
+      // direkt vor dem Exit hart killen — sonst ueberlebt agy.exe den
+      // Wrapper als Orphan (Review 2026-07-04).
+      if (!ptyExited) {
+        try { ptyProc.kill(); } catch (_) {}
       }
 
       cleanupTemp();
@@ -1577,6 +1593,9 @@ if (isMainModule()) {
     if (!ptyExited) {
       try { ptyProc.write('\x03'); } catch (_) {}
       if (code === 0) {
+        // Erfolgspfad: Exit nach CLEANUP_DELAY wie bisher; der
+        // Waisen-Schutz in scheduleFinalExit killt agy, falls Ctrl+C
+        // bis dahin nicht gewirkt hat (Review 2026-07-04).
         scheduleFinalExit(code);
         return;
       }
