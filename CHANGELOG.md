@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+_(nichts)_
+
+## [1.4.2] - 2026-07-04
+
 ### Fixed
 - Orphan-process guard (module review 2026-07-04): on the SUCCESS path the wrapper exited without ever force-killing agy — if agy ignored Ctrl+C (hung tool call, ConPTY signal loss) it survived as an orphan on every automated call. The final-exit handler now kills the PTY right before exiting whenever agy is still alive; error-path timing is unchanged.
 - Temp workspace and settings.json are created with restrictive permissions (0o700/0o600) — on shared /tmp multi-user POSIX hosts they were world-readable (no-op on Windows).
