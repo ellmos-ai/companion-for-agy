@@ -20,7 +20,7 @@ PTY-based wrapper for **agy** (Antigravity CLI / Gemini CLI) that captures Gemin
 | Start here | Link |
 |---|---|
 | Install | `npm install -g companion-for-agy` |
-| Run | `companion-for-agy --json --no-tools "prompt"` |
+| Run | `companion-for-agy --json --sandbox "prompt"` |
 | German docs | [README_de.md](README_de.md) |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | npm package | [npmjs.com/package/companion-for-agy](https://www.npmjs.com/package/companion-for-agy) |
@@ -78,22 +78,15 @@ companion-for-agy [options] "prompt"
 
 ### Permission Modes
 
+agy exposes exactly three native permission states; companion-for-agy passes the matching flag through unchanged. There are no soft/emulated modes and no per-invocation allow/deny rules — agy does not read workspace-local permission rules, so enforcement comes only from these flags.
+
 | Flag | Description |
 |------|-------------|
-| `--sandbox` | Sandbox mode (default), tools in container |
-| `--skip-permissions` | All tools without confirmation (YOLO) |
-| `--no-tools` | Pure chat, no tool execution |
-| `--researcher` | Web/search research allowed, shell commands and file changes denied |
-| `--read-only` | File reads allowed, shell commands and modifications denied |
+| _(default, no flag)_ | agy uses its **own** configuration (global + per-project allow/deny/ask rules under `~/.gemini/antigravity-cli/`) |
+| `--sandbox` | Shell and network blocked, filesystem limited to the workspace (writing files still works) |
+| `--skip-permissions` | Auto-approve every tool (YOLO), full rights. Also accepts `--dangerously-skip-permissions` |
 
-### Custom Rules
-
-```bash
---allow "read_file(/path)"    # Allowlist rule (repeatable)
---deny "command(rm)"          # Denylist rule (repeatable)
-```
-
-Formats match agy's own permission system (`settings.json`).
+> **Default-mode caveat:** In headless print mode a tool that is neither pre-allowed nor denied in agy's own config resolves to `ask` and blocks. Use `--skip-permissions` for tasks that need tools which are not already approved.
 
 ### Workspace
 
@@ -109,10 +102,6 @@ Use `--add-dir` to register additional directories so agy can actually create or
 # Write a file into /my/output — requires both workspace registration and write permission
 companion-for-agy --skip-permissions --add-dir "/my/output" \
   "Write hello.txt to /my/output with content: Hello World"
-
-# With sandbox mode: grant write permission explicitly
-companion-for-agy --allow "write_file(/my/output/*)" --add-dir "/my/output" \
-  "Write hello.txt to /my/output"
 ```
 
 > **Note:** `--skip-permissions` (YOLO mode) controls **tool authorization**; `--add-dir` controls **workspace scope**. Both are needed when writing to a directory outside the default temp workspace.
@@ -131,7 +120,7 @@ companion-for-agy --allow "write_file(/my/output/*)" --add-dir "/my/output" \
 | `--doctor` | Print a platform preflight for agy, node-pty and helper artifacts |
 | `--platform-smoke` | Run `--doctor` and `--pty-smoke` as one pre-live platform gate |
 | `--pty-smoke` | Run an auth-free node-pty truecolor smoke for platform validation |
-| `--live-smoke` | Run a real agy marker smoke; defaults to `no-tools` unless another permission mode is selected |
+| `--live-smoke` | Run a real agy marker smoke; defaults to `sandbox` unless another permission mode is selected |
 | `--lang <code>` | CLI output language: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
 | `--` | Stop option parsing; use before prompts that start with `-` |
 
@@ -148,9 +137,7 @@ companion-for-agy --allow "write_file(/my/output/*)" --add-dir "/my/output" \
 
 ```bash
 companion-for-agy "What is the capital of Bavaria?"
-companion-for-agy --no-tools "Review this code: ..."
-companion-for-agy --researcher "Latest info on Node.js 24"
-companion-for-agy --read-only --allow "command(git log)" "prompt"
+companion-for-agy --sandbox "Review this code: ..."
 companion-for-agy --json --model gemini-3.5-pro "prompt"
 companion-for-agy --no-model "prompt"
 companion-for-agy --skip-permissions --add-dir "/my/output" "Write hello.txt to /my/output"
@@ -161,7 +148,7 @@ companion-for-agy --platform-smoke --json
 companion-for-agy --pty-smoke --json
 companion-for-agy --live-smoke --no-model --debug --json
 companion-for-agy --lang de --help
-companion-for-agy --no-tools -- "-dash-prefixed prompt"
+companion-for-agy --sandbox -- "-dash-prefixed prompt"
 ```
 
 JSON output includes `response`, `model`, `requestedModel`, and `permissionMode`. `model` is detected from agy's banner when possible and falls back to `requestedModel`.
@@ -229,7 +216,7 @@ companion-for-agy gives you two ways to get results back from agy. Choose based 
 The default path: companion-for-agy captures agy's response from the PTY and writes it to its own stdout. This works reliably for **short responses and ASCII text**, and is the right choice when you delegate a task with a brief `-p` prompt and only need a compact answer back.
 
 ```bash
-companion-for-agy --no-tools "What is 2 + 2?"
+companion-for-agy --sandbox "What is 2 + 2?"
 ```
 
 **Limitation (observed on Windows):** When the response is long or contains non-ASCII content (e.g. CJK characters such as Chinese, Japanese, Korean), the stdout relay can garble the output — replacing characters with replacement characters (U+FFFD, e.g. `从​方阵…` becomes `从​​阵…`). This is a property of the PTY/ANSI extraction layer, not of agy itself.

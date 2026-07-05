@@ -259,7 +259,7 @@ describe('Fixture: Heavy drip animation (character-by-character)', () => {
 // ---------- No-tools prompt-echo regression ----------
 
 describe('Fixture: No-tools prompt echo (regression)', () => {
-  const prefix = PERMISSION_PRESETS['no-tools'].promptPrefix;
+  const prefix = 'IMPORTANT: Do not use any tools. Answer based on your knowledge only.\n\n';
   const userPrompt = 'Was ist 2+2?';
   const effectivePrompt = prefix + userPrompt;
 
@@ -330,7 +330,7 @@ describe('Fixture: ConPTY cursor-positioned response with bold text', () => {
 });
 
 describe('Fixture: Real smoke test — no-tools with tip noise', () => {
-  const prefix = PERMISSION_PRESETS['no-tools'].promptPrefix;
+  const prefix = 'IMPORTANT: Do not use any tools. Answer based on your knowledge only.\n\n';
   const userPrompt = 'What is 2+2? Answer with just the number.';
   const effectivePrompt = prefix + userPrompt;
 

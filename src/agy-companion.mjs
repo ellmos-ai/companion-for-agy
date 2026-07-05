@@ -880,31 +880,27 @@ export function parseDurationToMs(str) {
 // ---------- Permission-Presets ----------
 
 export const PERMISSION_PRESETS = {
+  // agy exposes exactly three native permission states; the companion passes
+  // them through unchanged. No settings.json is written and no prompt preamble
+  // is injected: agy is natively aware of its sandbox mode (via its own
+  // <terminal_sandbox> system context), and finer-grained per-invocation rules
+  // are not supported by agy (see ROADMAP: Permission Model & Enforcement).
+  default: {
+    // No permission flag — agy uses its OWN configuration (global + project
+    // allow/deny/ask under ~/.gemini/antigravity-cli/). Headless caveat: a tool
+    // that is neither pre-allowed nor denied resolves to "ask" and blocks in
+    // print mode, so use --skip-permissions when a task needs tools that are
+    // not already approved in agy's own config.
+    agyFlags: [],
+  },
   sandbox: {
+    // Terminal restrictions: shell and network blocked, filesystem limited to
+    // the workspace. Writing files still works.
     agyFlags: ['--sandbox'],
-    allow: [],
-    deny: [],
   },
   'skip-permissions': {
+    // Auto-approve every tool (YOLO) — full rights, no prompts.
     agyFlags: ['--dangerously-skip-permissions'],
-    allow: [],
-    deny: [],
-  },
-  'no-tools': {
-    agyFlags: ['--sandbox'],
-    allow: [],
-    deny: ['command(*)', 'write_file(*)', 'edit_file(*)', 'read_file(*)'],
-    promptPrefix: 'IMPORTANT: Do not use any tools. Answer based on your knowledge only.\n\n',
-  },
-  researcher: {
-    agyFlags: ['--sandbox'],
-    allow: ['google_search(*)', 'web_search(*)', 'web_fetch(*)', 'read_file(*)'],
-    deny: ['command(*)', 'write_file(*)', 'edit_file(*)'],
-  },
-  'read-only': {
-    agyFlags: ['--sandbox'],
-    allow: ['read_file(*)'],
-    deny: ['command(*)', 'write_file(*)', 'edit_file(*)'],
   },
 };
 
@@ -1248,10 +1244,8 @@ if (isMainModule()) {
   let platformSmokeMode = false;
   let ptySmokeMode = false;
   let liveSmokeMode = false;
-  let permissionMode = 'sandbox';
+  let permissionMode = 'default';
   let permissionModeExplicit = false;
-  const customAllow = [];
-  const customDeny = [];
   const addDirs = [];
   let userPromptForFilter = '';
   let effectivePromptForFilter = '';
@@ -1299,15 +1293,6 @@ if (isMainModule()) {
     } else if (arg === '--skip-permissions' || arg === '--dangerously-skip-permissions') {
       permissionMode = 'skip-permissions';
       permissionModeExplicit = true;
-    } else if (arg === '--no-tools') {
-      permissionMode = 'no-tools';
-      permissionModeExplicit = true;
-    } else if (arg === '--researcher') {
-      permissionMode = 'researcher';
-      permissionModeExplicit = true;
-    } else if (arg === '--read-only') {
-      permissionMode = 'read-only';
-      permissionModeExplicit = true;
     } else if (arg === '--print-timeout' && rawArgs[i + 1]) {
       const ms = parseDurationToMs(rawArgs[++i]);
       if (ms !== null) timeoutMs = ms;
@@ -1318,10 +1303,6 @@ if (isMainModule()) {
       // Ignored: agy-companion runs in interactive mode internally to capture PTY/ANSI
     } else if (arg === '-i' || arg === '--prompt-interactive') {
       // Ignored: agy-companion runs interactive by default
-    } else if (arg === '--allow' && rawArgs[i + 1]) {
-      customAllow.push(rawArgs[++i]);
-    } else if (arg === '--deny' && rawArgs[i + 1]) {
-      customDeny.push(rawArgs[++i]);
     } else if (arg === '--add-dir' && rawArgs[i + 1]) {
       addDirs.push(rawArgs[++i]);
     } else if (arg === '--lang' && rawArgs[i + 1]) {
@@ -1358,7 +1339,7 @@ if (isMainModule()) {
   let userPrompt = promptParts.join(' ').trim();
   if (liveSmokeMode) {
     if (!permissionModeExplicit) {
-      permissionMode = 'no-tools';
+      permissionMode = 'sandbox';
     }
     if (!userPrompt) {
       userPrompt = buildLiveSmokePrompt();
@@ -1374,31 +1355,20 @@ if (isMainModule()) {
   // ---------- Permission-Setup ----------
 
   const preset = PERMISSION_PRESETS[permissionMode];
-  const allAllow = [...preset.allow, ...customAllow];
-  const allDeny = [...preset.deny, ...customDeny];
-
   const tempWorkspace = path.join(os.tmpdir(), `agy-companion-${process.pid}`);
 
   // Clean stale workspace from a previous crashed run with same PID
   try { fs.rmSync(tempWorkspace, { recursive: true, force: true }); } catch (_) {}
 
-  // mode 0o700/0o600: /tmp ist auf Mehrbenutzer-POSIX-Systemen geteilt —
-  // ohne restriktive Rechte waere der agy-Arbeitsordner world-readable
-  // (auf Windows wirkungslos, dort gelten ACLs). (Review 2026-07-04)
-  if (allAllow.length > 0 || allDeny.length > 0) {
-    const geminiDir = path.join(tempWorkspace, '.gemini');
-    fs.mkdirSync(geminiDir, { recursive: true, mode: 0o700 });
-    const settings = { permissions: {} };
-    if (allAllow.length > 0) settings.permissions.allow = allAllow;
-    if (allDeny.length > 0) settings.permissions.deny = allDeny;
-    fs.writeFileSync(path.join(geminiDir, 'settings.json'),
-      JSON.stringify(settings, null, 2), { mode: 0o600 });
-  } else {
-    fs.mkdirSync(tempWorkspace, { recursive: true, mode: 0o700 });
-  }
+  // mode 0o700: /tmp is shared on multi-user POSIX systems (no-op on Windows,
+  // where ACLs apply). agy runs with cwd = tempWorkspace.
+  fs.mkdirSync(tempWorkspace, { recursive: true, mode: 0o700 });
 
-  const promptPrefix = preset.promptPrefix || '';
-  const effectivePrompt = promptPrefix + userPrompt;
+  // No prompt preamble and no settings.json: the companion only passes agy's
+  // native permission flags through (see PERMISSION_PRESETS). agy is natively
+  // aware of its sandbox mode, and per-invocation permission rules are not
+  // supported by agy (see ROADMAP: Permission Model & Enforcement).
+  const effectivePrompt = userPrompt;
   effectivePromptForFilter = effectivePrompt;
 
   if (doctorMode) {

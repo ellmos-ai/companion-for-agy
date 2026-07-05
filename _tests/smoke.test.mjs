@@ -25,7 +25,7 @@ describe('Smoke: CLI basics', () => {
     const { stderr } = await execFileAsync('node', [SCRIPT, '--help']);
     assert.ok(stderr.includes('companion-for-agy'));
     assert.ok(stderr.includes('--sandbox'));
-    assert.ok(stderr.includes('--no-tools'));
+    assert.ok(stderr.includes('--sandbox'));
   });
 
   it('no arguments exits 0 and shows usage', async () => {
@@ -44,7 +44,7 @@ describe('Smoke: Live agy query', {
     const logPrefix = `smoke-${Date.now()}`;
     try {
       const { stdout, stderr } = await execFileAsync('node', [
-        SCRIPT, '--no-tools', '--timeout', '120000',
+        SCRIPT, '--sandbox', '--timeout', '120000',
         'Antworte NUR mit dem Wort: Apfel',
       ], { timeout: 150000 });
 
@@ -70,7 +70,7 @@ describe('Smoke: Live agy query', {
     const logPrefix = `smoke-json-${Date.now()}`;
     try {
       const { stdout, stderr } = await execFileAsync('node', [
-        SCRIPT, '--no-tools', '--json', '--timeout', '120000',
+        SCRIPT, '--sandbox', '--json', '--timeout', '120000',
         'Antworte NUR mit: ja',
       ], { timeout: 150000 });
 
@@ -84,7 +84,7 @@ describe('Smoke: Live agy query', {
       assert.ok(parsed.response, 'JSON should have response field');
       assert.ok(parsed.model, 'JSON should have model field');
       assert.ok(parsed.permissionMode, 'JSON should have permissionMode field');
-      assert.equal(parsed.permissionMode, 'no-tools');
+      assert.equal(parsed.permissionMode, 'sandbox');
       assert.doesNotMatch(stderr, /AttachConsole failed|conpty_console_list_agent/);
     } catch (err) {
       fs.writeFileSync(

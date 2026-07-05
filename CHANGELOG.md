@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased]
+## [2.0.0] - 2026-07-06
 
-_(nichts)_
+### Changed (BREAKING)
+- Permission model reduced to the three modes agy natively supports, so the companion's invocation mode and agy's own internal mode are always in sync:
+  - **default (no flag):** agy uses its own configuration — global `~/.gemini/antigravity-cli/settings.json` plus per-project rules (allow/deny/ask). In headless `-p` mode a tool that is neither pre-allowed nor denied resolves to "ask" and blocks, so use `--skip-permissions` for tasks needing tools that are not pre-approved.
+  - **`--sandbox`:** shell and network blocked, filesystem limited to the workspace (writing files still works).
+  - **`--skip-permissions`:** auto-approve every tool (YOLO), full rights.
+
+### Removed (BREAKING)
+- Soft permission modes `--no-tools`, `--researcher`, `--read-only` and the custom-rule flags `--allow` / `--deny`. agy does not read per-invocation or workspace-local permission rules, so these had no enforceable effect (verified) — they only created a false sense of enforcement.
+- The per-invocation `<workspace>/.gemini/settings.json` writer (no-op: agy never adopts `cwd` as a project root) and the capability-preamble injection (unnecessary: agy is natively aware of its sandbox mode via its own `<terminal_sandbox>` system context).
+- **Migration:** replace `--no-tools` / `--researcher` / `--read-only` with `--sandbox` (or the default mode); replace `--allow` / `--deny` by configuring agy's own global/project permission rules. Rationale and the (deliberately unshipped) per-invocation enforcement research are documented in ROADMAP → "Permission Model & Enforcement".
+
+### Security
+- Hardened repository hygiene for local npm credentials, token/recovery files, private keys and certificate bundles. Added a regression test that checks the effective Git ignore behavior and defensive npm ignore patterns.
 
 ## [1.4.2] - 2026-07-04
 

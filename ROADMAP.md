@@ -119,6 +119,22 @@ Items identified during the systematic bug sweep that are design improvements, n
 - [x] **Dead code cleanup:** `tempSettingsCreated` variable is set but never read. Cleanup works unconditionally via `cleanupTemp()`.
 - [x] **Prompt-echo filter edge case:** Very short prompts (≤2 chars) identical to the response text are incorrectly filtered as prompt echoes. Rare in practice (requires the user's question to be the same as the answer), but theoretically possible.
 
+## Permission Model & Enforcement (research findings, 2026-07-06)
+
+agy exposes exactly **three native permission states**, which the companion now passes through 1:1 (no settings.json is written, no prompt preamble is injected):
+
+- **default (no flag):** agy uses its own configuration — the global `~/.gemini/antigravity-cli/settings.json` plus per-project rules under `~/.gemini/config/projects/` (allow / deny / ask; precedence **Deny > Ask > Allow**). Headless caveat: a tool that is neither pre-allowed nor denied resolves to "ask" and blocks in `-p` print mode; use `--skip-permissions` for tasks needing tools that are not pre-approved.
+- **`--sandbox`:** shell and network blocked, filesystem limited to the workspace (file writing still works). agy is *natively aware* of this via its own `<terminal_sandbox>` system context, so no prompt preamble is needed to inform it.
+- **`--skip-permissions`:** auto-approve everything (YOLO).
+
+**Verified no-op (removed):** supplying finer-grained rules per invocation. The companion previously wrote a `<workspace>/.gemini/settings.json` and offered `--researcher`/`--read-only`/`--no-tools`/`--allow`/`--deny` plus a capability preamble. agy never reads a workspace-local settings file (it does not adopt `cwd` as a project root — verified), so those rules had **no effect**. They were removed to avoid a false sense of enforcement.
+
+**Proven but deliberately NOT implemented — per-invocation enforcement:** writing a `deny`/`allow` rule into the **global** `~/.gemini/antigravity-cli/settings.json` *does* change agy's effective permissions and `list_permissions` output (verified with a temporary rule + backup/restore). But driving the shared global user config per run is error-prone: path drift across agy versions, races with parallel agy sessions, and a crash mid-edit corrupts the user's config. A safe version would need an **isolated** config store (an own `--project` id, or a redirected config home with auth carried over) plus robust path discovery and atomic backup/restore. Not planned; documented so the knowledge is preserved.
+
+**Future (not planned) — token / quota signal:** detect agy's quota / rate-limit / auth errors from the PTY output and surface them with a dedicated exit code and a clear message ("agy quota/token limit reached") instead of a generic failure.
+
+**Future (not planned) — role / agent prompt injection:** giving agy a role/agent prompt (e.g. a research role) is a *separate* concept that has nothing to do with permissions; it would be an independent, opt-in feature layered on top of any of the three modes.
+
 ## Completed (v1.2.0-alpha.1)
 
 - Trust dialog auto-confirmation (5-phase state machine)

@@ -21,12 +21,10 @@ Part of the dev-bricks family. Node.js, MIT.
 companion-for-agy [options] "prompt"
 ```
 
-### Permission Modes
-- `--sandbox`: Sandbox mode (default), tools run inside a container.
-- `--skip-permissions`: Executes all tools without confirmation.
-- `--no-tools`: Pure chat mode, disables tool execution.
-- `--researcher`: Allows web search/research, denies commands and file modifications.
-- `--read-only`: Allows file reads, denies shell commands and modifications.
+### Permission Modes (the three agy natively supports)
+- (default, no flag): agy uses its own configuration — global (`~/.gemini/antigravity-cli/settings.json`) plus per-project allow/deny/ask rules. In headless print mode a tool that is neither pre-allowed nor denied resolves to "ask" and blocks, so use `--skip-permissions` for tasks needing tools that are not pre-approved.
+- `--sandbox`: Shell and network blocked, filesystem limited to the workspace (writing files still works). agy is natively aware of this mode.
+- `--skip-permissions`: Auto-approve every tool (YOLO), full rights.
 
 ### Options
 - `--model <model>`: Specify Gemini model (default: `gemini-3.5-flash`).

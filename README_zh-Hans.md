@@ -66,22 +66,15 @@ companion-for-agy [选项] "提示词"
 
 ### 权限模式
 
+agy 恰好暴露三种原生权限状态；companion-for-agy 原样传递对应的 flag。没有软性/模拟模式，也没有按调用的 allow/deny 规则——agy 不读取 workspace 本地的权限规则，权限约束仅来自这些 flag。
+
 | 参数 | 说明 |
 |------|------|
-| `--sandbox` | 沙箱模式 (默认)，工具在容器中运行 |
-| `--skip-permissions` | 所有工具无需确认 (YOLO) |
-| `--no-tools` | 纯聊天，不执行工具 |
-| `--researcher` | 允许网页/搜索研究，禁止 shell 命令和文件修改 |
-| `--read-only` | 允许读取文件，禁止 shell 命令和修改 |
+| _(默认，无 flag)_ | agy 使用它**自己**的配置 (`~/.gemini/antigravity-cli/` 下的全局及按项目 allow/deny/ask 规则) |
+| `--sandbox` | 禁用 shell 和网络，文件系统限制在 workspace 内 (仍可写入文件) |
+| `--skip-permissions` | 自动批准每个工具 (YOLO)，完全权限。也接受 `--dangerously-skip-permissions` |
 
-### 自定义规则
-
-```bash
---allow "read_file(/路径)"    # 允许规则 (可重复)
---deny "command(rm)"          # 拒绝规则 (可重复)
-```
-
-格式与 agy 自身的权限系统 (`settings.json`) 一致。
+> **默认模式注意事项:** 在无界面的 print 模式下，若某工具在 agy 自身配置中既未允许也未拒绝，会被解析为 `ask` 并阻塞。对于需要尚未批准工具的任务，请使用 `--skip-permissions`。
 
 ### 选项
 
@@ -95,7 +88,7 @@ companion-for-agy [选项] "提示词"
 | `--doctor` | 输出 agy、node-pty 和 helper artifact 的平台预检 |
 | `--platform-smoke` | 将 `--doctor` 和 `--pty-smoke` 作为一个 pre-live gate 运行 |
 | `--pty-smoke` | 运行无需认证的 node-pty truecolor smoke |
-| `--live-smoke` | 运行真实 agy 标记 smoke；默认使用 `no-tools` |
+| `--live-smoke` | 运行真实 agy 标记 smoke；默认使用 `sandbox` |
 | `--lang <代码>` | CLI 输出语言: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
 | `--` | 停止解析选项；用于以 `-` 开头的提示词 |
 
@@ -112,14 +105,13 @@ companion-for-agy [选项] "提示词"
 
 ```bash
 companion-for-agy "巴伐利亚的首都是哪里？"
-companion-for-agy --no-tools "审查这段代码: ..."
-companion-for-agy --researcher "关于 Node.js 24 的最新信息"
-companion-for-agy --read-only --allow "command(git log)" "提示词"
+companion-for-agy --sandbox "审查这段代码: ..."
 companion-for-agy --json --model gemini-3.5-pro "提示词"
 companion-for-agy --no-model "提示词"
+companion-for-agy --skip-permissions --add-dir "/out" "将 hello.txt 写入 /out"
 companion-for-agy --platform-smoke --json
 companion-for-agy --lang zh-Hans --help
-companion-for-agy --no-tools -- "-以短横线开头的提示词"
+companion-for-agy --sandbox -- "-以短横线开头的提示词"
 ```
 
 JSON 输出包含 `response`、`model`、`requestedModel` 和 `permissionMode`。
@@ -165,7 +157,7 @@ companion-for-agy 提供两种从 agy 获取结果的方式，请根据需求选
 默认路径：companion-for-agy 从 PTY 捕获 agy 的响应，并写入自身的 stdout。它对**短响应和 ASCII 文本**工作可靠，适用于通过简短的 `-p` 提示词委派任务、只需获取紧凑回答的场景。
 
 ```bash
-companion-for-agy --no-tools "2 + 2 等于几？"
+companion-for-agy --sandbox "2 + 2 等于几？"
 ```
 
 **限制 (在 Windows 上观察到):** 当响应较长或包含非 ASCII 内容 (例如中文、日文、韩文等 CJK 字符) 时，stdout 返回路径可能损坏输出，将字符替换为替换字符 (U+FFFD)。这是 PTY/ANSI 提取层的特性，而非 agy 本身的问题。

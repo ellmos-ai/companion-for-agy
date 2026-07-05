@@ -1,5 +1,18 @@
 # Änderungsprotokoll
 
+## [2.0.0] - 2026-07-06
+
+### Geändert (BREAKING)
+- Rechtemodell auf die drei Modi reduziert, die agy nativ unterstützt — so sind der Aufrufmodus des Companions und agys interner Modus immer synchron:
+  - **Standard (kein Flag):** agy nutzt seine eigene Konfiguration — global `~/.gemini/antigravity-cli/settings.json` plus Projektregeln (allow/deny/ask). Im Headless-`-p`-Modus blockiert ein Tool, das weder vorab erlaubt noch verweigert ist, weil es zu „ask" auflöst — dann `--skip-permissions` verwenden.
+  - **`--sandbox`:** Shell und Netzwerk blockiert, Dateisystem auf den Workspace begrenzt (Dateien schreiben funktioniert weiterhin).
+  - **`--skip-permissions`:** alle Tools automatisch bestätigt (YOLO), volle Rechte.
+
+### Entfernt (BREAKING)
+- Die Soft-Modi `--no-tools`, `--researcher`, `--read-only` und die Custom-Rule-Flags `--allow` / `--deny`. agy liest keine Regeln pro Aufruf oder aus einer Workspace-lokalen Datei, daher hatten diese keine durchsetzbare Wirkung (verifiziert) — sie erzeugten nur eine Scheinsicherheit.
+- Der Schreiber der `<workspace>/.gemini/settings.json` pro Aufruf (wirkungslos: agy übernimmt `cwd` nie als Projektwurzel) und die Capability-Präambel (unnötig: agy kennt seinen Sandbox-Modus nativ über seinen eigenen `<terminal_sandbox>`-Systemkontext).
+- **Migration:** `--no-tools` / `--researcher` / `--read-only` durch `--sandbox` (oder den Standardmodus) ersetzen; `--allow` / `--deny` durch die eigenen globalen/Projekt-Rechteregeln von agy ersetzen. Begründung und die (bewusst nicht ausgelieferte) Enforcement-Recherche stehen in ROADMAP → „Permission Model & Enforcement".
+
 ## [1.4.2] - 2026-07-04
 
 ### Behoben
@@ -10,6 +23,9 @@
 - Details und ältere unveröffentlichte Einträge: siehe CHANGELOG.md (EN).
 
 ## [Unveröffentlicht]
+
+### Sicherheit
+- Repository-Hygiene für lokale npm-Zugangsdaten, Token-/Recovery-Dateien, private Schlüssel und Zertifikat-Bundles gehärtet. Ein Regressionstest prüft die wirksamen Git-Ignore-Regeln und defensive npm-Ignore-Muster.
 
 ### Hinzugefügt
 - `--report-file <Pfad>` für Diagnosemodi (`--doctor`, `--platform-smoke`, `--pty-smoke`, `--live-smoke`). Der Schalter schreibt einen formatierten JSON-Bericht auf die Platte, während stdout wie gewählt Text oder JSON bleibt; macOS-/Linux-Übergaben bekommen damit dauerhafte Evidenzdateien.

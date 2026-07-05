@@ -493,49 +493,38 @@ describe('extractResponse with effectiveFilter', () => {
 // ---------- PERMISSION_PRESETS ----------
 
 describe('PERMISSION_PRESETS', () => {
-  const modes = ['sandbox', 'skip-permissions', 'no-tools', 'researcher', 'read-only'];
+  const modes = ['default', 'sandbox', 'skip-permissions'];
 
-  it('has all 5 modes', () => {
-    for (const mode of modes) {
-      assert.ok(PERMISSION_PRESETS[mode], `Missing mode: ${mode}`);
-    }
+  it('has exactly the three native modes', () => {
+    assert.deepEqual(Object.keys(PERMISSION_PRESETS).sort(), [...modes].sort());
   });
 
-  it('each mode has required fields', () => {
+  it('each mode only carries native agy flags (no allow/deny/caps/settings)', () => {
     for (const mode of modes) {
       const p = PERMISSION_PRESETS[mode];
       assert.ok(Array.isArray(p.agyFlags), `${mode}: agyFlags missing`);
-      assert.ok(Array.isArray(p.allow), `${mode}: allow missing`);
-      assert.ok(Array.isArray(p.deny), `${mode}: deny missing`);
+      assert.equal(p.allow, undefined, `${mode}: must not declare allow`);
+      assert.equal(p.deny, undefined, `${mode}: must not declare deny`);
+      assert.equal(p.caps, undefined, `${mode}: must not declare caps`);
     }
   });
 
-  it('no-tools has promptPrefix', () => {
-    assert.ok(PERMISSION_PRESETS['no-tools'].promptPrefix);
-    assert.ok(PERMISSION_PRESETS['no-tools'].promptPrefix.includes('tools'));
+  it('default passes no permission flag (agy uses its own config)', () => {
+    assert.deepEqual(PERMISSION_PRESETS.default.agyFlags, []);
   });
 
-  it('sandbox has no custom rules', () => {
-    assert.equal(PERMISSION_PRESETS.sandbox.allow.length, 0);
-    assert.equal(PERMISSION_PRESETS.sandbox.deny.length, 0);
+  it('sandbox passes --sandbox', () => {
+    assert.deepEqual(PERMISSION_PRESETS.sandbox.agyFlags, ['--sandbox']);
   });
 
-  it('skip-permissions uses dangerously flag', () => {
-    assert.ok(PERMISSION_PRESETS['skip-permissions'].agyFlags.includes('--dangerously-skip-permissions'));
+  it('skip-permissions passes --dangerously-skip-permissions', () => {
+    assert.deepEqual(PERMISSION_PRESETS['skip-permissions'].agyFlags, ['--dangerously-skip-permissions']);
   });
 
-  it('researcher allows search but denies writes', () => {
-    const r = PERMISSION_PRESETS.researcher;
-    assert.ok(r.allow.some(a => a.includes('search')));
-    assert.ok(r.deny.some(d => d.includes('write_file')));
-  });
-
-  it('researcher denies shell commands to keep the preset read-only', () => {
-    assert.ok(PERMISSION_PRESETS.researcher.deny.includes('command(*)'));
-  });
-
-  it('read-only denies shell commands to prevent command-based writes', () => {
-    assert.ok(PERMISSION_PRESETS['read-only'].deny.includes('command(*)'));
+  it('removed soft modes are gone', () => {
+    for (const gone of ['no-tools', 'researcher', 'read-only']) {
+      assert.equal(PERMISSION_PRESETS[gone], undefined, `${gone} should be removed`);
+    }
   });
 });
 

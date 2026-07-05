@@ -66,22 +66,15 @@ companion-for-agy [opciones] "prompt"
 
 ### Modos de permisos
 
+agy expone exactamente tres estados de permiso nativos; companion-for-agy pasa el flag correspondiente sin cambios. No hay modos blandos/emulados ni reglas por invocación — agy no lee reglas de permiso locales del workspace, así que la aplicación proviene solo de estos flags.
+
 | Flag | Descripción |
 |------|-------------|
-| `--sandbox` | Modo sandbox (predeterminado), herramientas en contenedor |
-| `--skip-permissions` | Todas las herramientas sin confirmación (YOLO) |
-| `--no-tools` | Solo chat, sin ejecución de herramientas |
-| `--researcher` | Investigación web permitida, comandos shell y cambios de archivos denegados |
-| `--read-only` | Lectura de archivos permitida, comandos shell y modificaciones denegados |
+| _(predeterminado, sin flag)_ | agy usa su **propia** configuración (reglas allow/deny/ask globales y por proyecto en `~/.gemini/antigravity-cli/`) |
+| `--sandbox` | Shell y red bloqueadas, sistema de archivos limitado al workspace (escribir archivos sigue funcionando) |
+| `--skip-permissions` | Aprobar cada herramienta automáticamente (YOLO), permisos totales. También acepta `--dangerously-skip-permissions` |
 
-### Reglas personalizadas
-
-```bash
---allow "read_file(/ruta)"    # Regla de permiso (repetible)
---deny "command(rm)"          # Regla de denegación (repetible)
-```
-
-Los formatos coinciden con el sistema de permisos de agy (`settings.json`).
+> **Advertencia del modo predeterminado:** En modo print headless, una herramienta que no esté ni permitida ni denegada en la propia configuración de agy se resuelve como `ask` y se bloquea. Usa `--skip-permissions` para tareas que necesiten herramientas aún no aprobadas.
 
 ### Opciones
 
@@ -95,7 +88,7 @@ Los formatos coinciden con el sistema de permisos de agy (`settings.json`).
 | `--doctor` | Mostrar preflight de plataforma para agy, node-pty y artefactos helper |
 | `--platform-smoke` | Ejecutar `--doctor` y `--pty-smoke` como gate pre-live |
 | `--pty-smoke` | Ejecutar smoke truecolor de node-pty sin autenticación |
-| `--live-smoke` | Ejecutar un smoke real de agy con marcador; usa `no-tools` por defecto |
+| `--live-smoke` | Ejecutar un smoke real de agy con marcador; usa `sandbox` por defecto |
 | `--lang <código>` | Idioma de la CLI: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
 | `--` | Detener el análisis de opciones; usar antes de prompts que comienzan con `-` |
 
@@ -112,14 +105,13 @@ Los formatos coinciden con el sistema de permisos de agy (`settings.json`).
 
 ```bash
 companion-for-agy "¿Cuál es la capital de Baviera?"
-companion-for-agy --no-tools "Revisar este código: ..."
-companion-for-agy --researcher "Última información sobre Node.js 24"
-companion-for-agy --read-only --allow "command(git log)" "prompt"
+companion-for-agy --sandbox "Revisar este código: ..."
 companion-for-agy --json --model gemini-3.5-pro "prompt"
 companion-for-agy --no-model "prompt"
+companion-for-agy --skip-permissions --add-dir "/salida" "Escribe hello.txt en /salida"
 companion-for-agy --platform-smoke --json
 companion-for-agy --lang es --help
-companion-for-agy --no-tools -- "-prompt con guion"
+companion-for-agy --sandbox -- "-prompt con guion"
 ```
 
 La salida JSON incluye `response`, `model`, `requestedModel` y `permissionMode`.
@@ -165,7 +157,7 @@ companion-for-agy ofrece dos formas de recibir resultados de agy. Elige según l
 La vía predeterminada: companion-for-agy captura la respuesta de agy desde el PTY y la escribe en su propio stdout. Funciona de forma fiable con **respuestas cortas y texto ASCII**, y es la opción adecuada cuando delegas una tarea con un prompt `-p` breve y solo esperas una respuesta compacta.
 
 ```bash
-companion-for-agy --no-tools "¿Cuánto es 2 + 2?"
+companion-for-agy --sandbox "¿Cuánto es 2 + 2?"
 ```
 
 **Limitación (observada en Windows):** Cuando la respuesta es larga o contiene caracteres no ASCII (por ejemplo, caracteres CJK como chino, japonés o coreano), la vía de stdout puede corromper la salida, sustituyendo caracteres por el carácter de reemplazo (U+FFFD). Es una propiedad de la capa de extracción PTY/ANSI, no de agy en sí.

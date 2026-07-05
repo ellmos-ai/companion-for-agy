@@ -120,7 +120,7 @@ describe('CLI regressions with fake PTY', () => {
     const harness = makeFakeHarness('empty');
     try {
       await assert.rejects(
-        execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', 'EMPTY_PROMPT'], {
+        execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', 'EMPTY_PROMPT'], {
           env: harness.env,
           timeout: 60000,
         }),
@@ -140,7 +140,7 @@ describe('CLI regressions with fake PTY', () => {
   it('does not force-kill when Ctrl+C already lets the PTY exit cleanly', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });
@@ -177,7 +177,7 @@ describe('CLI regressions with fake PTY', () => {
   it('supports -- as a prompt separator for prompts that start with a dash', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', '--', '-dash prompt'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--', '-dash prompt'], {
         env: harness.env,
         timeout: 60000,
       });
@@ -192,7 +192,7 @@ describe('CLI regressions with fake PTY', () => {
   it('can omit --model for agy versions that do not support model flags', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--no-model', '--timeout', '30000', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--no-model', '--timeout', '30000', 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });
@@ -208,7 +208,7 @@ describe('CLI regressions with fake PTY', () => {
   it('can omit --model via AGY_COMPANION_NO_MODEL', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', 'OK_PROMPT'], {
         env: { ...harness.env, AGY_COMPANION_NO_MODEL: '1' },
         timeout: 60000,
       });
@@ -225,7 +225,7 @@ describe('CLI regressions with fake PTY', () => {
   }, async () => {
     const harness = makeFakeHarness('hold');
     try {
-      const child = spawn('node', [SCRIPT, '--no-tools', '--timeout', '30000', 'HOLD_PROMPT'], {
+      const child = spawn('node', [SCRIPT, '--sandbox', '--timeout', '30000', 'HOLD_PROMPT'], {
         env: harness.env,
         stdio: ['ignore', 'pipe', 'pipe'],
       });
@@ -324,7 +324,7 @@ describe('CLI regressions with fake PTY', () => {
     }
   });
 
-  it('runs live smoke JSON with the default no-tools permission mode', async () => {
+  it('runs live smoke JSON with the default sandbox permission mode', async () => {
     const harness = makeFakeHarness('live-smoke');
     try {
       const { stdout } = await execFileAsync('node', [SCRIPT, '--live-smoke', '--json', '--timeout', '30000'], {
@@ -334,7 +334,7 @@ describe('CLI regressions with fake PTY', () => {
       const parsed = JSON.parse(stdout.trim());
       assert.equal(parsed.tool, 'companion-for-agy');
       assert.equal(parsed.status, 'ok');
-      assert.equal(parsed.permissionMode, 'no-tools');
+      assert.equal(parsed.permissionMode, 'sandbox');
       assert.equal(parsed.liveSmoke.expectedText, 'AGY_LIVE_SMOKE_OK');
       assert.equal(parsed.liveSmoke.response, 'AGY_LIVE_SMOKE_OK');
       assert.equal(parsed.liveSmoke.matched, true);
@@ -395,7 +395,7 @@ describe('CLI regressions with fake PTY', () => {
   it('passes --add-dir to agy args (single)', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', '--add-dir', '/tmp/myout', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', '/tmp/myout', 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });
@@ -411,7 +411,7 @@ describe('CLI regressions with fake PTY', () => {
   it('passes --add-dir to agy args (multiple)', async () => {
     const harness = makeFakeHarness('ok');
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--no-tools', '--timeout', '30000', '--add-dir', '/tmp/dir1', '--add-dir', '/tmp/dir2', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', '/tmp/dir1', '--add-dir', '/tmp/dir2', 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });

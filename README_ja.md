@@ -66,22 +66,15 @@ companion-for-agy [オプション] "プロンプト"
 
 ### 権限モード
 
+agy は正確に 3 つのネイティブ権限状態を公開し、companion-for-agy は対応するフラグをそのまま渡します。ソフト/エミュレートモードや呼び出しごとの allow/deny ルールはありません。agy は workspace ローカルの権限ルールを読まないため、権限の適用はこれらのフラグのみによって行われます。
+
 | フラグ | 説明 |
 |--------|------|
-| `--sandbox` | サンドボックスモード (デフォルト)、コンテナ内でツール実行 |
-| `--skip-permissions` | すべてのツールを確認なしで実行 (YOLO) |
-| `--no-tools` | チャットのみ、ツール実行なし |
-| `--researcher` | Web/検索調査を許可し、shell コマンドとファイル変更は禁止 |
-| `--read-only` | ファイル読み取りを許可し、shell コマンドと変更は禁止 |
+| _(デフォルト、flag なし)_ | agy が**自身**の設定を使用 (`~/.gemini/antigravity-cli/` 下のグローバルおよびプロジェクトごとの allow/deny/ask ルール) |
+| `--sandbox` | shell とネットワークを遮断、ファイルシステムは workspace に限定 (ファイル書き込みは可能) |
+| `--skip-permissions` | すべてのツールを自動承認 (YOLO)、完全な権限。`--dangerously-skip-permissions` も受け付けます |
 
-### カスタムルール
-
-```bash
---allow "read_file(/path)"    # 許可ルール (繰り返し可)
---deny "command(rm)"          # 拒否ルール (繰り返し可)
-```
-
-形式は agy の権限システム (`settings.json`) と同じです。
+> **デフォルトモードの注意:** ヘッドレスの print モードでは、agy 自身の設定で許可も拒否もされていないツールは `ask` と解決されてブロックされます。まだ承認されていないツールを必要とするタスクには `--skip-permissions` を使用してください。
 
 ### オプション
 
@@ -95,7 +88,7 @@ companion-for-agy [オプション] "プロンプト"
 | `--doctor` | agy、node-pty、helper artifact のプラットフォーム診断を表示 |
 | `--platform-smoke` | `--doctor` と `--pty-smoke` を pre-live gate として実行 |
 | `--pty-smoke` | 認証不要の node-pty truecolor smoke を実行 |
-| `--live-smoke` | 実際の agy マーカー smoke を実行。デフォルトは `no-tools` |
+| `--live-smoke` | 実際の agy マーカー smoke を実行。デフォルトは `sandbox` |
 | `--lang <コード>` | CLI 出力言語: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
 | `--` | オプション解析を停止。`-` で始まるプロンプトの前に使用 |
 
@@ -112,14 +105,13 @@ companion-for-agy [オプション] "プロンプト"
 
 ```bash
 companion-for-agy "バイエルンの首都はどこですか？"
-companion-for-agy --no-tools "このコードをレビューしてください: ..."
-companion-for-agy --researcher "Node.js 24 の最新情報"
-companion-for-agy --read-only --allow "command(git log)" "プロンプト"
+companion-for-agy --sandbox "このコードをレビューしてください: ..."
 companion-for-agy --json --model gemini-3.5-pro "プロンプト"
 companion-for-agy --no-model "プロンプト"
+companion-for-agy --skip-permissions --add-dir "/out" "hello.txt を /out に書き込む"
 companion-for-agy --platform-smoke --json
 companion-for-agy --lang ja --help
-companion-for-agy --no-tools -- "-ハイフンで始まるプロンプト"
+companion-for-agy --sandbox -- "-ハイフンで始まるプロンプト"
 ```
 
 JSON 出力には `response`、`model`、`requestedModel`、`permissionMode` が含まれます。
@@ -165,7 +157,7 @@ companion-for-agy には agy から結果を受け取る方法が 2 つありま
 デフォルトの経路です。companion-for-agy は PTY から agy の応答を取得し、自身の stdout に書き出します。**短い応答や ASCII テキスト**では確実に動作し、短い `-p` プロンプトでタスクを委譲してコンパクトな回答だけを受け取りたい場合に適しています。
 
 ```bash
-companion-for-agy --no-tools "2 + 2 は？"
+companion-for-agy --sandbox "2 + 2 は？"
 ```
 
 **制限 (Windows で確認):** 応答が長い場合や、非 ASCII 文字 (中国語・日本語・韓国語などの CJK 文字) を含む場合、stdout 経由の取得で出力が文字化けし、文字が置換文字 (U+FFFD) に置き換わることがあります。これは agy 自体ではなく、PTY/ANSI 抽出層の特性です。
