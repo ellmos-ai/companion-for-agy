@@ -2,6 +2,10 @@
 
 ## [2.0.0] - 2026-07-06
 
+### Dokumentation & SEO (2026-07-22)
+- `llms.txt` `Last-checked`-Zeitstempel auf `2026-07-22` aktualisiert und Suchphrasen für das `v2.0.0` nativ unterstützte Rechtemodell (`--sandbox`, `--skip-permissions`) und ConPTY-Antwortextraktion erweitert.
+- Sichtbarkeits-Audit durchgeführt und Test-Suite verifiziert.
+
 ### Geändert (BREAKING)
 - Rechtemodell auf die drei Modi reduziert, die agy nativ unterstützt — so sind der Aufrufmodus des Companions und agys interner Modus immer synchron:
   - **Standard (kein Flag):** agy nutzt seine eigene Konfiguration — global `~/.gemini/antigravity-cli/settings.json` plus Projektregeln (allow/deny/ask). Im Headless-`-p`-Modus blockiert ein Tool, das weder vorab erlaubt noch verweigert ist, weil es zu „ask" auflöst — dann `--skip-permissions` verwenden.

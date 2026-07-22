@@ -2,6 +2,10 @@
 
 ## [2.0.0] - 2026-07-06
 
+### Documentation & SEO (2026-07-22)
+- Updated `llms.txt` `Last-checked` timestamp to `2026-07-22` and added search phrases for `v2.0.0` native permission model (`--sandbox`, `--skip-permissions`) and ConPTY response capture.
+- Conducted discoverability audit and verified test suite execution.
+
 ### Changed (BREAKING)
 - Permission model reduced to the three modes agy natively supports, so the companion's invocation mode and agy's own internal mode are always in sync:
   - **default (no flag):** agy uses its own configuration — global `~/.gemini/antigravity-cli/settings.json` plus per-project rules (allow/deny/ask). In headless `-p` mode a tool that is neither pre-allowed nor denied resolves to "ask" and blocks, so use `--skip-permissions` for tasks needing tools that are not pre-approved.
