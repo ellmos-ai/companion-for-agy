@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## [2.0.0] - 2026-07-06
+## [2.0.1] - 2026-07-23
 
 ### Behoben (Live-Smoke-Review, 2026-07-23)
 - **Verfrühtes Ctrl+C während der Generierung:** `detectResponseComplete()` interpretierte das leere `>`, das agys umrandete Eingabebox bei **jedem** Bildschirm-Redraw zeigt — auch während eine Antwort noch generiert wird — als „zurück im Leerlauf"-Signal, weil Rahmen, Spinner und die begleitende „esc to cancel"-Statuszeile allesamt als Rauschen galten und die Kandidaten-Markierung nie zurücksetzten. Gegen die aktuell installierte agy-Version 1.1.5 führte das dazu, dass der Wrapper bei jedem Lauf rund 2,5 Sekunden nach dem Absenden der Frage ein Ctrl+C schickte und die laufende Antwort abbrach (per `--debug` bestätigt: agy protokollierte „Interrupted"). Fix: Erscheint „esc to cancel" nach einem Kandidaten-`>`, wird dieser jetzt zurückgesetzt, da dieser Text ausschließlich während aktiver Generierung auftritt. Gegen eine echte authentifizierte agy-Sitzung verifiziert (zuvor reproduzierbarer Fehlschlag, jetzt sauber extrahierte Antwort). Durch zwei neue Regressionstests in `_tests/unit.test.mjs` abgedeckt.
@@ -8,6 +8,8 @@
 
 ### Gefunden, nicht behoben (als TODO dokumentiert)
 - agy 1.1.5 warnt jetzt mit `--model gemini-3.5-flash requires --effort (available: low, medium, high). Using the default model instead.` und fällt bei `--model` ohne passendes `--effort` still auf sein eigenes Standardmodell zurück. companion-for-agy übergibt bisher kein `--effort`, weshalb eine abweichende `--model`-Anfrage stillschweigend wirkungslos bleiben kann. In ROADMAP → „Known Issues" nachgehalten.
+
+## [2.0.0] - 2026-07-06
 
 ### Dokumentation & SEO (2026-07-22)
 - `llms.txt` `Last-checked`-Zeitstempel auf `2026-07-22` aktualisiert und Suchphrasen für das `v2.0.0` nativ unterstützte Rechtemodell (`--sandbox`, `--skip-permissions`) und ConPTY-Antwortextraktion erweitert.

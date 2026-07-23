@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0] - 2026-07-06
+## [2.0.1] - 2026-07-23
 
 ### Fixed (live-smoke review, 2026-07-23)
 - **Premature Ctrl+C during generation:** `detectResponseComplete()` treated the bare `>` that agy's bordered input box renders on *every* screen redraw — including while a response is still generating — as the "back to idle" signal, because the box border, spinner, and the accompanying "esc to cancel" status line were all classified as noise and never reset the candidate flag. Against the currently installed agy 1.1.5 UI, this made the wrapper send Ctrl+C and abort the live response within about 2.5s of sending the question on every run (confirmed via `--debug`: agy logged "Interrupted"). Fix: seeing "esc to cancel" after a candidate `>` now clears it, since that text only ever appears while agy is actively generating. Verified against a real authenticated agy session (previously reproducible failure, now a clean extracted response). Covered by two new regression tests in `_tests/unit.test.mjs`.
@@ -8,6 +8,8 @@
 
 ### Found, not fixed (documented as TODO)
 - agy 1.1.5 now warns `--model gemini-3.5-flash requires --effort (available: low, medium, high). Using the default model instead.` and silently falls back to its own default model whenever `--model` is passed without a matching `--effort`. companion-for-agy does not yet pass `--effort`, so a non-default `--model` request can silently not take effect. Tracked in ROADMAP → "Known Issues".
+
+## [2.0.0] - 2026-07-06
 
 ### Documentation & SEO (2026-07-22)
 - Updated `llms.txt` `Last-checked` timestamp to `2026-07-22` and added search phrases for `v2.0.0` native permission model (`--sandbox`, `--skip-permissions`) and ConPTY response capture.
