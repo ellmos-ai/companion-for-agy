@@ -15,8 +15,8 @@
 Discovered during a real authenticated live-smoke on Windows (2026-07-23, agy 1.1.5): passing `--model <model>` without a matching `--effort` now prints `⚠ Warning ⎿ --model <model> requires --effort (available: low, medium, high). Using the default model instead.` and agy silently falls back to its own default model. companion-for-agy does not currently pass `--effort`, so a non-default `--model` request (e.g. `gemini-3.5-pro` when agy's own default is `gemini-3.5-flash`) can silently not take effect — the JSON output's `model` field (detected from agy's banner) will still correctly reflect whichever model actually ran, but `requestedModel` may no longer match it.
 
 **TODOs:**
-- [ ] Add an `--effort <low|medium|high>` passthrough flag (mirroring agy's own flag) so `--model` keeps working on agy >= 1.1.5.
-- [ ] Detect the "requires --effort" warning banner and surface it distinctly (e.g. a `modelFallback: true` field in JSON output) instead of only reporting the banner-detected model.
+- [x] Add an `--effort <low|medium|high>` passthrough flag (mirroring agy's own flag) so `--model` keeps working on agy >= 1.1.5. *(shipped in 2.0.2)*
+- [x] Surface a silent model fallback distinctly: stderr warning `warnModelMismatch` (localized, 6 languages) whenever the banner-detected model does not match the requested one, plus a `modelMismatch: true/false` field in JSON output. *(shipped in 2.0.2; detection is banner-based rather than warning-banner-based, which also catches fallbacks that print no warning)*
 - [ ] Re-verify on the next agy release whether `--effort` becomes mandatory or optional-with-default.
 
 ## Planned

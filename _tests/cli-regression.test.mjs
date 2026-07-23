@@ -394,34 +394,70 @@ describe('CLI regressions with fake PTY', () => {
 
   it('passes --add-dir to agy args (single)', async () => {
     const harness = makeFakeHarness('ok');
+    const addDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-adddir-'));
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', '/tmp/myout', 'OK_PROMPT'], {
+      const { stdout, stderr } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', addDir, 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });
       assert.equal(stdout.trim(), 'OK');
       const events = fs.readFileSync(harness.eventLog, 'utf8');
       assert.match(events, /"--add-dir"/);
-      assert.match(events, /\/tmp\/myout/);
+      assert.ok(events.includes(JSON.stringify(addDir).slice(1, -1)), 'add-dir path appears in agy args');
+      // 2.0.2: the first --add-dir becomes agy's working directory
+      assert.ok(stderr.includes(path.resolve(addDir)), 'workdir status line mentions the add-dir');
     } finally {
       harness.cleanup();
+      fs.rmSync(addDir, { recursive: true, force: true });
     }
   });
 
   it('passes --add-dir to agy args (multiple)', async () => {
     const harness = makeFakeHarness('ok');
+    const dir1 = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-adddir1-'));
+    const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-adddir2-'));
     try {
-      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', '/tmp/dir1', '--add-dir', '/tmp/dir2', 'OK_PROMPT'], {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', dir1, '--add-dir', dir2, 'OK_PROMPT'], {
         env: harness.env,
         timeout: 60000,
       });
       assert.equal(stdout.trim(), 'OK');
       const events = fs.readFileSync(harness.eventLog, 'utf8');
-      assert.match(events, /\/tmp\/dir1/);
-      assert.match(events, /\/tmp\/dir2/);
+      assert.ok(events.includes(JSON.stringify(dir1).slice(1, -1)), 'first add-dir appears in agy args');
+      assert.ok(events.includes(JSON.stringify(dir2).slice(1, -1)), 'second add-dir appears in agy args');
       // Both --add-dir flags appear in args (two occurrences expected)
       const addDirCount = (events.match(/"--add-dir"/g) || []).length;
       assert.equal(addDirCount, 2);
+    } finally {
+      harness.cleanup();
+      fs.rmSync(dir1, { recursive: true, force: true });
+      fs.rmSync(dir2, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a missing --add-dir directory with a clear error', async () => {
+    const missing = path.join(os.tmpdir(), 'agy-adddir-missing-' + process.pid);
+    await assert.rejects(
+      execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--add-dir', missing, 'OK_PROMPT'], { timeout: 60000 }),
+      err => {
+        assert.equal(err.code, 1);
+        assert.match(err.stderr, /--add-dir/);
+        return true;
+      }
+    );
+  });
+
+  it('passes --effort through to agy args', async () => {
+    const harness = makeFakeHarness('ok');
+    try {
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--sandbox', '--timeout', '30000', '--model', 'gemini-3.6-flash', '--effort', 'high', 'OK_PROMPT'], {
+        env: harness.env,
+        timeout: 60000,
+      });
+      assert.equal(stdout.trim(), 'OK');
+      const events = fs.readFileSync(harness.eventLog, 'utf8');
+      assert.match(events, /"--effort"/);
+      assert.match(events, /"high"/);
     } finally {
       harness.cleanup();
     }

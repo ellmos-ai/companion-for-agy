@@ -138,7 +138,7 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 ```bash
 companion-for-agy "What is the capital of Bavaria?"
 companion-for-agy --sandbox "Review this code: ..."
-companion-for-agy --json --model gemini-3.5-pro "prompt"
+companion-for-agy --json --model gemini-3.6-flash --effort high "prompt"
 companion-for-agy --no-model "prompt"
 companion-for-agy --skip-permissions --add-dir "/my/output" "Write hello.txt to /my/output"
 companion-for-agy --doctor

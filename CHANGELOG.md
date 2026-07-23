@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.0.2] - 2026-07-23
+
+### Added
+- `--effort <low|medium|high>` passthrough flag (mirrors agy's own flag). agy >= 1.1.x
+  requires `--effort` for some models (e.g. `gemini-3.6-flash`) and silently falls back
+  to its default model otherwise — closing the Known Issue documented in 2.0.1.
+- Model-mismatch surfacing: whenever the model detected from agy's banner does not match
+  the requested `--model`, the companion prints a localized `warnModelMismatch` warning
+  on stderr and sets `modelMismatch: true` in `--json` output.
+- New regression tests: `--effort` passthrough, missing `--add-dir` rejection, and the
+  add-dir working-directory behavior.
+
+### Changed
+- The FIRST `--add-dir` directory now becomes agy's working directory (previously agy
+  always ran inside a throwaway temp workspace, so relative output paths silently landed
+  in `%TEMP%\agy-companion-<pid>\` instead of the caller's directory — found in a real
+  banner-generation run). A `statusWorkdir` status line reports the effective directory;
+  a missing `--add-dir` path now fails fast with `errAddDirMissing` instead of running
+  against a directory agy cannot use.
+- Help text: model list updated to the agy 1.1.x generation (`gemini-3.6-flash`,
+  `gemini-3.5-flash`, `gemini-3.1-pro`; the retired `gemini-1.5*/2.0*/3.5-pro` entries
+  are gone), `--effort` documented, examples updated — in all six locales.
+
 ## [2.0.1] - 2026-07-23
 
 ### Fixed (live-smoke review, 2026-07-23)

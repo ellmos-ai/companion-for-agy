@@ -136,7 +136,7 @@ companion-for-agy --skip-permissions --add-dir "/mein/ausgabe" \
 ```bash
 companion-for-agy "Was ist die Hauptstadt von Bayern?"
 companion-for-agy --sandbox "Code-Review: ..."
-companion-for-agy --json --model gemini-3.5-pro "Prompt"
+companion-for-agy --json --model gemini-3.6-flash --effort high "Prompt"
 companion-for-agy --no-model "Prompt"
 companion-for-agy --skip-permissions --add-dir "/mein/ausgabe" "Schreibe hello.txt nach /mein/ausgabe"
 companion-for-agy --doctor --json

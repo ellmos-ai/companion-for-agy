@@ -1246,6 +1246,7 @@ if (isMainModule()) {
   const rawArgs = process.argv.slice(2);
 
   let model = DEFAULT_MODEL;
+  let effort = null;
   let includeModel = !/^(1|true|yes)$/i.test(process.env.AGY_COMPANION_NO_MODEL || '');
   let timeoutMs = DEFAULT_TIMEOUT_MS;
   let debug = false;
@@ -1277,6 +1278,10 @@ if (isMainModule()) {
       showHelp = true;
     } else if ((arg === '--model' || arg === '-m') && rawArgs[i + 1]) {
       model = rawArgs[++i];
+    } else if (arg === '--effort' && rawArgs[i + 1]) {
+      effort = rawArgs[++i].toLowerCase();
+    } else if (arg.startsWith('--effort=')) {
+      effort = arg.slice('--effort='.length).toLowerCase();
     } else if (arg === '--no-model') {
       includeModel = false;
     } else if (arg === '--timeout' && rawArgs[i + 1]) {
@@ -1444,9 +1449,25 @@ if (isMainModule()) {
   // ---------- Start agy ----------
 
   const addDirFlags = addDirs.flatMap(dir => ['--add-dir', dir]);
+  const effortFlags = includeModel && effort ? ['--effort', effort] : [];
   const agyArgs = includeModel
-    ? ['--model', model, ...preset.agyFlags, ...addDirFlags]
+    ? ['--model', model, ...effortFlags, ...preset.agyFlags, ...addDirFlags]
     : [...preset.agyFlags, ...addDirFlags];
+
+  // The first --add-dir becomes agy's working directory so that relative
+  // output paths land where the caller expects them (2.0.2 fix: previously
+  // agy always ran inside the throwaway temp workspace and relative writes
+  // silently ended up there).
+  let agyCwd = tempWorkspace;
+  if (addDirs.length > 0) {
+    const resolvedFirst = path.resolve(addDirs[0]);
+    if (!fs.existsSync(resolvedFirst)) {
+      process.stderr.write(getMessage('errAddDirMissing', lang, { dir: resolvedFirst }));
+      process.exit(1);
+    }
+    agyCwd = resolvedFirst;
+    process.stderr.write(getMessage('statusWorkdir', lang, { dir: agyCwd }));
+  }
 
   process.stderr.write(
     getMessage('statusStarting', lang, { args: agyArgs.join(' '), mode: permissionMode })
@@ -1456,7 +1477,7 @@ if (isMainModule()) {
     name: 'xterm-256color',
     cols: 220,
     rows: 50,
-    cwd: tempWorkspace,
+    cwd: agyCwd,
     env: { ...process.env, TERM: 'xterm-256color', COLORTERM: 'truecolor' },
   });
 
@@ -1474,6 +1495,7 @@ if (isMainModule()) {
 
   let rawBuffer = '';
   let detectedModel = null;
+  let modelMismatchDetected = false;
   let trustHandled = false;
   let startupComplete = false;
   let initDone = false;
@@ -1624,7 +1646,7 @@ if (isMainModule()) {
     }
 
     if (jsonOutput) {
-      const result = { response: text, model: detectedModel || model, requestedModel: model, permissionMode };
+      const result = { response: text, model: detectedModel || model, requestedModel: model, modelMismatch: modelMismatchDetected, permissionMode };
       process.stdout.write(JSON.stringify(result) + '\n');
     } else {
       process.stdout.write(text + '\n');
@@ -1656,6 +1678,18 @@ if (isMainModule()) {
         if (modelMatch) {
           detectedModel = modelMatch[0];
           process.stderr.write(getMessage('statusDetectedModel', lang, { model: detectedModel }));
+          // agy silently falls back to its default when the requested model is
+          // invalid for it (e.g. missing --effort). Surface that instead of
+          // letting the caller believe the requested model answered.
+          if (includeModel && model) {
+            const requestedTokens = model.toLowerCase().split(/[^a-z0-9.]+/).filter(t => t && t !== 'gemini');
+            const detectedNorm = detectedModel.toLowerCase();
+            const mismatch = requestedTokens.some(t => !detectedNorm.includes(t));
+            if (mismatch) {
+              modelMismatchDetected = true;
+              process.stderr.write(getMessage('warnModelMismatch', lang, { requested: model, detected: detectedModel }));
+            }
+          }
         }
       }
 
