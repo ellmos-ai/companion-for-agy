@@ -891,6 +891,35 @@ describe('detectResponseComplete', () => {
     const response = '> Was ist 2+2?\nAntwort.\n>\n>\n>';
     assert.equal(detectResponseComplete(response, 'Was ist 2+2'), true);
   });
+
+  it('rejects the empty bordered input-box placeholder while agy is still generating (live-smoke regression)', () => {
+    // Captured from a real --debug session (agy 1.1.5): the bordered input box redraws
+    // a bare '>' on every frame, including immediately after the question is sent and
+    // before any response text streams. Only "esc to cancel" proves generation is still
+    // in progress; without this guard the bare '>' latched true within the first redraw
+    // and the wrapper sent Ctrl+C to agy mid-generation.
+    const response = [
+      '> What is 2+2? Answer with only the digit.',
+      'Generating...',
+      '────────────',
+      '>',
+      '────────────',
+      'esc to cancel                                                Gemini 3.5 Flash · high',
+    ].join('\n');
+    assert.equal(detectResponseComplete(response, 'What is 2+2'), false);
+  });
+
+  it('accepts completion once the idle "for shortcuts" footer returns after generation', () => {
+    const response = [
+      '> What is 2+2? Answer with only the digit.',
+      '4',
+      '────────────',
+      '>',
+      '────────────',
+      '? for shortcuts                                                Gemini 3.5 Flash · high',
+    ].join('\n');
+    assert.equal(detectResponseComplete(response, 'What is 2+2'), true);
+  });
 });
 
 // ---------- shouldResetIdleTimer ----------

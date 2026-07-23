@@ -976,12 +976,21 @@ export function isNoiseLine(line, promptFilter = '') {
  * Returns true when the stripped response buffer ends with the agy idle prompt (bare '>'),
  * with no real content appearing after it.
  *
- * Bug fixed: the previous implementation used `break` at the first bare '>' after the
+ * Bug fixed (1.3.1): the previous implementation used `break` at the first bare '>' after the
  * question echo, so a blank blockquote line or any other mid-response '>' would
  * incorrectly trigger responseComplete, starting the short 2.5s idle timer before the
- * actual response finished.  The new approach tracks a candidate flag and resets it
- * whenever non-noise content follows — only the *last* bare '>' with nothing meaningful
- * after it is treated as the real prompt.
+ * actual response finished.  The candidate-flag approach resets on non-noise content
+ * so only the *last* bare '>' with nothing meaningful after it counts as the real prompt.
+ *
+ * Bug fixed (live-smoke 2026-07-23): agy's bordered input box renders an empty '>'
+ * placeholder on every screen redraw, including while a response is still generating
+ * (that redraw always also carries an "esc to cancel" status line). Because the spinner
+ * and border are themselves noise, no non-noise content ever appears between the question
+ * echo and that placeholder '>' during generation, so the candidate flag used to latch
+ * true within the first redraw — firing the 2.5s idle timer and sending Ctrl+C to agy
+ * while it was still mid-generation (confirmed via --debug: agy logged "Interrupted").
+ * "esc to cancel" only ever appears while generating and never once idle, so seeing it
+ * after a candidate '>' now clears the candidate — it is the one reliable "still busy" signal.
  */
 export function detectResponseComplete(responseSoFar, userPromptForFilter) {
   const respLines = responseSoFar.split('\n');
@@ -992,7 +1001,9 @@ export function detectResponseComplete(responseSoFar, userPromptForFilter) {
     if (!seenQuestionEcho && userPromptForFilter && t.includes(userPromptForFilter.slice(0, 15))) {
       seenQuestionEcho = true;
     } else if (seenQuestionEcho) {
-      if (t === '>') {
+      if (/esc to cancel/i.test(t)) {
+        foundPromptCandidate = false;
+      } else if (t === '>') {
         foundPromptCandidate = true;
       } else if (foundPromptCandidate && t && !isNoiseLine(t)) {
         foundPromptCandidate = false;
