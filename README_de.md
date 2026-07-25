@@ -6,6 +6,8 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml)
+[![Node Tests](https://img.shields.io/badge/tests-209%20passed-brightgreen.svg)](https://github.com/dev-bricks/companion-for-agy/blob/master/_tests/unit.test.mjs)
+[![LLM-Ready](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Deutsch](https://img.shields.io/badge/lang-Deutsch-blue)](README_de.md)
 [![Español](https://img.shields.io/badge/lang-Espa%C3%B1ol-blue)](README_es.md)
@@ -14,6 +16,9 @@
 [![Русский](https://img.shields.io/badge/lang-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-blue)](README_ru.md)
 
 > **Inoffiziell** - nicht mit Google verbunden und nicht von Google unterstützt.
+
+> [!NOTE]
+> **KI-Agenten & LLM-Integration:** `companion-for-agy` ist für die automatisierte Ausführung durch KI-Agenten (Claude Code, Codex, Antigravity, n8n) optimiert. Maschinenlesbare Kontexte, Systemarchitekturen und Suchbegriffe befinden sich in [llms.txt](llms.txt).
 
 PTY-basierter Wrapper für **agy** (Antigravity CLI / Gemini CLI), der Gemini-Antworten aus Subprozessen erfasst.
 

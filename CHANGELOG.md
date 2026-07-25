@@ -34,6 +34,11 @@
 
 ## [2.0.0] - 2026-07-06
 
+### Documentation & SEO (2026-07-25)
+- Updated `llms.txt` `Last-checked` timestamp to `2026-07-25`.
+- Added Node.js test badge (209 passing unit/fixture/hygiene tests) and LLM-Ready callout banner to `README.md` and `README_de.md`.
+- Verified repository hygiene, clean git status, and node test suite execution.
+
 ### Documentation & SEO (2026-07-22)
 - Updated `llms.txt` `Last-checked` timestamp to `2026-07-22` and added search phrases for `v2.0.0` native permission model (`--sandbox`, `--skip-permissions`) and ConPTY response capture.
 - Conducted discoverability audit and verified test suite execution.
