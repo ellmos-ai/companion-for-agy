@@ -34,6 +34,9 @@
 
 ## [2.0.0] - 2026-07-06
 
+### Documentation & SEO (2026-07-26)
+- Updated `llms.txt` `Last-checked` timestamp to `2026-07-26` and re-verified Node.js test suite execution (209 passed, 1 skipped).
+
 ### Documentation & SEO (2026-07-25)
 - Updated `llms.txt` `Last-checked` timestamp to `2026-07-25`.
 - Added Node.js test badge (209 passing unit/fixture/hygiene tests) and LLM-Ready callout banner to `README.md` and `README_de.md`.
