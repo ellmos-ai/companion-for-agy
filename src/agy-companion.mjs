@@ -1422,6 +1422,16 @@ if (isMainModule()) {
 
   // ---------- node-pty ----------
 
+  // ---------- Validate arguments before probing the environment ----------
+  // A missing --add-dir directory is a caller error and must be reported as such,
+  // regardless of whether node-pty loads or agy is installed on this machine.
+  // Reporting it only later made the error depend on the runner (a macOS/Node 24
+  // job failed with the node-pty message instead).
+  if (addDirs.length > 0 && !fs.existsSync(path.resolve(addDirs[0]))) {
+    process.stderr.write(getMessage('errAddDirMissing', lang, { dir: path.resolve(addDirs[0]) }));
+    process.exit(1);
+  }
+
   const nodePty = resolveNodePtyModule();
   if (!nodePty.ok) {
     if (process.env.AGY_COMPANION_PTY_PATH) {
@@ -1460,11 +1470,8 @@ if (isMainModule()) {
   // silently ended up there).
   let agyCwd = tempWorkspace;
   if (addDirs.length > 0) {
+    // Existenz ist oben bereits geprüft (Argumentvalidierung vor Umgebungsprüfung).
     const resolvedFirst = path.resolve(addDirs[0]);
-    if (!fs.existsSync(resolvedFirst)) {
-      process.stderr.write(getMessage('errAddDirMissing', lang, { dir: resolvedFirst }));
-      process.exit(1);
-    }
     agyCwd = resolvedFirst;
     process.stderr.write(getMessage('statusWorkdir', lang, { dir: agyCwd }));
   }
