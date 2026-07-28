@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0] - 2026-07-28
+
+### Added
+- Live agy model discovery via `--list-models` / `--refresh-models`, with a path/version-bound 24-hour cache.
+- Model-aware automatic effort selection and one pre-prompt retry when agy requires effort to be added or removed.
+- `--no-effort` to explicitly suppress automatic selection and `--version` / `-V` for machine-readable version checks.
+- JSON metadata for effective effort and the discovered model catalog.
+
 ## [2.0.2] - 2026-07-23
 
 ### Added

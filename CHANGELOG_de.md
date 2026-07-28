@@ -1,5 +1,13 @@
 # Änderungsprotokoll
 
+## [2.1.0] - 2026-07-28
+
+### Hinzugefügt
+- Live-Ermittlung des agy-Modellkatalogs über `--list-models` / `--refresh-models` mit einem 24-Stunden-Cache je agy-Pfad und -Version.
+- Modellabhängige automatische Effort-Auswahl und genau ein Pre-Prompt-Retry, wenn agy das Hinzufügen oder Entfernen von Effort verlangt.
+- `--no-effort` zum expliziten Unterdrücken der automatischen Auswahl sowie `--version` / `-V`.
+- JSON-Metadaten für den effektiven Effort und den ermittelten Modellkatalog.
+
 ## [2.0.2] - 2026-07-23
 
 ### Hinzugefügt

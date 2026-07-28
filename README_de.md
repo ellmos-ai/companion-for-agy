@@ -115,7 +115,12 @@ companion-for-agy --skip-permissions --add-dir "/mein/ausgabe" \
 |------|--------------|
 | `--add-dir <Verz.>` | Verzeichnis zum agy-Workspace hinzufügen (wiederholbar); erforderlich damit agy Dateien außerhalb des Temp-Verzeichnisses schreiben kann |
 | `--model <Modell>` | Gemini-Modell (Standard: `gemini-3.5-flash`) |
+| `--effort <Stufe>` | Expliziter agy-Effort; wird gegen den ermittelten Modellkatalog geprüft |
+| `--no-effort` | Automatische Effort-Auswahl für das angeforderte Modell unterdrücken |
 | `--no-model` | `--model` nicht an agy übergeben; nützlich für agy v1.0.x |
+| `--list-models` | Live-Modellkatalog von agy ausgeben (24 Stunden je agy-Pfad/-Version gecacht) |
+| `--refresh-models` | Live-Modellkatalog aktualisieren und ausgeben |
+| `--version`, `-V` | Companion-Version ausgeben |
 | `--timeout <ms>` | Timeout in ms (Standard: `120000`) |
 | `--json` | Ausgabe als JSON-Objekt |
 | `--report-file <Pfad>` | Diagnosebericht für `--doctor`, `--platform-smoke`, `--pty-smoke` und `--live-smoke` als JSON-Datei schreiben |
@@ -142,6 +147,7 @@ companion-for-agy --skip-permissions --add-dir "/mein/ausgabe" \
 companion-for-agy "Was ist die Hauptstadt von Bayern?"
 companion-for-agy --sandbox "Code-Review: ..."
 companion-for-agy --json --model gemini-3.6-flash --effort high "Prompt"
+companion-for-agy --refresh-models --json
 companion-for-agy --no-model "Prompt"
 companion-for-agy --skip-permissions --add-dir "/mein/ausgabe" "Schreibe hello.txt nach /mein/ausgabe"
 companion-for-agy --doctor --json
@@ -153,7 +159,9 @@ companion-for-agy --lang de --help
 companion-for-agy --sandbox -- "-prompt mit Bindestrich"
 ```
 
-JSON-Ausgabe enthält `response`, `model`, `requestedModel` und `permissionMode`. `model` wird nach Möglichkeit aus agys Banner erkannt und fällt sonst auf `requestedModel` zurück.
+Für agy >= 1.1 ermittelt der Companion verfügbare Modelle und Effort-Varianten aus agys eigener Invalid-Model-Antwort. Explizite Auswahl wird validiert, ohne Angabe wird ein unterstützter Effort automatisch gewählt, und vor dem Prompt erfolgt höchstens ein Retry, falls agy das Hinzufügen oder Entfernen von `--effort` verlangt.
+
+JSON-Ausgabe enthält `response`, `model`, `requestedModel`, `effort`, `effortAutoSelected`, `availableModels` und `permissionMode`. `model` wird nach Möglichkeit aus agys Banner erkannt und fällt sonst auf `requestedModel` zurück.
 
 Für `--doctor --json` enthält die Ausgabe stattdessen einen Preflight-Bericht mit `status`, `blockers`, `warnings`, agy-Versionserkennung, `node-pty`-Ladedetails und Helper-/Binary-Pfaden. Für `--platform-smoke --json` enthält sie einen gebündelten Pre-Live-Bericht mit verschachteltem Doctor- und PTY-Smoke-Ergebnis sowie dem nächsten authentifizierten Live-Smoke-Befehl. Für `--pty-smoke --json` enthält sie einen PTY-Smoke-Bericht mit verwendetem Kommando, erwarteter/extrahierter Truecolor-Antwort, Rohbytezahl sowie Blockern/Warnungen. Für `--live-smoke --no-model --debug --json` enthält sie einen authentifizierten agy-Live-Smoke-Bericht mit `status`, Marker-Prüfung, Modellmetadaten, Berechtigungsmodus, Antwort-RGB und Debug-Log-Pfad. Ein Marker-Mismatch beendet den Prozess mit Exit-Code `5`. `--report-file <Pfad>` kann zu jedem Diagnosemodus ergänzt werden, wenn der Bericht dauerhaft als formatiertes JSON abgelegt werden soll, während stdout im gewählten Text- oder JSON-Format bleibt.
 

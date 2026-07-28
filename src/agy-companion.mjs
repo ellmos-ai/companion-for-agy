@@ -19,7 +19,7 @@
 
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import { execFileSync, execSync } from 'node:child_process';
+import { execFileSync, execSync, spawnSync } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -45,6 +45,9 @@ export const PLATFORM_SMOKE_LIVE_COMMAND = 'companion-for-agy --live-smoke --no-
 export const RESPONSE_MIN_PROGRESS_BYTES = 10;
 // If STARTUP_DONE_PATTERNS never fire (e.g. different agy version or language), proceed anyway after this delay
 export const STARTUP_FALLBACK_MS = 30000;
+export const MODEL_CATALOG_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+export const MODEL_DISCOVERY_PROBE = '__companion_invalid_model__';
+export const EFFORT_RETRY_ENV = 'AGY_COMPANION_EFFORT_RETRY_DEPTH';
 
 // Pure helper — extracted for testability
 export function shouldResetIdleTimer({ newLength, lastProgressLength, minProgressBytes, responseComplete, lastResponseComplete }) {
@@ -172,6 +175,179 @@ export function versionSupportsModelFlag(version) {
   if (major > 1) return true;
   if (major < 1) return false;
   return minor >= 1;
+}
+
+export function modelLabelToId(label) {
+  if (!label || typeof label !== 'string') return null;
+  return label
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9.-]/g, '')
+    .replace(/-+/g, '-');
+}
+
+export function parseAgyModelCatalog(text) {
+  if (!text || typeof text !== 'string') return [];
+  const stripped = stripAnsi(text);
+  const lines = stripped.split(/\r?\n/);
+  const start = lines.findIndex(line => /available models\s*:/i.test(line));
+  if (start === -1) return [];
+
+  const grouped = new Map();
+  for (const rawLine of lines.slice(start + 1)) {
+    const line = rawLine.trim();
+    if (!line) {
+      if (grouped.size > 0) break;
+      continue;
+    }
+    const match = line.match(/^(.+?)\s+\(([^()]+)\)$/);
+    if (!match) {
+      if (grouped.size > 0) break;
+      continue;
+    }
+    const displayName = match[1].trim();
+    const id = modelLabelToId(displayName);
+    const effort = match[2].trim().toLowerCase();
+    if (!id) continue;
+    if (!grouped.has(id)) {
+      grouped.set(id, { id, displayName, efforts: [] });
+    }
+    const entry = grouped.get(id);
+    if (!entry.efforts.includes(effort)) entry.efforts.push(effort);
+  }
+  return [...grouped.values()];
+}
+
+export function chooseCatalogEffort(models, model, requestedEffort = null) {
+  if (!Array.isArray(models) || !model) return requestedEffort;
+  const entry = models.find(item => item.id === model.toLowerCase());
+  if (!entry) return requestedEffort;
+  const efforts = entry.efforts || [];
+  if (requestedEffort && efforts.includes(requestedEffort.toLowerCase())) {
+    return requestedEffort.toLowerCase();
+  }
+  if (requestedEffort) return null;
+  if (efforts.includes('high')) return 'high';
+  if (efforts.includes('medium')) return 'medium';
+  if (efforts.includes('low')) return 'low';
+  return null;
+}
+
+export function buildEffortRetryArgs(rawArgs, newEffort) {
+  const result = [];
+  for (let i = 0; i < rawArgs.length; i++) {
+    const arg = rawArgs[i];
+    if (arg === '--') {
+      result.push(...rawArgs.slice(i));
+      break;
+    }
+    if (arg === '--effort') {
+      i++;
+      continue;
+    }
+    if (arg.startsWith('--effort=')) continue;
+    if (arg === '--no-effort') continue;
+    result.push(arg);
+  }
+  if (newEffort) {
+    const separator = result.indexOf('--');
+    if (separator === -1) result.unshift('--effort', newEffort);
+    else result.splice(separator, 0, '--effort', newEffort);
+  } else {
+    const separator = result.indexOf('--');
+    if (separator === -1) result.unshift('--no-effort');
+    else result.splice(separator, 0, '--no-effort');
+  }
+  return result;
+}
+
+export function effortRetryFromOutput(text, currentEffort = null) {
+  const stripped = stripAnsi(text || '');
+  const required = stripped.match(/requires\s+--effort\s*\(available:\s*([^)]+)\)/i);
+  if (required && !currentEffort) {
+    const available = required[1].split(',').map(value => value.trim().toLowerCase());
+    return { action: 'add', effort: available.includes('high') ? 'high' : available[0] };
+  }
+  if (currentEffort && /--effort\s+is\s+not\s+supported|does\s+not\s+support\s+--effort|unexpected\s+(?:argument|option).*--effort/i.test(stripped)) {
+    return { action: 'remove', effort: null };
+  }
+  return null;
+}
+
+export function getModelCatalogCachePath() {
+  if (process.env.AGY_COMPANION_MODEL_CACHE) {
+    return path.resolve(process.env.AGY_COMPANION_MODEL_CACHE);
+  }
+  const base = process.platform === 'win32'
+    ? (process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'))
+    : (process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'));
+  return path.join(base, 'companion-for-agy', 'model-catalog.json');
+}
+
+export function probeAgyModelCatalog(agyPath, { force = false } = {}) {
+  const versionInfo = detectAgyVersion(agyPath);
+  const cachePath = getModelCatalogCachePath();
+  if (!force && fs.existsSync(cachePath)) {
+    try {
+      const cached = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      const age = Date.now() - Date.parse(cached.detectedAt);
+      if (
+        cached.agyPath === agyPath &&
+        cached.agyVersion === versionInfo.version &&
+        Array.isArray(cached.models) &&
+        cached.models.length > 0 &&
+        age >= 0 &&
+        age <= MODEL_CATALOG_CACHE_MAX_AGE_MS
+      ) {
+        return { ...cached, cacheHit: true };
+      }
+    } catch (_) {}
+  }
+
+  let combined = '';
+  try {
+    execFileSync(agyPath, [
+      '-p',
+      'MODEL_DISCOVERY_PROBE',
+      '--model',
+      MODEL_DISCOVERY_PROBE,
+      '--sandbox',
+    ], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 20000,
+      windowsHide: true,
+      maxBuffer: 1024 * 1024,
+    });
+  } catch (error) {
+    combined = [
+      typeof error.stdout === 'string' ? error.stdout : '',
+      typeof error.stderr === 'string' ? error.stderr : '',
+      error.message || '',
+    ].join('\n');
+  }
+  const models = parseAgyModelCatalog(combined);
+  if (models.length === 0) {
+    throw new Error('agy model discovery probe returned no parseable model catalog');
+  }
+
+  const catalog = {
+    schemaVersion: 1,
+    source: 'agy-invalid-model-probe',
+    detectedAt: new Date().toISOString(),
+    agyPath,
+    agyVersion: versionInfo.version,
+    models,
+    cacheHit: false,
+  };
+  try {
+    fs.mkdirSync(path.dirname(cachePath), { recursive: true, mode: 0o700 });
+    const tempPath = `${cachePath}.${process.pid}.tmp`;
+    fs.writeFileSync(tempPath, JSON.stringify(catalog, null, 2), { encoding: 'utf8', mode: 0o600 });
+    fs.renameSync(tempPath, cachePath);
+  } catch (_) {}
+  return catalog;
 }
 
 export function isExecutablePath(filePath) {
@@ -1247,6 +1423,7 @@ if (isMainModule()) {
 
   let model = DEFAULT_MODEL;
   let effort = null;
+  let suppressEffort = false;
   let includeModel = !/^(1|true|yes)$/i.test(process.env.AGY_COMPANION_NO_MODEL || '');
   let timeoutMs = DEFAULT_TIMEOUT_MS;
   let debug = false;
@@ -1256,6 +1433,8 @@ if (isMainModule()) {
   let platformSmokeMode = false;
   let ptySmokeMode = false;
   let liveSmokeMode = false;
+  let listModelsMode = false;
+  let refreshModels = false;
   let permissionMode = 'default';
   let permissionModeExplicit = false;
   const addDirs = [];
@@ -1264,6 +1443,7 @@ if (isMainModule()) {
   const promptParts = [];
   let langOption = null;
   let showHelp = false;
+  let showVersion = false;
 
   let parseOptions = true;
 
@@ -1276,10 +1456,22 @@ if (isMainModule()) {
       parseOptions = false;
     } else if (arg === '--help' || arg === '-h') {
       showHelp = true;
+    } else if (arg === '--version' || arg === '-V') {
+      showVersion = true;
+    } else if (arg === '--list-models') {
+      listModelsMode = true;
+    } else if (arg === '--refresh-models') {
+      listModelsMode = true;
+      refreshModels = true;
     } else if ((arg === '--model' || arg === '-m') && rawArgs[i + 1]) {
       model = rawArgs[++i];
     } else if (arg === '--effort' && rawArgs[i + 1]) {
       effort = rawArgs[++i].toLowerCase();
+    } else if (arg.startsWith('--effort=')) {
+      effort = arg.slice('--effort='.length).toLowerCase();
+    } else if (arg === '--no-effort') {
+      effort = null;
+      suppressEffort = true;
     } else if (arg.startsWith('--effort=')) {
       effort = arg.slice('--effort='.length).toLowerCase();
     } else if (arg === '--no-model') {
@@ -1350,6 +1542,36 @@ if (isMainModule()) {
   if (showHelp || rawArgs.length === 0) {
     printUsage(lang);
     process.exit(0);
+  }
+
+  if (showVersion) {
+    process.stdout.write(`${getPackageVersion() || 'unknown'}\n`);
+    process.exit(0);
+  }
+
+  if (listModelsMode) {
+    const resolvedAgyPath = AGY_PATH;
+    if (!resolvedAgyPath || !fs.existsSync(resolvedAgyPath)) {
+      process.stderr.write(resolvedAgyPath
+        ? getMessage('errAgyNotAt', lang, { path: resolvedAgyPath })
+        : getMessage('errAgyNotFound', lang));
+      process.exit(1);
+    }
+    try {
+      const catalog = probeAgyModelCatalog(resolvedAgyPath, { force: refreshModels });
+      if (jsonOutput) {
+        process.stdout.write(JSON.stringify(catalog) + '\n');
+      } else {
+        process.stdout.write(`agy ${catalog.agyVersion || '(unknown)'} models (${catalog.cacheHit ? 'cache' : catalog.source}):\n`);
+        for (const entry of catalog.models) {
+          process.stdout.write(`  ${entry.id} [${entry.efforts.join(', ')}]\n`);
+        }
+      }
+      process.exit(0);
+    } catch (error) {
+      process.stderr.write(`[agy-companion] Model discovery failed: ${error.message}\n`);
+      process.exit(1);
+    }
   }
 
   let userPrompt = promptParts.join(' ').trim();
@@ -1454,6 +1676,31 @@ if (isMainModule()) {
   if (!fs.existsSync(resolvedAgyPath)) {
     process.stderr.write(getMessage('errAgyNotAt', lang, { path: resolvedAgyPath }));
     process.exit(1);
+  }
+
+  let modelCatalog = null;
+  let effortAutoSelected = false;
+  if (includeModel) {
+    try {
+      modelCatalog = probeAgyModelCatalog(resolvedAgyPath);
+      const modelEntry = modelCatalog.models.find(entry => entry.id === model.toLowerCase());
+      if (!modelEntry) {
+        const available = modelCatalog.models.map(entry => entry.id).join(', ');
+        process.stderr.write(`[agy-companion] Requested model "${model}" is unavailable in agy ${modelCatalog.agyVersion || '(unknown)'}. Available: ${available}\n`);
+        process.exit(1);
+      }
+      const catalogEffort = chooseCatalogEffort(modelCatalog.models, model, effort);
+      if (effort && catalogEffort === null) {
+        process.stderr.write(`[agy-companion] --effort "${effort}" is not supported for ${model}; retrying without --effort.\n`);
+        effort = null;
+        effortAutoSelected = true;
+      } else if (!effort && catalogEffort && !suppressEffort) {
+        effort = catalogEffort;
+        effortAutoSelected = true;
+      }
+    } catch (error) {
+      process.stderr.write(`[agy-companion] Model discovery unavailable; continuing with requested model: ${error.message}\n`);
+    }
   }
 
   // ---------- Start agy ----------
@@ -1653,7 +1900,16 @@ if (isMainModule()) {
     }
 
     if (jsonOutput) {
-      const result = { response: text, model: detectedModel || model, requestedModel: model, modelMismatch: modelMismatchDetected, permissionMode };
+      const result = {
+        response: text,
+        model: detectedModel || model,
+        requestedModel: model,
+        effort,
+        effortAutoSelected,
+        modelMismatch: modelMismatchDetected,
+        availableModels: modelCatalog?.models || null,
+        permissionMode,
+      };
       process.stdout.write(JSON.stringify(result) + '\n');
     } else {
       process.stdout.write(text + '\n');
@@ -1675,11 +1931,48 @@ if (isMainModule()) {
     }, RESPONSE_IDLE_MS);
   }
 
+  function retryEffortBeforePrompt(retry) {
+    if (
+      !retry ||
+      questionSent ||
+      finished ||
+      Number.parseInt(process.env[EFFORT_RETRY_ENV] || '0', 10) >= 1
+    ) {
+      return false;
+    }
+
+    finished = true;
+    clearTimeout(globalTimeout);
+    clearTimeout(startupFallbackTimer);
+    clearTimeout(initIdleTimer);
+    clearTimeout(responseIdleTimer);
+    try { ptyProc.kill(); } catch (_) {}
+    cleanupTemp();
+
+    const nextArgs = buildEffortRetryArgs(rawArgs, retry.effort);
+    const detail = retry.effort ? `--effort ${retry.effort}` : '--no-effort';
+    process.stderr.write(`[agy-companion] agy rejected the current effort mode; retrying once with ${detail}.\n`);
+    const child = spawnSync(process.execPath, [__filename, ...nextArgs], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        [EFFORT_RETRY_ENV]: '1',
+      },
+      stdio: 'inherit',
+      windowsHide: false,
+    });
+    process.exit(Number.isInteger(child.status) ? child.status : 1);
+  }
+
   ptyProc.onData(chunk => {
     rawBuffer += chunk;
     const recentStripped = stripAnsi(rawBuffer.slice(-3000));
 
     if (!questionSent && !finished) {
+      if (retryEffortBeforePrompt(effortRetryFromOutput(recentStripped, effort))) {
+        return;
+      }
+
       if (!detectedModel) {
         const modelMatch = recentStripped.match(BANNER_MODEL_PATTERN);
         if (modelMatch) {

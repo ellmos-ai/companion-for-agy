@@ -60,6 +60,10 @@ exports.spawn = function spawn(_cmd, args) {
       emitExit(0);
       return;
     }
+    if (mode === 'effort-retry' && args.includes('--effort')) {
+      dataCb('Error: --effort is not supported for this model\\n');
+      return;
+    }
     dataCb('Antigravity CLI 1.0.6\\nGemini 3.5 Flash (Medium)\\n? for shortcuts\\nsession ready\\n');
   }, 20);
 
@@ -116,6 +120,68 @@ exports.spawn = function spawn(_cmd, args) {
 }
 
 describe('CLI regressions with fake PTY', () => {
+  it('prints the package version without starting agy', async () => {
+    const harness = makeFakeHarness('ok');
+    try {
+      const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf8'));
+      const { stdout, stderr } = await execFileAsync('node', [SCRIPT, '--version'], {
+        env: harness.env,
+        timeout: 10000,
+      });
+      assert.equal(stdout.trim(), packageJson.version);
+      assert.equal(stderr, '');
+      assert.equal(fs.readFileSync(harness.eventLog, 'utf8'), '');
+    } finally {
+      harness.cleanup();
+    }
+  });
+
+  it('lists a fresh cached model catalog as JSON without starting the PTY', async () => {
+    const harness = makeFakeHarness('ok');
+    const cachePath = path.join(harness.tempDir, 'model-catalog.json');
+    try {
+      fs.writeFileSync(cachePath, JSON.stringify({
+        schemaVersion: 1,
+        source: 'agy-invalid-model-probe',
+        detectedAt: new Date().toISOString(),
+        agyPath: harness.env.AGY_COMPANION_AGY_PATH,
+        agyVersion: null,
+        models: [{ id: 'gemini-3.6-flash', displayName: 'Gemini 3.6 Flash', efforts: ['high', 'medium', 'low'] }],
+      }), 'utf8');
+      const { stdout } = await execFileAsync('node', [SCRIPT, '--list-models', '--json'], {
+        env: { ...harness.env, AGY_COMPANION_MODEL_CACHE: cachePath },
+        timeout: 10000,
+      });
+      const result = JSON.parse(stdout);
+      assert.equal(result.cacheHit, true);
+      assert.deepEqual(result.models[0].efforts, ['high', 'medium', 'low']);
+      assert.equal(fs.readFileSync(harness.eventLog, 'utf8'), '');
+    } finally {
+      harness.cleanup();
+    }
+  });
+
+  it('retries exactly once without effort before sending the prompt', async () => {
+    const harness = makeFakeHarness('effort-retry');
+    try {
+      const { stdout, stderr } = await execFileAsync(
+        'node',
+        [SCRIPT, '--sandbox', '--model', 'gemini-3.5-flash', '--effort', 'high', '--timeout', '30000', 'OK_PROMPT'],
+        { env: harness.env, timeout: 60000 },
+      );
+      assert.equal(stdout.trim(), 'OK');
+      assert.match(stderr, /retrying once with --no-effort/);
+      const argsLines = fs.readFileSync(harness.eventLog, 'utf8')
+        .split(/\r?\n/)
+        .filter(line => line.startsWith('args:'));
+      assert.equal(argsLines.length, 2);
+      assert.match(argsLines[0], /"--effort","high"/);
+      assert.doesNotMatch(argsLines[1], /"--effort","high"/);
+    } finally {
+      harness.cleanup();
+    }
+  });
+
   it('exits nonzero without falling back to startup banner when no response is extractable', async () => {
     const harness = makeFakeHarness('empty');
     try {

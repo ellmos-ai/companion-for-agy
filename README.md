@@ -117,7 +117,12 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 |------|-------------|
 | `--add-dir <dir>` | Add a directory to agy's workspace (repeatable); required for agy to write files outside its temp dir |
 | `--model <model>` | Gemini model (default: `gemini-3.5-flash`) |
+| `--effort <level>` | Explicit agy effort; validated against the discovered model catalog |
+| `--no-effort` | Suppress automatic effort selection for the requested model |
 | `--no-model` | Do not pass `--model` to agy; useful for agy v1.0.x |
+| `--list-models` | Print the live agy model catalog (cached for 24 hours per agy path/version) |
+| `--refresh-models` | Refresh the live model catalog and print it |
+| `--version`, `-V` | Print the companion version |
 | `--timeout <ms>` | Timeout in ms (default: `120000`) |
 | `--json` | Output as JSON object |
 | `--report-file <path>` | Write diagnostic report JSON to a file for `--doctor`, `--platform-smoke`, `--pty-smoke` and `--live-smoke` |
@@ -144,6 +149,7 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 companion-for-agy "What is the capital of Bavaria?"
 companion-for-agy --sandbox "Review this code: ..."
 companion-for-agy --json --model gemini-3.6-flash --effort high "prompt"
+companion-for-agy --refresh-models --json
 companion-for-agy --no-model "prompt"
 companion-for-agy --skip-permissions --add-dir "/my/output" "Write hello.txt to /my/output"
 companion-for-agy --doctor
@@ -156,7 +162,9 @@ companion-for-agy --lang de --help
 companion-for-agy --sandbox -- "-dash-prefixed prompt"
 ```
 
-JSON output includes `response`, `model`, `requestedModel`, and `permissionMode`. `model` is detected from agy's banner when possible and falls back to `requestedModel`.
+For agy >= 1.1, the companion discovers the available models and their effort variants from agy's own invalid-model response. It validates explicit selections, automatically chooses a supported effort when none is supplied, and retries once before the prompt if agy reports that effort must be added or removed.
+
+JSON output includes `response`, `model`, `requestedModel`, `effort`, `effortAutoSelected`, `availableModels`, and `permissionMode`. `model` is detected from agy's banner when possible and falls back to `requestedModel`.
 
 For `--doctor --json`, the output instead contains a preflight report with `status`, `blockers`, `warnings`, agy version detection, `node-pty` load details and helper/binary paths.
 For `--platform-smoke --json`, the output contains a bundled pre-live report with nested doctor and PTY-smoke results plus the exact authenticated live-smoke command to run next.

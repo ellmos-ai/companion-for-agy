@@ -14,6 +14,8 @@ import {
   shouldResetIdleTimer, RESPONSE_MIN_PROGRESS_BYTES,
   STARTUP_FALLBACK_MS,
   parseSemverishVersion, versionSupportsModelFlag, inspectNodePtyArtifacts,
+  modelLabelToId, parseAgyModelCatalog, chooseCatalogEffort,
+  buildEffortRetryArgs, effortRetryFromOutput,
   buildPtySmokeCommand, PTY_SMOKE_TEXT, renderPtySmokeReport,
   renderPlatformSmokeReport, PLATFORM_SMOKE_LIVE_COMMAND,
   writeReportFile,
@@ -1107,5 +1109,69 @@ describe('doctor helpers', () => {
     } finally {
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
+  });
+});
+
+describe('agy model catalog and effort fallback helpers', () => {
+  const catalogText = `
+Error: Invalid model "__companion_invalid_model__".
+Available models:
+  Gemini 3.6 Flash (High)
+  Gemini 3.6 Flash (Medium)
+  Gemini 3.6 Flash (Low)
+  Claude Sonnet 4.6 (Thinking)
+  GPT-OSS 120B (Medium)
+`;
+
+  it('normalizes display labels and groups effort variants', () => {
+    assert.equal(modelLabelToId('GPT-OSS 120B Medium'), 'gpt-oss-120b-medium');
+    assert.deepEqual(parseAgyModelCatalog(catalogText), [
+      {
+        id: 'gemini-3.6-flash',
+        displayName: 'Gemini 3.6 Flash',
+        efforts: ['high', 'medium', 'low'],
+      },
+      {
+        id: 'claude-sonnet-4.6',
+        displayName: 'Claude Sonnet 4.6',
+        efforts: ['thinking'],
+      },
+      {
+        id: 'gpt-oss-120b',
+        displayName: 'GPT-OSS 120B',
+        efforts: ['medium'],
+      },
+    ]);
+  });
+
+  it('chooses a supported requested effort or the strongest default', () => {
+    const models = parseAgyModelCatalog(catalogText);
+    assert.equal(chooseCatalogEffort(models, 'gemini-3.6-flash'), 'high');
+    assert.equal(chooseCatalogEffort(models, 'gemini-3.6-flash', 'medium'), 'medium');
+    assert.equal(chooseCatalogEffort(models, 'gemini-3.6-flash', 'thinking'), null);
+    assert.equal(chooseCatalogEffort(models, 'claude-sonnet-4.6'), null);
+  });
+
+  it('rewrites effort arguments without touching prompt arguments after --', () => {
+    assert.deepEqual(
+      buildEffortRetryArgs(['--model', 'x', '--effort', 'high', '--', '--effort', 'prompt'], null),
+      ['--model', 'x', '--no-effort', '--', '--effort', 'prompt'],
+    );
+    assert.deepEqual(
+      buildEffortRetryArgs(['--no-effort', '--model', 'x', 'prompt'], 'medium'),
+      ['--effort', 'medium', '--model', 'x', 'prompt'],
+    );
+  });
+
+  it('recognizes add and remove effort errors', () => {
+    assert.deepEqual(
+      effortRetryFromOutput('Model requires --effort (available: low, high)', null),
+      { action: 'add', effort: 'high' },
+    );
+    assert.deepEqual(
+      effortRetryFromOutput('--effort is not supported for model x', 'high'),
+      { action: 'remove', effort: null },
+    );
+    assert.equal(effortRetryFromOutput('normal startup', 'high'), null);
   });
 });

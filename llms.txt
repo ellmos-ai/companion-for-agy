@@ -28,7 +28,10 @@ companion-for-agy [options] "prompt"
 
 ### Options
 - `--model <model>`: Specify Gemini model (default: `gemini-3.5-flash`).
+- `--effort <level>` / `--no-effort`: Select or suppress model-aware reasoning effort.
 - `--no-model`: Do not pass `--model` to agy (useful for older agy v1.0.x).
+- `--list-models` / `--refresh-models`: Read agy's live model/effort catalog (24-hour cache).
+- `--version`, `-V`: Print the companion version.
 - `--timeout <ms>`: Set execution timeout in ms (default: `120000`).
 - `--json`: Format CLI output as a JSON object containing the response and metadata.
 - `--report-file <path>`: Persist diagnostic report JSON for doctor/platform/PTY/live smoke modes while keeping stdout compatible.
