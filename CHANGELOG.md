@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Maintenance & Technical Hygiene
+- Added visual repository header banner (`assets/banner.png`) to `README.md` and `README_de.md`.
 - Updated `llms.txt` `Last-checked` timestamp to `2026-07-30`.
 - Conducted technical hygiene audit, verified Node.js test suite execution (252 passed, 1 skipped).
 - Synchronized repository metadata and verified clean workspace state.

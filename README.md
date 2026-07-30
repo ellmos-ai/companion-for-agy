@@ -1,4 +1,6 @@
 # companion-for-agy
+<img src="assets/banner.png" width="100%" alt="companion-for-agy Banner">
+
 
 <p align="left">
   <img src="https://raw.githubusercontent.com/dev-bricks/companion-for-agy/master/assets/logo.jpg" alt="companion-for-agy Banner" width="800" />
