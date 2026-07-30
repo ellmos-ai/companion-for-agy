@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Maintenance & Technical Hygiene
+- Updated `llms.txt` `Last-checked` timestamp to `2026-07-30`.
+- Conducted technical hygiene audit, verified Node.js test suite execution (252 passed, 1 skipped).
+- Synchronized repository metadata and verified clean workspace state.
+
 ## [2.1.0] - 2026-07-28
 
 ### Added
