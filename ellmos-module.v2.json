@@ -1,0 +1,36 @@
+{
+  "schema": "ellmos.module.v2",
+  "id": "companion-for-agy",
+  "display_name": "companion-for-agy",
+  "category": "connectors",
+  "kind": "adapter",
+  "status": "released",
+  "visibility": "public",
+  "provides": [
+    "adapter.agy",
+    "provider.gemini.cli"
+  ],
+  "requires": [],
+  "optional": [],
+  "conflicts": [],
+  "surfaces": [
+    "cli"
+  ],
+  "state": {
+    "ownership": "none",
+    "location": "none"
+  },
+  "boundaries": {
+    "network": "optional",
+    "data": "application-defined",
+    "platforms": [
+      "windows"
+    ]
+  },
+  "source_of_truth": {
+    "type": "local-directory",
+    "path": ".",
+    "repository": null
+  },
+  "adapters": []
+}
