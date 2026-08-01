@@ -120,7 +120,14 @@ Currently, each invocation spawns a fresh agy process (one question, one answer)
 Emit response tokens as they arrive (line-by-line or chunk-by-chunk) instead of buffering until completion. Useful for long responses where the caller wants progressive output.
 
 ### Response Format Detection
-Detect whether agy's response is Markdown, JSON, or plain text and expose this in the JSON output (`"format": "markdown"`).
+Detect whether agy's response is Markdown, JSON, or plain text and expose this in JSON output as a stable `format` field.
+
+**Target JSON contract:** `format` should be one of `"markdown"`, `"json"`, or `"text"`. Existing `response` contents stay unchanged.
+
+**TODOs:**
+- [ ] Add a small pure detector that first accepts strict JSON (`JSON.parse` on trimmed object/array responses), then Markdown structure (headings, fenced code, tables, lists, blockquotes, or links), otherwise plain text.
+- [ ] Add `format` to normal `--json` responses; diagnostic JSON modes (`--doctor`, `--platform-smoke`, `--pty-smoke`, `--live-smoke`) keep their existing report schemas unless they carry an agy answer payload.
+- [ ] Cover JSON, Markdown, and plain-text fixtures with unit tests, including short answers such as `4` and prose containing braces that is not valid JSON.
 
 ### Robustness Improvements (from Bugsweep 2026-06-07)
 

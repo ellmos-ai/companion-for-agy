@@ -7,7 +7,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-209%20passed-brightgreen.svg)](https://github.com/dev-bricks/companion-for-agy/blob/master/_tests/unit.test.mjs)
+[![Node Tests](https://img.shields.io/badge/tests-220%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/dev-bricks/companion-for-agy/blob/master/package.json)
 [![LLM-Ready](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Deutsch](https://img.shields.io/badge/lang-Deutsch-blue)](README_de.md)
@@ -45,13 +45,15 @@ Dadurch können andere Agenten wie Claude Code, Codex oder CI/CD-Skripte agys An
 
 `companion-for-agy` startet agy in einem virtuellen Terminal via `node-pty` (ConPTY unter Windows, forkpty unter macOS/Linux) und extrahiert die Antwort aus dem ANSI-Farbstream. agys Antworttext nutzt derzeit `RGB(232,234,237)`, daher verfolgt der Wrapper den ANSI-Farbstatus und sammelt nur Text in dieser Farbe.
 
-> **Plattformhinweis:** ANSI-Farbextraktion (`RGB(232,234,237)`) und das Flag `--model` wurden unter **Windows** mit agy >= 1.1 verifiziert. macOS und Linux sollten über `node-pty` funktionieren, aber der exakte Antwortfarbwert muss dort noch unabhängig geprüft werden.
+> **Plattformhinweis:** ANSI-Farbextraktion (`RGB(232,234,237)`) und das Flag `--model` wurden unter **Windows** mit agy >= 1.1 verifiziert. Unter **Linux** hat das Repository inzwischen auch einen echten `node-pty`-/`forkpty`-Smoke (`npm run test:linux-pty`), der `spawn-helper`, das native `pty.node` und Truecolor-Extraktion über `/bin/sh` prüft; der verbleibende offene Linux-Schritt ist eine echte agy-Live-Session. macOS benötigt weiterhin die erste unabhängige Live-Verifikation.
 >
 > - **agy v1.0.x** (Homebrew `antigravity-cli`) unterstützt `--model` nicht; nutze `--no-model` oder `AGY_COMPANION_NO_MODEL=1`.
 > - Falls die Farbextraktion leer bleibt, mit `--debug` starten und `agy-debug.log` prüfen.
-> - Vor einem echten macOS-/Linux-Live-Smoke zuerst `companion-for-agy --doctor` und danach `companion-for-agy --pty-smoke` ausführen. `--pty-smoke` prüft den paketierten `node-pty`-Truecolor-Pfad ohne agy-Authentifizierung.
-> - Für Übergaben `companion-for-agy --platform-smoke --json` nutzen: Der Befehl bündelt `--doctor` und `--pty-smoke` in einem Pre-Live-Bericht für macOS/Linux.
+> - Vor dem ersten macOS-/Linux-Smoke `companion-for-agy --doctor` ausführen, um agy-Pfad, `node-pty`, natives Binary und POSIX-`spawn-helper`-Bereitschaft zu prüfen.
+> - Vor dem ersten echten agy-Test `companion-for-agy --pty-smoke` ausführen. Der Modus prüft den paketierten `node-pty`-Truecolor-Pfad ohne agy-Authentifizierung.
+> - `companion-for-agy --platform-smoke --json` ausführen, um `--doctor` und `--pty-smoke` als gemeinsames Pre-Live-Plattform-Gate für macOS-/Linux-Übergabelogs zu bündeln.
 > - Für den ersten authentifizierten macOS-/Linux-Live-Smoke `companion-for-agy --live-smoke --no-model --debug --json` ausführen. Der Modus fragt agy nach dem Marker `AGY_LIVE_SMOKE_OK`, prüft die exakt gecapturete Antwort und schreibt rohe ANSI-Evidenz nach `agy-debug.log`.
+> - Unter Linux vor dem ersten echten agy-Test `npm run test:linux-pty` ausführen. Der Test prüft die PTY-Pipeline ohne agy-Authentifizierung.
 
 ## Installation
 

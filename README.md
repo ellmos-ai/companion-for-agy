@@ -7,7 +7,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/dev-bricks/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-209%20passed-brightgreen.svg)](https://github.com/dev-bricks/companion-for-agy/blob/master/_tests/unit.test.mjs)
+[![Node Tests](https://img.shields.io/badge/tests-220%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/dev-bricks/companion-for-agy/blob/master/package.json)
 [![LLM-Ready](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Deutsch](https://img.shields.io/badge/lang-Deutsch-blue)](README_de.md)
