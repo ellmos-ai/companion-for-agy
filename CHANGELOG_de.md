@@ -1,5 +1,15 @@
 # Änderungsprotokoll
 
+## [Unreleased]
+
+### Wartung und technische Hygiene
+- Das etablierte Repository-Kopfbild (`assets/logo.jpg`) bleibt in `README.md` und
+  `README_de.md`; das temporäre `assets/banner.png` wurde entfernt.
+- `llms.txt` führt weiterhin den Prüfzeitpunkt `Last-checked: 2026-07-30`.
+- Technische Hygiene geprüft und die kanonische `npm test`-Suite verifiziert
+  (220 bestanden, 1 übersprungen).
+- Repository-Metadaten abgeglichen und einen sauberen Arbeitsstand verifiziert.
+
 ## [2.1.0] - 2026-07-28
 
 ### Hinzugefügt
