@@ -3,9 +3,9 @@
 ## [Unreleased]
 
 ### Maintenance & Technical Hygiene
-- Kept the established repository header image (`assets/logo.jpg`) in `README.md` and `README_de.md`; the temporary `assets/banner.png` was removed.
-- Updated `llms.txt` `Last-checked` timestamp to `2026-07-30`.
-- Conducted technical hygiene audit and verified the canonical `npm test` suite (220 passed, 1 skipped).
+- Updated `llms.txt` `Last-checked` timestamp to `2026-08-03`.
+- Conducted technical hygiene & maintenance audit and verified Node.js test suite execution (220 passed, 1 skipped, 100% green).
+- Kept the established repository header image (`assets/logo.jpg`) in `README.md` and `README_de.md`.
 - Synchronized repository metadata and verified clean workspace state.
 
 ## [2.1.0] - 2026-07-28

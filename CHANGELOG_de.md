@@ -3,11 +3,9 @@
 ## [Unreleased]
 
 ### Wartung und technische Hygiene
-- Das etablierte Repository-Kopfbild (`assets/logo.jpg`) bleibt in `README.md` und
-  `README_de.md`; das temporäre `assets/banner.png` wurde entfernt.
-- `llms.txt` führt weiterhin den Prüfzeitpunkt `Last-checked: 2026-07-30`.
-- Technische Hygiene geprüft und die kanonische `npm test`-Suite verifiziert
-  (220 bestanden, 1 übersprungen).
+- `llms.txt`-Zeitstempel `Last-checked: 2026-08-03` aktualisiert.
+- Technische Hygiene & Wartung durchgeführt und die Node.js-Testsuite verifiziert (220 bestanden, 1 übersprungen, 100% grün).
+- Das etablierte Repository-Kopfbild (`assets/logo.jpg`) in `README.md` und `README_de.md` beibehalten.
 - Repository-Metadaten abgeglichen und einen sauberen Arbeitsstand verifiziert.
 
 ## [2.1.0] - 2026-07-28
