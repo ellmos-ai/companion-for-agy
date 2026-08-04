@@ -2,11 +2,12 @@
 
 ## [Unreleased]
 
-### Maintenance & Technical Hygiene
-- Updated `llms.txt` `Last-checked` timestamp to `2026-08-03`.
-- Conducted technical hygiene & maintenance audit and verified Node.js test suite execution (220 passed, 1 skipped, 100% green).
-- Kept the established repository header image (`assets/logo.jpg`) in `README.md` and `README_de.md`.
-- Synchronized repository metadata and verified clean workspace state.
+### Maintenance & Discoverability (2026-08-04)
+- Conducted Discoverability, README Design & SEO Check (Pfad B).
+- Updated canonical repository URLs in `llms.txt`, `README.md`, and `README_de.md` to `ellmos-ai/companion-for-agy`.
+- Integrated Shields.io Ecosystem (`ellmos-ai`) and Umbrella (`open-bricks`) badges across English and German documentation.
+- Synchronized `llms.txt` `Last-checked` timestamp to `2026-08-04`.
+- Verified Node.js test suite execution (220 passed, 1 skipped, 100% green).
 
 ## [2.1.0] - 2026-07-28
 

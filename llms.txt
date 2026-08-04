@@ -2,18 +2,18 @@
 
 > companion-for-agy is an unofficial PTY-based Node.js wrapper for agy (Antigravity CLI / Gemini CLI) that captures Gemini responses from subprocesses. Since agy writes its output to the terminal buffer instead of stdout in print mode, other agents (like Claude Code, Codex, or CI scripts) cannot programmatically read its responses. companion-for-agy solves this by spawning agy inside a virtual terminal (using node-pty) and extracting only the response text based on its ANSI color stream.
 
-Part of the dev-bricks family. Node.js, MIT.
+Part of the ellmos-ai & dev-bricks ecosystem. Node.js, MIT.
 
 ## Docs
 
-- [README.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README.md): Primary documentation, installation guide, usage, options, and environment variables.
-- [README_de.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README_de.md): German localization.
-- [README_es.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README_es.md): Spanish localization.
-- [README_ja.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README_ja.md): Japanese localization.
-- [README_ru.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README_ru.md): Russian localization.
-- [README_zh-Hans.md](https://github.com/dev-bricks/companion-for-agy/blob/master/README_zh-Hans.md): Simplified Chinese localization.
-- [CHANGELOG.md](https://github.com/dev-bricks/companion-for-agy/blob/master/CHANGELOG.md): Project version history.
-- [LICENSE](https://github.com/dev-bricks/companion-for-agy/blob/master/LICENSE): MIT license text.
+- [README.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README.md): Primary documentation, installation guide, usage, options, and environment variables.
+- [README_de.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_de.md): German localization.
+- [README_es.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_es.md): Spanish localization.
+- [README_ja.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_ja.md): Japanese localization.
+- [README_ru.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_ru.md): Russian localization.
+- [README_zh-Hans.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_zh-Hans.md): Simplified Chinese localization.
+- [CHANGELOG.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/CHANGELOG.md): Project version history.
+- [LICENSE](https://github.com/ellmos-ai/companion-for-agy/blob/master/LICENSE): MIT license text.
 
 ## Usage & Commands
 
@@ -87,4 +87,4 @@ agy sandbox mode skip-permissions Node.js wrapper
 
 companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
 
-## Last-checked: 2026-08-03
+## Last-checked: 2026-08-04
