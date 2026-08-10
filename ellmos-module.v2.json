@@ -30,7 +30,7 @@
   "source_of_truth": {
     "type": "local-directory",
     "path": ".",
-    "repository": null
+    "repository": "https://github.com/ellmos-ai/companion-for-agy"
   },
   "adapters": []
 }
