@@ -135,7 +135,7 @@ Detect whether agy's response is Markdown, JSON, or plain text and expose this i
 
 Items identified during the systematic bug sweep that are design improvements, not defects:
 
-- **Response idle timer minimum-progress threshold:** Currently, any single byte within the idle window resets the timer. A very slow stream (1 char/10s) keeps the timer alive indefinitely — only the global timeout catches it. Add a "minimum bytes since last check" threshold.
+- [x] **Response idle timer minimum-progress threshold:** A response must add at least 10 bytes since the previous progress checkpoint before the idle timer is reset; a completion-state transition is still handled immediately. Implemented by `RESPONSE_MIN_PROGRESS_BYTES`/`shouldResetIdleTimer()` with unit coverage. *(verified 2026-08-13)*
 - [x] **Signal handling for external kill:** Register `process.on('SIGTERM')` and `process.on('SIGINT')` to ensure temp workspace cleanup when the process is killed externally (e.g., by a parent orchestrator or Ctrl+C in a pipeline).
 - [x] **Dead code cleanup:** `tempSettingsCreated` variable is set but never read. Cleanup works unconditionally via `cleanupTemp()`.
 - [x] **Prompt-echo filter edge case:** Very short prompts (≤2 chars) identical to the response text are incorrectly filtered as prompt echoes. Rare in practice (requires the user's question to be the same as the answer), but theoretically possible.
