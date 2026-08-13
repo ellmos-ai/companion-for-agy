@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added (2026-08-13)
+- Added `--probe-color` to run the known-answer color probe and cache agy's response truecolor per platform/architecture; `AGY_COMPANION_RESPONSE_RGB` remains the explicit override.
+- Added `--stream` for progressive text output and JSONL chunk/result events.
+- Re-verified the ANSI-wrapped invalid-model catalog against agy 1.1.11 and added regression coverage for its six-model effort format.
+
 ### Maintenance & Discoverability (2026-08-04)
 - Conducted Discoverability, README Design & SEO Check (Pfad B).
 - Updated canonical repository URLs in `llms.txt`, `README.md`, and `README_de.md` to `ellmos-ai/companion-for-agy`.

@@ -134,6 +134,8 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 | `--platform-smoke` | Run `--doctor` and `--pty-smoke` as one pre-live platform gate |
 | `--pty-smoke` | Run an auth-free node-pty truecolor smoke for platform validation |
 | `--live-smoke` | Run a real agy marker smoke; defaults to `sandbox` unless another permission mode is selected |
+| `--probe-color` | Ask `What is 2+2?`, detect the truecolor wrapping `4`, and cache it per platform |
+| `--stream` | Emit response chunks as they arrive instead of waiting for the final response |
 | `--lang <code>` | CLI output language: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
 | `--` | Stop option parsing; use before prompts that start with `-` |
 
@@ -145,6 +147,7 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 | `AGY_PATH` | Alternative path to agy binary |
 | `AGY_COMPANION_NO_MODEL` | Set to `1`, `true`, or `yes` to omit `--model` |
 | `AGY_COMPANION_RESPONSE_RGB` | Override response color as `R,G,B` or `R;G;B` |
+| `AGY_COMPANION_RESPONSE_RGB_CACHE` | Override the per-platform response-color cache path |
 
 ### Examples
 
@@ -161,13 +164,17 @@ companion-for-agy --platform-smoke --report-file reports/platform-smoke.json
 companion-for-agy --platform-smoke --json
 companion-for-agy --pty-smoke --json
 companion-for-agy --live-smoke --no-model --debug --json
+companion-for-agy --probe-color --no-model --json
+companion-for-agy --stream --sandbox "Explain this change briefly."
 companion-for-agy --lang de --help
 companion-for-agy --sandbox -- "-dash-prefixed prompt"
 ```
 
 For agy >= 1.1, the companion discovers the available models and their effort variants from agy's own invalid-model response. It validates explicit selections, automatically chooses a supported effort when none is supplied, and retries once before the prompt if agy reports that effort must be added or removed.
 
-JSON output includes `response`, `model`, `requestedModel`, `effort`, `effortAutoSelected`, `availableModels`, and `permissionMode`. `model` is detected from agy's banner when possible and falls back to `requestedModel`.
+JSON output includes `response`, `model`, `requestedModel`, `effort`, `effortAutoSelected`, `availableModels`, and `permissionMode`. `model` is detected from agy's banner when possible and falls back to `requestedModel`. With `--stream --json`, chunk events are emitted as `{"type":"chunk","chunk":"..."}` and the final result as `{"type":"result",...}`.
+
+`--probe-color` runs the fixed known-answer prompt `What is 2+2?`, identifies the truecolor SGR segment containing `4`, and stores it in a platform/architecture-scoped cache. An explicit `AGY_COMPANION_RESPONSE_RGB` always takes precedence. Use `AGY_COMPANION_RESPONSE_RGB_CACHE` to keep the cache in a controlled location during tests or CI.
 
 For `--doctor --json`, the output instead contains a preflight report with `status`, `blockers`, `warnings`, agy version detection, `node-pty` load details and helper/binary paths.
 For `--platform-smoke --json`, the output contains a bundled pre-live report with nested doctor and PTY-smoke results plus the exact authenticated live-smoke command to run next.

@@ -18,7 +18,7 @@ Discovered during a real authenticated live-smoke on Windows (2026-07-23, agy 1.
 - [x] Add an `--effort <low|medium|high>` passthrough flag (mirroring agy's own flag) so `--model` keeps working on agy >= 1.1.5. *(shipped in 2.0.2)*
 - [x] Surface a silent model fallback distinctly: stderr warning `warnModelMismatch` (localized, 6 languages) whenever the banner-detected model does not match the requested one, plus a `modelMismatch: true/false` field in JSON output. *(shipped in 2.0.2; detection is banner-based rather than warning-banner-based, which also catches fallbacks that print no warning)*
 - [x] Discover the model/effort catalog from agy's own CLI, auto-select a supported effort, and retry once before sending the prompt when agy rejects the current effort mode. *(shipped in 2.1.0; live-verified with agy 1.1.8 on Windows)*
-- [ ] Re-verify on the next agy release whether the invalid-model catalog format changes.
+- [x] Re-verify on agy 1.1.11 whether the invalid-model catalog format changes; the ANSI-wrapped `Available models:` catalog and effort variants remain parseable, with regression coverage. *(verified 2026-08-13)*
 
 ## Planned
 
@@ -49,8 +49,8 @@ The tool is currently **Windows-only verified**. macOS and Linux are expected to
 ### Color Fallback / Auto-Probe
 The current ANSI color extraction relies on `RGB(232,234,237)` as the response color. This has been verified on Windows (ConPTY). If agy changes its color scheme or uses different values on macOS/Linux, extraction silently fails.
 
-**Ideas:**
-- `--probe-color`: Run a known-answer prompt ("What is 2+2?"), scan the raw ANSI stream for the color that wraps "4", and cache it per platform
+**Implemented:**
+- [x] `--probe-color`: Run a known-answer prompt ("What is 2+2?"), scan the raw ANSI stream for the color that wraps "4", and cache it per platform/architecture
 - [x] Platform-specific RGB override via environment variable (`AGY_COMPANION_RESPONSE_RGB`)
 - Heuristic: find the most frequent non-UI color in the stream
 
@@ -118,6 +118,8 @@ Currently, each invocation spawns a fresh agy process (one question, one answer)
 
 ### Streaming Output
 Emit response tokens as they arrive (line-by-line or chunk-by-chunk) instead of buffering until completion. Useful for long responses where the caller wants progressive output.
+
+- [x] Add `--stream` text mode and JSONL chunk/result events with regression coverage.
 
 ### Response Format Detection
 Detect whether agy's response is Markdown, JSON, or plain text and expose this in JSON output as a stable `format` field.

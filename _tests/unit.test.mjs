@@ -11,6 +11,8 @@ import {
   STARTUP_DONE_PATTERNS, INIT_DONE_PATTERNS,
   DEFAULT_MODEL, findAgyPath, AGY_PATH, parseDurationToMs,
   DEFAULT_RESPONSE_RGB, parseResponseRgb, responseRgbToSgrParams,
+  detectResponseRgbFromRaw, appendOnlyStreamDelta,
+  readCachedResponseRgb, writeResponseRgbCache,
   shouldResetIdleTimer, RESPONSE_MIN_PROGRESS_BYTES,
   STARTUP_FALLBACK_MS,
   parseSemverishVersion, versionSupportsModelFlag, inspectNodePtyArtifacts,
@@ -781,6 +783,45 @@ describe('responseRgbToSgrParams', () => {
   });
 });
 
+describe('response color probe and cache', () => {
+  it('finds the truecolor segment containing the known numeric answer', () => {
+    const raw = [
+      '\x1b[38;2;10;20;30m42 tokens\x1b[0m',
+      '\x1b[1;38;2;9;8;7mThe answer is 4.\x1b[0m',
+    ].join('\n');
+    assert.deepEqual(detectResponseRgbFromRaw(raw), [9, 8, 7]);
+  });
+
+  it('does not mistake a token counter for the answer', () => {
+    const raw = '\x1b[38;2;10;20;30m42 tokens\x1b[0m';
+    assert.equal(detectResponseRgbFromRaw(raw), null);
+  });
+
+  it('round-trips a platform-scoped response color cache', () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-companion-rgb-'));
+    const cachePath = path.join(tempRoot, 'response-rgb.json');
+    try {
+      writeResponseRgbCache([1, 2, 3], { cachePath, agyPath: 'agy-test', agyVersion: '1.1.11' });
+      assert.deepEqual(readCachedResponseRgb({ cachePath }), [1, 2, 3]);
+      const stale = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      stale.detectedAt = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
+      fs.writeFileSync(cachePath, JSON.stringify(stale), 'utf8');
+      assert.equal(readCachedResponseRgb({ cachePath }), null);
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('appendOnlyStreamDelta', () => {
+  it('returns only newly appended response text', () => {
+    assert.equal(appendOnlyStreamDelta('', 'Hello'), 'Hello');
+    assert.equal(appendOnlyStreamDelta('Hello', 'Hello world'), ' world');
+    assert.equal(appendOnlyStreamDelta('Hello world', 'Hello world'), '');
+    assert.equal(appendOnlyStreamDelta('Hello world', 'repainted'), '');
+  });
+});
+
 // ---------- i18n Locales ----------
 
 describe('detectLocale', () => {
@@ -1122,6 +1163,35 @@ Available models:
   Claude Sonnet 4.6 (Thinking)
   GPT-OSS 120B (Medium)
 `;
+
+  const agy1111CatalogText = `\x1b[31;1mError: invalid model selection (--model "__companion_invalid_model__" --effort ""): model __companion_invalid_model__ is not recognized\x1b[0m
+\x1b[31;1mAvailable models:\x1b[0m
+\x1b[31;1m  Gemini 3.6 Flash (High)\x1b[0m
+\x1b[31;1m  Gemini 3.6 Flash (Medium)\x1b[0m
+\x1b[31;1m  Gemini 3.6 Flash (Low)\x1b[0m
+\x1b[31;1m  Gemini 3.5 Flash (High)\x1b[0m
+\x1b[31;1m  Gemini 3.5 Flash (Medium)\x1b[0m
+\x1b[31;1m  Gemini 3.5 Flash (Low)\x1b[0m
+\x1b[31;1m  Gemini 3.1 Pro (High)\x1b[0m
+\x1b[31;1m  Gemini 3.1 Pro (Low)\x1b[0m
+\x1b[31;1m  Claude Sonnet 4.6 (Thinking)\x1b[0m
+\x1b[31;1m  Claude Opus 4.6 (Thinking)\x1b[0m
+\x1b[31;1m  GPT-OSS 120B (Medium)\x1b[0m`;
+
+  it('parses the agy 1.1.11 invalid-model catalog format', () => {
+    const models = parseAgyModelCatalog(agy1111CatalogText);
+    assert.equal(models.length, 6);
+    assert.deepEqual(models.find(model => model.id === 'gemini-3.5-flash'), {
+      id: 'gemini-3.5-flash',
+      displayName: 'Gemini 3.5 Flash',
+      efforts: ['high', 'medium', 'low'],
+    });
+    assert.deepEqual(models.find(model => model.id === 'claude-opus-4.6'), {
+      id: 'claude-opus-4.6',
+      displayName: 'Claude Opus 4.6',
+      efforts: ['thinking'],
+    });
+  });
 
   it('normalizes display labels and groups effort variants', () => {
     assert.equal(modelLabelToId('GPT-OSS 120B Medium'), 'gpt-oss-120b-medium');

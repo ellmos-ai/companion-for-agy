@@ -35,6 +35,7 @@ const fs = require('fs');
 const mode = process.env.AGY_COMPANION_FAKE_MODE;
 const eventLog = process.env.AGY_COMPANION_FAKE_EVENT_LOG;
 const RC = '${RC}';
+const PROBE_RC = '\\x1b[38;2;9;8;7m';
 const RESET = '${RESET}';
 
 function log(event) {
@@ -85,6 +86,11 @@ exports.spawn = function spawn(_cmd, args) {
           dataCb('> ' + prompt + '\\n42 tokens\\n>\\n');
         } else if (mode === 'live-smoke') {
           dataCb('> ' + prompt + '\\n' + RC + 'AGY_LIVE_SMOKE_OK' + RESET + '\\n>\\n');
+        } else if (mode === 'probe-color') {
+          dataCb('> ' + prompt + '\\n' + PROBE_RC + '4' + RESET + '\\n>\\n');
+        } else if (mode === 'stream') {
+          dataCb('> ' + prompt + '\\n' + RC + 'Hel' + RESET);
+          setTimeout(() => dataCb(RC + 'lo' + RESET + '\\n>\\n'), 20);
         } else {
           dataCb('> ' + prompt + '\\n' + RC + 'OK' + RESET + '\\n>\\n');
         }
@@ -156,6 +162,38 @@ describe('CLI regressions with fake PTY', () => {
       assert.equal(result.cacheHit, true);
       assert.deepEqual(result.models[0].efforts, ['high', 'medium', 'low']);
       assert.equal(fs.readFileSync(harness.eventLog, 'utf8'), '');
+    } finally {
+      harness.cleanup();
+    }
+  });
+
+  it('emits response chunks before the final stream result', async () => {
+    const harness = makeFakeHarness('stream');
+    try {
+      const { stdout } = await execFileAsync(
+        'node',
+        [SCRIPT, '--sandbox', '--no-model', '--stream', '--timeout', '30000', 'STREAM_PROMPT'],
+        { env: harness.env, timeout: 60000 },
+      );
+      assert.equal(stdout, 'Hello\n');
+    } finally {
+      harness.cleanup();
+    }
+  });
+
+  it('probes and caches the response truecolor from a known answer', async () => {
+    const harness = makeFakeHarness('probe-color');
+    const cachePath = path.join(harness.tempDir, 'response-rgb.json');
+    try {
+      const { stdout } = await execFileAsync(
+        'node',
+        [SCRIPT, '--probe-color', '--no-model', '--json'],
+        { env: { ...harness.env, AGY_COMPANION_RESPONSE_RGB_CACHE: cachePath }, timeout: 60000 },
+      );
+      const report = JSON.parse(stdout);
+      assert.deepEqual(report.rgb, [9, 8, 7]);
+      assert.equal(report.source, 'response-color-probe');
+      assert.deepEqual(JSON.parse(fs.readFileSync(cachePath, 'utf8')).rgb, [9, 8, 7]);
     } finally {
       harness.cleanup();
     }

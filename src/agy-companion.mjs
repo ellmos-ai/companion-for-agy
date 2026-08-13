@@ -37,6 +37,9 @@ export const NO_RESPONSE_EXIT_CODE = 4;
 export const SHUTDOWN_FORCE_KILL_MS = 2000;
 export const SHUTDOWN_CLEANUP_DELAY_MS = 1000;
 export const DEFAULT_RESPONSE_RGB = [232, 234, 237];
+export const RESPONSE_COLOR_PROBE_PROMPT = 'What is 2+2?';
+export const RESPONSE_COLOR_PROBE_ANSWER = '4';
+export const RESPONSE_COLOR_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 export const PTY_SMOKE_TEXT = 'PTY_SMOKE_OK';
 export const LIVE_SMOKE_TEXT = 'AGY_LIVE_SMOKE_OK';
 export const LIVE_SMOKE_EXIT_CODE = 5;
@@ -60,6 +63,15 @@ export function shouldResetIdleTimer({ newLength, lastProgressLength, minProgres
   return (newLength - lastProgressLength) >= minProgressBytes;
 }
 
+/** Return only the newly appended part of a monotone response stream. */
+export function appendOnlyStreamDelta(previous, next) {
+  const before = typeof previous === 'string' ? previous : '';
+  const after = typeof next === 'string' ? next : '';
+  if (!after || after === before) return '';
+  if (after.startsWith(before)) return after.slice(before.length);
+  return '';
+}
+
 const require = createRequire(import.meta.url);
 const PACKAGE_JSON_PATH = fileURLToPath(new URL('../package.json', import.meta.url));
 
@@ -78,9 +90,154 @@ export function responseRgbToSgrParams(rgb) {
   return `38;2;${rgb[0]};${rgb[1]};${rgb[2]}`;
 }
 
+export function getResponseColorCachePath() {
+  if (process.env.AGY_COMPANION_RESPONSE_RGB_CACHE) {
+    return path.resolve(process.env.AGY_COMPANION_RESPONSE_RGB_CACHE);
+  }
+  const base = process.platform === 'win32'
+    ? (process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'))
+    : (process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'));
+  return path.join(
+    base,
+    'companion-for-agy',
+    `response-rgb-${process.platform}-${process.arch}.json`,
+  );
+}
+
+function validResponseRgb(rgb) {
+  return Array.isArray(rgb) && rgb.length === 3 && rgb.every(value => Number.isInteger(value) && value >= 0 && value <= 255)
+    ? [...rgb]
+    : null;
+}
+
+export function readCachedResponseRgb({ cachePath = getResponseColorCachePath(), now = Date.now() } = {}) {
+  try {
+    const cached = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+    const rgb = validResponseRgb(cached.rgb) || parseResponseRgb(cached.rgb);
+    const detectedAt = Date.parse(cached.detectedAt);
+    const age = now - detectedAt;
+    if (
+      rgb && cached.platform === process.platform &&
+      cached.arch === process.arch &&
+      Number.isFinite(detectedAt) && age >= 0 && age <= RESPONSE_COLOR_CACHE_MAX_AGE_MS
+    ) {
+      return rgb;
+    }
+  } catch (_) {}
+  return null;
+}
+
+export function writeResponseRgbCache(rgb, {
+  cachePath = getResponseColorCachePath(),
+  agyPath = null,
+  agyVersion = null,
+  detectedAt = new Date().toISOString(),
+} = {}) {
+  const normalized = validResponseRgb(rgb);
+  if (!normalized) throw new Error('response RGB must contain three integers from 0 to 255');
+  const cache = {
+    schemaVersion: 1,
+    source: 'response-color-probe',
+    detectedAt,
+    platform: process.platform,
+    arch: process.arch,
+    agyPath,
+    agyVersion,
+    rgb: normalized,
+  };
+  fs.mkdirSync(path.dirname(cachePath), { recursive: true, mode: 0o700 });
+  const tempPath = `${cachePath}.${process.pid}.tmp`;
+  fs.writeFileSync(tempPath, JSON.stringify(cache, null, 2) + '\n', { encoding: 'utf8', mode: 0o600 });
+  fs.renameSync(tempPath, cachePath);
+  return cachePath;
+}
+
+export function getConfiguredResponseRgb() {
+  return parseResponseRgb(process.env.AGY_COMPANION_RESPONSE_RGB)
+    || readCachedResponseRgb()
+    || DEFAULT_RESPONSE_RGB;
+}
+
 export function getResponseSgrParams() {
-  const envRgb = parseResponseRgb(process.env.AGY_COMPANION_RESPONSE_RGB);
-  return responseRgbToSgrParams(envRgb || DEFAULT_RESPONSE_RGB);
+  return responseRgbToSgrParams(getConfiguredResponseRgb());
+}
+
+/**
+ * Find the truecolor SGR that contains the known answer in a raw PTY stream.
+ * The probe deliberately uses a numeric answer so token counters (for example
+ * "42 tokens") are not mistaken for the response color.
+ */
+export function detectResponseRgbFromRaw(raw, expectedAnswer = RESPONSE_COLOR_PROBE_ANSWER) {
+  if (!raw || typeof raw !== 'string' || expectedAnswer === null || expectedAnswer === undefined) return null;
+  const runs = [];
+  let activeRgb = null;
+  let text = '';
+  const flush = () => {
+    if (activeRgb && text) runs.push({ rgb: [...activeRgb], text });
+    text = '';
+  };
+
+  for (let pos = 0; pos < raw.length;) {
+    if (raw[pos] !== '\x1b' || raw[pos + 1] !== '[') {
+      text += raw[pos++];
+      continue;
+    }
+    let end = pos + 2;
+    while (end < raw.length && !/[A-Za-z]/.test(raw[end])) end++;
+    if (end >= raw.length) {
+      text += raw.slice(pos);
+      break;
+    }
+    const params = raw.slice(pos + 2, end);
+    const command = raw[end];
+    if (command === 'm') {
+      const match = params.match(/(?:^|;)38;2;(\d+);(\d+);(\d+)(?:;|$)/);
+      if (match) {
+        flush();
+        activeRgb = [Number(match[1]), Number(match[2]), Number(match[3])];
+      } else if (
+        params === '' || params === '0' || params === '39' ||
+        /(?:^|;)(?:38;|3[0-7]|9[0-7])/.test(params)
+      ) {
+        flush();
+        activeRgb = null;
+      }
+    }
+    pos = end + 1;
+  }
+  flush();
+
+  const answer = String(expectedAnswer).trim();
+  if (!answer) return null;
+  const answerPattern = new RegExp(`(?:^|[^\\p{L}\\p{N}])${escapeRegex(answer)}(?:$|[^\\p{L}\\p{N}])`, 'iu');
+  const matching = runs.filter(run => answerPattern.test(stripAnsi(run.text).replace(/\s+/g, ' ').trim()));
+  return matching.length > 0 ? matching[matching.length - 1].rgb : null;
+}
+
+export function buildResponseColorProbeReport({ rgb, agyPath = null, agyVersion = null, cachePath = null } = {}) {
+  return {
+    tool: 'companion-for-agy',
+    source: 'response-color-probe',
+    prompt: RESPONSE_COLOR_PROBE_PROMPT,
+    expectedAnswer: RESPONSE_COLOR_PROBE_ANSWER,
+    platform: process.platform,
+    arch: process.arch,
+    agyPath,
+    agyVersion,
+    rgb: validResponseRgb(rgb),
+    sgrParams: validResponseRgb(rgb) ? responseRgbToSgrParams(rgb) : null,
+    cachePath,
+  };
+}
+
+export function renderResponseColorProbeReport(report) {
+  const rgb = Array.isArray(report.rgb) ? report.rgb.join(',') : '(not detected)';
+  return [
+    'companion-for-agy response color probe',
+    `Platform: ${report.platform}-${report.arch}`,
+    `response RGB: ${rgb}`,
+    `cache: ${report.cachePath || '(not written)'}`,
+  ].join('\n') + '\n';
 }
 
 // ---------- Auto-Detection ----------
@@ -541,7 +698,7 @@ export function collectDoctorReport() {
   const nodePtyArtifacts = inspectNodePtyArtifacts(nodePty.packageRoot);
   const agyExecutable = resolvedAgyPath ? isExecutablePath(resolvedAgyPath) : false;
   const agyVersion = detectAgyVersion(resolvedAgyPath);
-  const configuredRgb = parseResponseRgb(process.env.AGY_COMPANION_RESPONSE_RGB) || DEFAULT_RESPONSE_RGB;
+  const configuredRgb = getConfiguredResponseRgb();
   const blockers = [];
   const warnings = [];
 
@@ -640,7 +797,7 @@ function finalizePtySmokeReport(report) {
 export async function collectPtySmokeReport({ timeoutMs = 10000 } = {}) {
   const nodePty = resolveNodePtyModule();
   const nodePtyArtifacts = inspectNodePtyArtifacts(nodePty.packageRoot);
-  const configuredRgb = parseResponseRgb(process.env.AGY_COMPANION_RESPONSE_RGB) || DEFAULT_RESPONSE_RGB;
+  const configuredRgb = getConfiguredResponseRgb();
   const responseColorParams = responseRgbToSgrParams(configuredRgb);
   const command = buildPtySmokeCommand({ responseColorParams });
   const report = {
@@ -1433,6 +1590,8 @@ if (isMainModule()) {
   let platformSmokeMode = false;
   let ptySmokeMode = false;
   let liveSmokeMode = false;
+  let probeColorMode = false;
+  let streamOutput = false;
   let listModelsMode = false;
   let refreshModels = false;
   let permissionMode = 'default';
@@ -1495,6 +1654,10 @@ if (isMainModule()) {
       ptySmokeMode = true;
     } else if (arg === '--live-smoke') {
       liveSmokeMode = true;
+    } else if (arg === '--probe-color') {
+      probeColorMode = true;
+    } else if (arg === '--stream') {
+      streamOutput = true;
     } else if (arg === '--sandbox') {
       permissionMode = 'sandbox';
       permissionModeExplicit = true;
@@ -1583,10 +1746,13 @@ if (isMainModule()) {
       userPrompt = buildLiveSmokePrompt();
     }
   }
-  if (!doctorMode && !platformSmokeMode && !ptySmokeMode && !liveSmokeMode && !userPrompt) {
+  if (!doctorMode && !platformSmokeMode && !ptySmokeMode && !liveSmokeMode && !probeColorMode && !userPrompt) {
     process.stderr.write(getMessage('errNoPrompt', lang));
     printUsage(lang);
     process.exit(1);
+  }
+  if (probeColorMode) {
+    userPrompt = RESPONSE_COLOR_PROBE_PROMPT;
   }
   userPromptForFilter = userPrompt;
 
@@ -1765,6 +1931,9 @@ if (isMainModule()) {
   let finalExitTimer = null;
   let lastProgressResponseLength = 0;
   let lastResponseComplete = false;
+  let streamedResponse = '';
+  let probeColorRgb = null;
+  let probeColorCachePath = null;
 
   const globalTimeout = setTimeout(() => {
     if (!finished) {
@@ -1870,6 +2039,26 @@ if (isMainModule()) {
   function deliverResponse() {
     const responsePart = rawBuffer.slice(responseStartMark);
     const stripped = stripAnsi(responsePart);
+    if (probeColorMode) {
+      probeColorRgb = detectResponseRgbFromRaw(responsePart, RESPONSE_COLOR_PROBE_ANSWER);
+      if (!probeColorRgb) {
+        process.stderr.write('[agy-companion] Response color probe did not find the known answer in a truecolor segment.\n');
+        shutdown(NO_RESPONSE_EXIT_CODE);
+        return;
+      }
+      try {
+        probeColorCachePath = writeResponseRgbCache(probeColorRgb, {
+          agyPath: resolvedAgyPath,
+          agyVersion: detectAgyVersion(resolvedAgyPath).version,
+        });
+      } catch (error) {
+        process.stderr.write(`[agy-companion] Failed to write response color cache: ${error.message}\n`);
+        shutdown(1);
+        return;
+      }
+      shutdown(outputResult(null));
+      return;
+    }
     const response = extractResponse(stripped, responsePart, userPromptForFilter, effectivePromptForFilter);
 
     if (response) {
@@ -1881,6 +2070,22 @@ if (isMainModule()) {
   }
 
   function outputResult(text) {
+    if (probeColorMode) {
+      const report = buildResponseColorProbeReport({
+        rgb: probeColorRgb,
+        agyPath: resolvedAgyPath,
+        agyVersion: detectAgyVersion(resolvedAgyPath).version,
+        cachePath: probeColorCachePath,
+      });
+      writeOptionalReport(report);
+      if (jsonOutput) {
+        process.stdout.write(JSON.stringify(report) + '\n');
+      } else {
+        process.stdout.write(renderResponseColorProbeReport(report));
+      }
+      return 0;
+    }
+
     if (liveSmokeMode) {
       const report = buildLiveSmokeReport({
         text,
@@ -1910,11 +2115,45 @@ if (isMainModule()) {
         availableModels: modelCatalog?.models || null,
         permissionMode,
       };
-      process.stdout.write(JSON.stringify(result) + '\n');
+      if (streamOutput) {
+        result.streamed = true;
+        process.stdout.write(JSON.stringify({ type: 'result', ...result }) + '\n');
+      } else {
+        process.stdout.write(JSON.stringify(result) + '\n');
+      }
     } else {
-      process.stdout.write(text + '\n');
+      if (streamOutput) {
+        if (typeof text === 'string' && text.startsWith(streamedResponse)) {
+          const tail = text.slice(streamedResponse.length);
+          if (tail) process.stdout.write(tail);
+        } else if (typeof text === 'string' && text && text !== streamedResponse) {
+          process.stdout.write(text);
+        }
+        process.stdout.write('\n');
+      } else {
+        process.stdout.write(text + '\n');
+      }
     }
     return 0;
+  }
+
+  function streamResponseProgress() {
+    const responsePart = rawBuffer.slice(responseStartMark);
+    const response = extractResponse(
+      stripAnsi(responsePart),
+      responsePart,
+      userPromptForFilter,
+      effectivePromptForFilter,
+    );
+    if (!response) return;
+    const delta = appendOnlyStreamDelta(streamedResponse, response);
+    if (!delta) return;
+    streamedResponse = response;
+    if (jsonOutput) {
+      process.stdout.write(JSON.stringify({ type: 'chunk', chunk: delta }) + '\n');
+    } else {
+      process.stdout.write(delta);
+    }
   }
 
   function sendQuestion() {
@@ -2040,6 +2279,9 @@ if (isMainModule()) {
       }
     } else if (questionSent && !finished) {
       const responseSoFar = stripAnsi(rawBuffer.slice(responseStartMark));
+      if (streamOutput && !probeColorMode) {
+        streamResponseProgress();
+      }
       const responseComplete = detectResponseComplete(responseSoFar, userPromptForFilter);
       const newLength = responseSoFar.length;
 
