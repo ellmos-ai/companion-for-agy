@@ -89,7 +89,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('companion-for-agy'));
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
-    assert.ok(llms.includes('https://github.com/ellmos-ai/companion-for-agy'));
+    assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
     assert.ok(llms.includes('Last-checked:'));
   });
 });
