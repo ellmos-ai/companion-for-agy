@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Discoverability & System Architecture (2026-08-16)
+- Conducted Discoverability, README-Design, Badges & Pytest Status Check (Pfad B).
+- Added interactive bilingual Mermaid system architecture and data flow diagrams illustrating the 5-phase PTY lifecycle state machine and dual output paths.
+- Synchronized Node.js test suite status badge across documentation (232 passed, 1 skipped).
+- Added dev-bricks ecosystem and open-bricks umbrella badges and sibling tool references (`DevCenter`, `CodeBox`, `MethodenAnalyser`, `CareCenter-for-Codex`).
+- Added comprehensive repository metadata & manifest parity test suite in `_tests/metadata.test.mjs`.
+- Synchronized `llms.txt` Last-checked timestamp to `2026-08-16`.
+
 ### Added (2026-08-13)
 - Added `--probe-color` to run the known-answer color probe and cache agy's response truecolor per platform/architecture; `AGY_COMPANION_RESPONSE_RGB` remains the explicit override.
 - Added `--stream` for progressive text output and JSONL chunk/result events.

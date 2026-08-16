@@ -2,7 +2,7 @@
 
 > companion-for-agy is an unofficial PTY-based Node.js wrapper for agy (Antigravity CLI / Gemini CLI) that captures Gemini responses from subprocesses. Since agy writes its output to the terminal buffer instead of stdout in print mode, other agents (like Claude Code, Codex, or CI scripts) cannot programmatically read its responses. companion-for-agy solves this by spawning agy inside a virtual terminal (using node-pty) and extracting only the response text based on its ANSI color stream.
 
-Part of the ellmos-ai & dev-bricks ecosystem. Node.js, MIT.
+Part of the dev-bricks & ellmos-ai ecosystem. Node.js, MIT.
 
 ## Docs
 
@@ -41,6 +41,10 @@ companion-for-agy [options] "prompt"
 ## Related Projects (dev-bricks & ellmos family)
 
 - [safe-start-for-codex](https://github.com/dev-bricks/safe-start-for-codex): Startup surge prevention for Codex Desktop automations.
+- [DevCenter](https://github.com/dev-bricks/DevCenter): Developer dashboard, tool health & system orchestration.
+- [CodeBox](https://github.com/dev-bricks/CodeBox): Code execution sandbox & script runner.
+- [MethodenAnalyser](https://github.com/dev-bricks/MethodenAnalyser): Psychological test methodology and psychometrics engine.
+- [CareCenter-for-Codex](https://github.com/dev-bricks/CareCenter-for-Codex): Client care documentation & clinical process assistant.
 - [ellmos-filecommander-mcp](https://github.com/ellmos-ai/ellmos-filecommander-mcp): Filesystem and process orchestration.
 - [ellmos-codecommander-mcp](https://github.com/ellmos-ai/ellmos-codecommander-mcp): Code analysis and AST processing.
 - [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp): MCP stack control plane.
@@ -77,6 +81,7 @@ Claude Code Codex Gemini integration node-pty
 capture agy response from subprocess ConPTY wrapper
 npm companion-for-agy agy-companion install
 dev-bricks companion-for-agy GitHub
+ellmos-ai companion-for-agy GitHub
 Antigravity CLI subprocess response capture
 agy Gemini CLI PTY wrapper for automation
 node-pty ConPTY Gemini CLI stdout capture
@@ -85,6 +90,6 @@ agy sandbox mode skip-permissions Node.js wrapper
 
 ## Disambiguation
 
-companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
+companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks & ellmos-ai Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
 
-## Last-checked: 2026-08-04
+## Last-checked: 2026-08-16

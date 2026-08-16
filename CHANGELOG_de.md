@@ -2,11 +2,13 @@
 
 ## [Unreleased]
 
-### Wartung und technische Hygiene
-- `llms.txt`-Zeitstempel `Last-checked: 2026-08-03` aktualisiert.
-- Technische Hygiene & Wartung durchgeführt und die Node.js-Testsuite verifiziert (220 bestanden, 1 übersprungen, 100% grün).
-- Das etablierte Repository-Kopfbild (`assets/logo.jpg`) in `README.md` und `README_de.md` beibehalten.
-- Repository-Metadaten abgeglichen und einen sauberen Arbeitsstand verifiziert.
+### Auffindbarkeit, Systemarchitektur & Metadaten (2026-08-16)
+- Discoverability, README-Design, Badges & Pytest/Node Test Status Check (Pfad B) durchgeführt.
+- Interaktive zweisprachige Mermaid-Systemarchitektur- und Datenflussdiagramme für die 5-Phasen-PTY-Zustandsmaschine und duale Ausgabepfade integriert.
+- Node.js Testsuite Status-Badges über die gesamte Dokumentation synchronisiert (232 bestanden, 1 übersprungen, 100% grün).
+- dev-bricks Ökosystem- und open-bricks Umbrella-Badges sowie Querverweise zu verwandten Werkzeugen (`DevCenter`, `CodeBox`, `MethodenAnalyser`, `CareCenter-for-Codex`) ergänzt.
+- Umfassende automatisierte Metadaten- & Manifest-Testsuite in `_tests/metadata.test.mjs` implementiert.
+- `llms.txt`-Zeitstempel `Last-checked: 2026-08-16` synchronisiert.
 
 ## [2.1.0] - 2026-07-28
 
@@ -76,6 +78,14 @@
 - Details und ältere unveröffentlichte Einträge: siehe CHANGELOG.md (EN).
 
 ## [Unveröffentlicht]
+
+### Auffindbarkeit & Systemarchitektur (2026-08-16)
+- Discoverability-, README-Design-, Badges- & Test-Status-Prüfung (Pfad B) durchgeführt.
+- Interaktive zweisprachige Mermaid-Systemarchitektur- und Datenflussdiagramme für den 5-Phasen-PTY-Zustandsautomaten und die zwei Rückgabewege integriert.
+- Node.js-Teststatus-Badges in der gesamten Dokumentation synchronisiert (232 bestanden, 1 übersprungen).
+- `dev-bricks`-Ökosystem- und `open-bricks`-Dachorganisations-Badges sowie Querverweise zu Geschwisterwerkzeugen (`DevCenter`, `CodeBox`, `MethodenAnalyser`, `CareCenter-for-Codex`) ergänzt.
+- Vollständige Metadaten- & Manifest-Paritäts-Testsuite in `_tests/metadata.test.mjs` integriert.
+- `llms.txt` Last-checked-Zeitstempel auf `2026-08-16` aktualisiert.
 
 ### Sicherheit
 - Repository-Hygiene für lokale npm-Zugangsdaten, Token-/Recovery-Dateien, private Schlüssel und Zertifikat-Bundles gehärtet. Ein Regressionstest prüft die wirksamen Git-Ignore-Regeln und defensive npm-Ignore-Muster.
