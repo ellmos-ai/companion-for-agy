@@ -41,13 +41,18 @@ companion-for-agy [options] "prompt"
 ## Related Projects (dev-bricks & ellmos family)
 
 - [safe-start-for-codex](https://github.com/dev-bricks/safe-start-for-codex): Startup surge prevention for Codex Desktop automations.
+- [automizer-for-claude-desktop](https://github.com/dev-bricks/automizer-for-claude-desktop): Automations and hook orchestrator for Claude Desktop.
 - [DevCenter](https://github.com/dev-bricks/DevCenter): Developer dashboard, tool health & system orchestration.
 - [CodeBox](https://github.com/dev-bricks/CodeBox): Code execution sandbox & script runner.
 - [MethodenAnalyser](https://github.com/dev-bricks/MethodenAnalyser): Psychological test methodology and psychometrics engine.
 - [CareCenter-for-Codex](https://github.com/dev-bricks/CareCenter-for-Codex): Client care documentation & clinical process assistant.
-- [ellmos-filecommander-mcp](https://github.com/ellmos-ai/ellmos-filecommander-mcp): Filesystem and process orchestration.
-- [ellmos-codecommander-mcp](https://github.com/ellmos-ai/ellmos-codecommander-mcp): Code analysis and AST processing.
-- [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp): MCP stack control plane.
+- [automation-master](https://github.com/dev-bricks/automation-master): Workflow automation engine & multi-agent scheduler.
+- [ellmos-filecommander-mcp](https://github.com/ellmos-ai/ellmos-filecommander-mcp): Filesystem and process orchestration MCP server.
+- [ellmos-codecommander-mcp](https://github.com/ellmos-ai/ellmos-codecommander-mcp): Code analysis and AST processing MCP server.
+- [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp): MCP stack control plane & tool discovery.
+- [ellmos-clatcher-mcp](https://github.com/ellmos-ai/ellmos-clatcher-mcp): Multi-agent bridge & message coordination MCP server.
+- [n8n-manager-mcp](https://github.com/ellmos-ai/n8n-manager-mcp): n8n workflow management & execution MCP server.
+- [open-bricks](https://github.com/open-bricks): Umbrella ecosystem for modular open-source software bricks.
 
 ## Best Practices: Two Return Paths
 
@@ -92,4 +97,4 @@ agy sandbox mode skip-permissions Node.js wrapper
 
 companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks & ellmos-ai Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
 
-## Last-checked: 2026-08-16
+## Last-checked: 2026-08-20

@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Auffindbarkeit, Badges & Ökosystem-Matrix (2026-08-20)
+- Discoverability, README-Design, Badges, Test Status & Metadata Check (Pfad B) durchgeführt.
+- Node.js-, Plattform-, PTY-Engine- und MIT-Lizenz-Badges über `README.md` und `README_de.md` synchronisiert.
+- Umfassende Geschwisterwerkzeuge- & Ökosystem-Matrix in deutscher und englischer Dokumentation integriert (`safe-start-for-codex`, `automizer-for-claude-desktop`, `DevCenter`, `CodeBox`, `CareCenter-for-Codex`, `automation-master`, `ellmos-filecommander-mcp`, `ellmos-codecommander-mcp`, `ellmos-controlcenter-mcp`, `ellmos-clatcher-mcp`, `n8n-manager-mcp`, `skills`, `open-bricks`).
+- `llms.txt`-Geschwisterprojekte und `Last-checked: 2026-08-20`-Zeitstempel synchronisiert.
+- Node.js Testsuite-Parität verifiziert (232 bestanden, 1 übersprungen, 100% grün).
+
 ### Auffindbarkeit, Systemarchitektur & Metadaten (2026-08-16)
 - Discoverability, README-Design, Badges & Pytest/Node Test Status Check (Pfad B) durchgeführt.
 - Interaktive zweisprachige Mermaid-Systemarchitektur- und Datenflussdiagramme für die 5-Phasen-PTY-Zustandsmaschine und duale Ausgabepfade integriert.

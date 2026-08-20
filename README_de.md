@@ -7,6 +7,10 @@
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
 [![Node Tests](https://img.shields.io/badge/tests-232%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Plattform](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
+[![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
+[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-yellow.svg)](LICENSE)
 [![Ecosystem](https://img.shields.io/badge/ecosystem-dev--bricks-blue.svg)](https://github.com/dev-bricks)
 [![Ecosystem](https://img.shields.io/badge/ecosystem-ellmos--ai-purple.svg)](https://github.com/ellmos-ai)
 [![Umbrella](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
@@ -254,14 +258,22 @@ companion-for-agy --skip-permissions --add-dir "/mein/output"   "Lies /mein/outp
 
 `companion-for-agy` ist Teil der Entwickler-Toolchains von **dev-bricks** und **ellmos-ai** unter dem **open-bricks** Dach:
 
-| Werkzeug | Schwerpunkt | Repository |
-|---|---|---|
-| **companion-for-agy** | PTY-stdout-Antwort-Erfassung für Antigravity / Gemini CLI | [dev-bricks/companion-for-agy](https://github.com/dev-bricks/companion-for-agy) |
-| **safe-start-for-codex** | Startup-Surge-Schutz & Cron-Staffelung für Codex-Automationen | [dev-bricks/safe-start-for-codex](https://github.com/dev-bricks/safe-start-for-codex) |
-| **DevCenter** | Entwickler-Dashboard, Tool-Health & Systemorchestrierung | [dev-bricks/DevCenter](https://github.com/dev-bricks/DevCenter) |
-| **CodeBox** | Code-Ausführungs-Sandbox & Skript-Runner für diverse Runtimes | [dev-bricks/CodeBox](https://github.com/dev-bricks/CodeBox) |
-| **MethodenAnalyser** | Testmethodik & Psychometrie-Engine | [dev-bricks/MethodenAnalyser](https://github.com/dev-bricks/MethodenAnalyser) |
-| **CareCenter-for-Codex** | Klientendokumentation & klinischer Prozessassistent | [dev-bricks/CareCenter-for-Codex](https://github.com/dev-bricks/CareCenter-for-Codex) |
+| Werkzeug | Ökosystem | Schwerpunkt | Repository |
+|---|---|---|---|
+| **companion-for-agy** | `dev-bricks` / `ellmos-ai` | PTY-stdout-Antwort-Erfassung für Antigravity / Gemini CLI | [GitHub](https://github.com/ellmos-ai/companion-for-agy) |
+| **safe-start-for-codex** | `dev-bricks` | Startup-Surge-Schutz & Cron-Staffelung für Codex-Automationen | [GitHub](https://github.com/dev-bricks/safe-start-for-codex) |
+| **automizer-for-claude-desktop** | `dev-bricks` | Automations- und Hook-Orchestrator für Claude Desktop | [GitHub](https://github.com/dev-bricks/automizer-for-claude-desktop) |
+| **DevCenter** | `dev-bricks` | Entwickler-Dashboard, Tool-Health & Multi-Agent-Systemorchestrierung | [GitHub](https://github.com/dev-bricks/DevCenter) |
+| **CodeBox** | `dev-bricks` | Isolierte Code-Ausführungs-Sandbox & Skript-Runner | [GitHub](https://github.com/dev-bricks/CodeBox) |
+| **CareCenter-for-Codex** | `dev-bricks` | Klientendokumentation & klinischer Prozessassistent | [GitHub](https://github.com/dev-bricks/CareCenter-for-Codex) |
+| **automation-master** | `dev-bricks` | Workflow-Automations-Engine & Multi-Agent-Scheduler | [GitHub](https://github.com/dev-bricks/automation-master) |
+| **ellmos-filecommander-mcp** | `ellmos-ai` | Dateisystem-, Shell- und Prozess-Orchestrierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-filecommander-mcp) |
+| **ellmos-codecommander-mcp** | `ellmos-ai` | Code-Analyse-, Refactoring- und AST-Verarbeitungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-codecommander-mcp) |
+| **ellmos-controlcenter-mcp** | `ellmos-ai` | MCP-Stack-Control-Plane, Bundle-Routing & Rechte-Audit | [GitHub](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) |
+| **ellmos-clatcher-mcp** | `ellmos-ai` | Multi-Agent-Kommunikations-Bridge & Prozess-Zwischenablage | [GitHub](https://github.com/ellmos-ai/ellmos-clatcher-mcp) |
+| **n8n-manager-mcp** | `ellmos-ai` | n8n-Workflow-Management-, Backup- & Aktivierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/n8n-manager-mcp) |
+| **skills** | `ellmos-ai` | Autonome Agenten-Skills & Ausführungsbibliothek | [GitHub](https://github.com/ellmos-ai/skills) |
+| **open-bricks** | `open-bricks` | Dachkatalog für modulare Open-Source-Softwarebausteine | [GitHub](https://github.com/open-bricks) |
 
 ## Auffindbarkeit & Kontext
 

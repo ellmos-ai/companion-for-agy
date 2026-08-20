@@ -8,6 +8,11 @@
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
 [![Node Tests](https://img.shields.io/badge/tests-232%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
+[![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ecosystem](https://img.shields.io/badge/ecosystem-dev--bricks-blue.svg)](https://github.com/dev-bricks)
 [![Ecosystem](https://img.shields.io/badge/ecosystem-ellmos--ai-purple.svg)](https://github.com/ellmos-ai)
 [![Umbrella](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![LLM-Ready](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
@@ -262,6 +267,26 @@ companion-for-agy --skip-permissions --add-dir "/my/output" \
 > - **Need the full response reliably** (long text, non-ASCII, CJK) → use `--add-dir` and let agy write the file.
 
 **Evidence:** Inbound task delivery is reliable (agy receives instructions correctly, including CJK). File output via `--add-dir` is also clean (tested on Windows with CJK content). The stdout return path is the unreliable leg for non-ASCII/bulky content.
+
+## Sibling Tools & Ecosystem Matrix
+
+`companion-for-agy` is part of the **[dev-bricks](https://github.com/dev-bricks)** and **[ellmos-ai](https://github.com/ellmos-ai)** developer tooling ecosystems under the **[open-bricks](https://github.com/open-bricks)** open-source umbrella:
+
+| Tool | Ecosystem | Focus | Link |
+|---|---|---|---|
+| **safe-start-for-codex** | `dev-bricks` | Startup surge prevention & resource throttling for Codex Desktop | [GitHub](https://github.com/dev-bricks/safe-start-for-codex) |
+| **automizer-for-claude-desktop** | `dev-bricks` | Automations and hook orchestrator for Claude Desktop | [GitHub](https://github.com/dev-bricks/automizer-for-claude-desktop) |
+| **DevCenter** | `dev-bricks` | Developer dashboard, tool health & multi-agent system orchestration | [GitHub](https://github.com/dev-bricks/DevCenter) |
+| **CodeBox** | `dev-bricks` | Isolated code execution sandbox & script runner | [GitHub](https://github.com/dev-bricks/CodeBox) |
+| **CareCenter-for-Codex** | `dev-bricks` | Client care documentation & clinical process assistant | [GitHub](https://github.com/dev-bricks/CareCenter-for-Codex) |
+| **automation-master** | `dev-bricks` | Workflow automation engine & multi-agent scheduler | [GitHub](https://github.com/dev-bricks/automation-master) |
+| **ellmos-filecommander-mcp** | `ellmos-ai` | Filesystem, shell & process orchestration MCP server | [GitHub](https://github.com/ellmos-ai/ellmos-filecommander-mcp) |
+| **ellmos-codecommander-mcp** | `ellmos-ai` | Code analysis, refactoring & AST processing MCP server | [GitHub](https://github.com/ellmos-ai/ellmos-codecommander-mcp) |
+| **ellmos-controlcenter-mcp** | `ellmos-ai` | MCP stack control plane, bundle routing & permission audit | [GitHub](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) |
+| **ellmos-clatcher-mcp** | `ellmos-ai` | Multi-agent communication bridge & cross-process clipboard | [GitHub](https://github.com/ellmos-ai/ellmos-clatcher-mcp) |
+| **n8n-manager-mcp** | `ellmos-ai` | n8n workflow management, backup & activation MCP server | [GitHub](https://github.com/ellmos-ai/n8n-manager-mcp) |
+| **skills** | `ellmos-ai` | Autonomous agent skills & execution library | [GitHub](https://github.com/ellmos-ai/skills) |
+| **open-bricks** | `open-bricks` | Umbrella catalog for modular open-source software bricks | [GitHub](https://github.com/open-bricks) |
 
 ## Discovery Context
 

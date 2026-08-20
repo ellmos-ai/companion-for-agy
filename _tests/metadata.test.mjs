@@ -90,6 +90,29 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked:'));
+    assert.ok(llms.includes('Last-checked: 2026-08-20'));
+  });
+
+  it('verifies README and README_de contain required badges and ecosystem matrices', () => {
+    const readmeEn = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
+    const readmeDe = fs.readFileSync(path.join(REPO_ROOT, 'README_de.md'), 'utf8');
+
+    for (const content of [readmeEn, readmeDe]) {
+      assert.match(content, /img\.shields\.io\/npm\/v\/companion-for-agy/);
+      assert.match(content, /tests-232%20passed/);
+      assert.match(content, /node-%3E%3D18\.0\.0/);
+      assert.match(content, /(platform|plattform)-Windows/i);
+      assert.match(content, /ecosystem-dev--bricks/);
+      assert.match(content, /ecosystem-ellmos--ai/);
+      assert.match(content, /umbrella-open--bricks/);
+      assert.match(content, /LLM--Ready-llms\.txt/);
+      assert.ok(content.includes('safe-start-for-codex'));
+      assert.ok(content.includes('DevCenter'));
+      assert.ok(content.includes('CodeBox'));
+      assert.ok(content.includes('CareCenter-for-Codex'));
+      assert.ok(content.includes('ellmos-filecommander-mcp'));
+      assert.ok(content.includes('ellmos-codecommander-mcp'));
+      assert.ok(content.includes('ellmos-controlcenter-mcp'));
+    }
   });
 });
