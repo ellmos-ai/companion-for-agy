@@ -6,7 +6,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-232%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
+[![Node Tests](https://img.shields.io/badge/tests-235%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Plattform](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
@@ -29,11 +29,13 @@
 
 PTY-basierter Wrapper für **agy** (Antigravity CLI / Gemini CLI), der Gemini-Antworten aus Subprozessen erfasst.
 
-| Einstieg | Link |
+| Startpunkt | Link |
 |---|---|
 | Installation | `npm install -g companion-for-agy` |
-| Ausführen | `companion-for-agy --json --sandbox "Prompt"` |
+| Starten | `companion-for-agy --json --sandbox "prompt"` |
 | Englische Doku | [README.md](README.md) |
+| Sicherheitsrichtlinie | [SECURITY.md](SECURITY.md) |
+| LLM-Kontext | [llms.txt](llms.txt) |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | npm-Paket | [npmjs.com/package/companion-for-agy](https://www.npmjs.com/package/companion-for-agy) |
 

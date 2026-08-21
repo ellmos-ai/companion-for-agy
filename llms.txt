@@ -12,6 +12,7 @@ Part of the dev-bricks & ellmos-ai ecosystem. Node.js, MIT.
 - [README_ja.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_ja.md): Japanese localization.
 - [README_ru.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_ru.md): Russian localization.
 - [README_zh-Hans.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_zh-Hans.md): Simplified Chinese localization.
+- [SECURITY.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/SECURITY.md): Security policy, vulnerability reporting guidelines, and local-first execution guarantees.
 - [CHANGELOG.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/CHANGELOG.md): Project version history.
 - [LICENSE](https://github.com/ellmos-ai/companion-for-agy/blob/master/LICENSE): MIT license text.
 
@@ -97,4 +98,4 @@ agy sandbox mode skip-permissions Node.js wrapper
 
 companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks & ellmos-ai Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
 
-## Last-checked: 2026-08-20
+## Last-checked: 2026-08-21

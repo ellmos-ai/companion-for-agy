@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-### Discoverability, Badges & Ecosystem Matrix (2026-08-20)
+### Technical Hygiene, CI Hardening & Security Policy Parity (2026-08-21)
+- Conducted Technical Hygiene, CI Matrix & Security Policy Parity Check (Pfad A).
+- Hardened GitHub Actions CI workflow (`.github/workflows/tests.yml`) with Node.js matrix `[18, 20, 22, 24]` across Ubuntu, Windows, and macOS with `npm` caching.
+- Enriched bilingual `SECURITY.md` with explicit security contact points (`security@ellmos.ai`, `support@lukasgeiger.com`), direct GitHub Security Advisory links, and local-first execution guarantees.
+- Extended automated repository metadata & parity test suite in `_tests/metadata.test.mjs` to validate CI workflow matrix and security policy integrity.
+- Synchronized `llms.txt` Docs navigation and `Last-checked: 2026-08-21` timestamp.
+- Verified test suite parity across Node.js test runner (235 passed, 1 skipped, 100% green).
 - Conducted Discoverability, README-Design, Badges, Test Status & Metadata Check (Pfad B).
 - Synchronized Node.js, platform, PTY engine, and MIT license badges across `README.md` and `README_de.md`.
 - Added comprehensive Sibling Tools & Ecosystem Matrix in both English and German documentation linking `dev-bricks`, `ellmos-ai`, and `open-bricks` tools (`safe-start-for-codex`, `automizer-for-claude-desktop`, `DevCenter`, `CodeBox`, `CareCenter-for-Codex`, `automation-master`, `ellmos-filecommander-mcp`, `ellmos-codecommander-mcp`, `ellmos-controlcenter-mcp`, `ellmos-clatcher-mcp`, `n8n-manager-mcp`, `skills`, `open-bricks`).

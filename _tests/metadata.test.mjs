@@ -83,6 +83,36 @@ describe('repository metadata & manifest parity', () => {
     }
   });
 
+  it('verifies GitHub Actions CI workflow configuration and matrix integrity', () => {
+    const ciPath = path.join(REPO_ROOT, '.github', 'workflows', 'tests.yml');
+    assert.ok(fs.existsSync(ciPath), 'Missing GitHub Actions workflow file');
+    const ciContent = fs.readFileSync(ciPath, 'utf8');
+
+    assert.match(ciContent, /actions\/checkout@v4/);
+    assert.match(ciContent, /actions\/setup-node@v4/);
+    assert.match(ciContent, /node-version:\s*\[18,\s*20,\s*22,\s*24\]/);
+    assert.match(ciContent, /ubuntu-latest/);
+    assert.match(ciContent, /windows-latest/);
+    assert.match(ciContent, /macos-latest/);
+    assert.match(ciContent, /cache:\s*'npm'/);
+    assert.match(ciContent, /npm ci/);
+    assert.match(ciContent, /npm test/);
+  });
+
+  it('verifies SECURITY.md bilingual policy and direct maintainer contact points', () => {
+    const secPath = path.join(REPO_ROOT, 'SECURITY.md');
+    assert.ok(fs.existsSync(secPath), 'Missing SECURITY.md');
+    const secContent = fs.readFileSync(secPath, 'utf8');
+
+    assert.ok(secContent.includes('Sicherheitsrichtlinie'));
+    assert.ok(secContent.includes('Security Policy'));
+    assert.ok(secContent.includes('security@ellmos.ai'));
+    assert.ok(secContent.includes('support@lukasgeiger.com'));
+    assert.ok(secContent.includes('https://github.com/ellmos-ai/companion-for-agy/security/advisories'));
+    assert.ok(secContent.includes('Local-First & Zero-Egress'));
+    assert.ok(secContent.includes('Non-Elevation'));
+  });
+
   it('verifies llms.txt contains essential ecosystem markers and canonical links', () => {
     const llms = fs.readFileSync(path.join(REPO_ROOT, 'llms.txt'), 'utf8');
 
@@ -90,7 +120,8 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-08-20'));
+    assert.ok(llms.includes('Last-checked: 2026-08-21'));
+    assert.ok(llms.includes('SECURITY.md'));
   });
 
   it('verifies README and README_de contain required badges and ecosystem matrices', () => {
@@ -99,7 +130,7 @@ describe('repository metadata & manifest parity', () => {
 
     for (const content of [readmeEn, readmeDe]) {
       assert.match(content, /img\.shields\.io\/npm\/v\/companion-for-agy/);
-      assert.match(content, /tests-232%20passed/);
+      assert.match(content, /tests-23\d%20passed/);
       assert.match(content, /node-%3E%3D18\.0\.0/);
       assert.match(content, /(platform|plattform)-Windows/i);
       assert.match(content, /ecosystem-dev--bricks/);

@@ -7,7 +7,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-232%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
+[![Node Tests](https://img.shields.io/badge/tests-235%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
@@ -35,6 +35,8 @@ PTY-based wrapper for **agy** (Antigravity CLI / Gemini CLI) that captures Gemin
 | Install | `npm install -g companion-for-agy` |
 | Run | `companion-for-agy --json --sandbox "prompt"` |
 | German docs | [README_de.md](README_de.md) |
+| Security Policy | [SECURITY.md](SECURITY.md) |
+| LLM Context | [llms.txt](llms.txt) |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | npm package | [npmjs.com/package/companion-for-agy](https://www.npmjs.com/package/companion-for-agy) |
 

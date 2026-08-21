@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-### Auffindbarkeit, Badges & Ökosystem-Matrix (2026-08-20)
+### Technische Hygiene, CI-Härtung & Sicherheitsrichtlinien-Parität (2026-08-21)
+- Technischer Hygiene-, CI-Matrix- und Sicherheitsrichtlinien-Paritätsprüflauf (Pfad A) durchgeführt.
+- GitHub Actions CI-Workflow (`.github/workflows/tests.yml`) um Node.js Matrix `[18, 20, 22, 24]` über Ubuntu, Windows und macOS mit `npm`-Caching gehärtet.
+- Zweisprachige Sicherheitsrichtlinie `SECURITY.md` um direkte Kontaktadressen (`security@ellmos.ai`, `support@lukasgeiger.com`), direkte GitHub Security Advisories Links und Local-First-Sicherheitsgarantien erweitert.
+- Automatisierte Metadaten- und Manifest-Paritätstestsuite in `_tests/metadata.test.mjs` um CI-Workflow- und `SECURITY.md`-Validierung erweitert.
+- `llms.txt`-Dokumentationsverweise und `Last-checked: 2026-08-21`-Zeitstempel synchronisiert.
+- Node.js Testsuite-Parität verifiziert (235 bestanden, 1 übersprungen, 100% grün).
 - Discoverability, README-Design, Badges, Test Status & Metadata Check (Pfad B) durchgeführt.
 - Node.js-, Plattform-, PTY-Engine- und MIT-Lizenz-Badges über `README.md` und `README_de.md` synchronisiert.
 - Umfassende Geschwisterwerkzeuge- & Ökosystem-Matrix in deutscher und englischer Dokumentation integriert (`safe-start-for-codex`, `automizer-for-claude-desktop`, `DevCenter`, `CodeBox`, `CareCenter-for-Codex`, `automation-master`, `ellmos-filecommander-mcp`, `ellmos-codecommander-mcp`, `ellmos-controlcenter-mcp`, `ellmos-clatcher-mcp`, `n8n-manager-mcp`, `skills`, `open-bricks`).
