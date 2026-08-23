@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-### Technical Hygiene, CI Hardening & Security Policy Parity (2026-08-21)
+### Technical Hygiene, Multi-OS Boundaries & Contract Test Extension (2026-08-23)
+- Conducted Technical Hygiene, CI Matrix & Security Policy Parity Check (Pfad A).
+- Hardened GitHub Actions CI workflow (`.github/workflows/tests.yml`) with concurrency controls (`cancel-in-progress: true`) across Node.js matrix `[18, 20, 22, 24]` and multi-OS matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`).
+- Updated `ellmos-module.v2.json` boundary platforms to multi-OS `["windows", "linux", "macos"]`.
+- Enriched bilingual `SECURITY.md` with direct umbrella security contact `lukas@open-bricks.org` alongside `security@ellmos.ai` and `support@lukasgeiger.com`.
+- Expanded automated metadata test suite in `_tests/metadata.test.mjs` with contract checks for internationalized README titles/badges, zero-egress offline runtime invariants, and manifest boundary integrity (11/11 passed).
+- Synchronized `llms.txt` `Last-checked: 2026-08-23` timestamp.
+- Verified test suite parity across Node.js test runner (235 passed, 1 skipped, 100% green).
 - Conducted Technical Hygiene, CI Matrix & Security Policy Parity Check (Pfad A).
 - Hardened GitHub Actions CI workflow (`.github/workflows/tests.yml`) with Node.js matrix `[18, 20, 22, 24]` across Ubuntu, Windows, and macOS with `npm` caching.
 - Enriched bilingual `SECURITY.md` with explicit security contact points (`security@ellmos.ai`, `support@lukasgeiger.com`), direct GitHub Security Advisory links, and local-first execution guarantees.

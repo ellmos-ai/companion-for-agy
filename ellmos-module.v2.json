@@ -24,7 +24,9 @@
     "network": "optional",
     "data": "application-defined",
     "platforms": [
-      "windows"
+      "windows",
+      "linux",
+      "macos"
     ]
   },
   "source_of_truth": {

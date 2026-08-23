@@ -21,6 +21,7 @@ Wenn Sie eine Sicherheitslücke oder ein potenzielles Sicherheitsrisiko finden, 
 3. **Direkter E-Mail-Kontakt:** Alternativ können Sie Sicherheitsberichte direkt an die Maintainer senden:
    - `security@ellmos.ai`
    - `support@lukasgeiger.com`
+   - `lukas@open-bricks.org` (Dachverband / Umbrella Security Contact)
 
 ### Erforderliche Angaben
 
@@ -57,6 +58,7 @@ If you discover a security vulnerability or potential risk, please report it res
 3. **Direct Email Contact:** Alternatively, submit security reports directly to the maintainers:
    - `security@ellmos.ai`
    - `support@lukasgeiger.com`
+   - `lukas@open-bricks.org` (Umbrella Security Contact)
 
 ### What to Include
 

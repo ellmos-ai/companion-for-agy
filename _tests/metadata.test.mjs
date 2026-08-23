@@ -108,6 +108,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(secContent.includes('Security Policy'));
     assert.ok(secContent.includes('security@ellmos.ai'));
     assert.ok(secContent.includes('support@lukasgeiger.com'));
+    assert.ok(secContent.includes('lukas@open-bricks.org'));
     assert.ok(secContent.includes('https://github.com/ellmos-ai/companion-for-agy/security/advisories'));
     assert.ok(secContent.includes('Local-First & Zero-Egress'));
     assert.ok(secContent.includes('Non-Elevation'));
@@ -120,7 +121,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-08-21'));
+    assert.ok(llms.includes('Last-checked: 2026-08-23'));
     assert.ok(llms.includes('SECURITY.md'));
   });
 
@@ -145,5 +146,42 @@ describe('repository metadata & manifest parity', () => {
       assert.ok(content.includes('ellmos-codecommander-mcp'));
       assert.ok(content.includes('ellmos-controlcenter-mcp'));
     }
+  });
+
+  it('verifies all internationalized README files have consistent titles and badge anchors', () => {
+    const localizedReadmes = [
+      'README.md',
+      'README_de.md',
+      'README_es.md',
+      'README_zh-Hans.md',
+      'README_ja.md',
+      'README_ru.md',
+    ];
+
+    for (const file of localizedReadmes) {
+      const content = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
+      assert.match(content, /^#\s+companion-for-agy/m, `${file} missing top-level # companion-for-agy header`);
+      assert.ok(content.includes('assets/logo.jpg'), `${file} missing assets/logo.jpg banner reference`);
+      assert.ok(content.includes('img.shields.io'), `${file} missing shields.io badges`);
+    }
+  });
+
+  it('verifies zero-egress offline runtime invariants in source modules', () => {
+    const srcDir = path.join(REPO_ROOT, 'src');
+    const files = fs.readdirSync(srcDir).filter(f => f.endsWith('.mjs') || f.endsWith('.js'));
+
+    for (const f of files) {
+      const content = fs.readFileSync(path.join(srcDir, f), 'utf8');
+      // Verify no outbound HTTP/HTTPS or telemetry imports in runtime
+      assert.doesNotMatch(content, /import\s+.*from\s+['"](https?|node:http|node:https|axios|node-fetch|got|request)['"]/);
+      assert.doesNotMatch(content, /fetch\s*\(/, `Forbidden fetch call in ${f}`);
+      assert.doesNotMatch(content, /telemetry|analytics|phoneHome/i, `Forbidden telemetry reference in ${f}`);
+    }
+  });
+
+  it('verifies ellmos-module.v2.json platform boundaries and schema parity', () => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'ellmos-module.v2.json'), 'utf8'));
+    assert.deepEqual(manifest.boundaries.platforms, ['windows', 'linux', 'macos']);
+    assert.equal(manifest.boundaries.network, 'optional');
   });
 });

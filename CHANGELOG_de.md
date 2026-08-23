@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-### Technische Hygiene, CI-Härtung & Sicherheitsrichtlinien-Parität (2026-08-21)
+### Technische Hygiene, Multi-OS-Grenzen & Vertragstest-Erweiterung (2026-08-23)
+- Technischer Hygiene-, CI-Matrix- und Sicherheitsrichtlinien-Paritätsprüflauf (Pfad A) durchgeführt.
+- GitHub Actions CI-Workflow (`.github/workflows/tests.yml`) um Concurrency-Steuerung (`cancel-in-progress: true`) über Node.js Matrix `[18, 20, 22, 24]` und Multi-OS Matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`) gehärtet.
+- `ellmos-module.v2.json` Plattformgrenzen auf Multi-OS `["windows", "linux", "macos"]` aktualisiert.
+- Zweisprachige Sicherheitsrichtlinie `SECURITY.md` um direkten Dachverband-Sicherheitskontakt `lukas@open-bricks.org` neben `security@ellmos.ai` und `support@lukasgeiger.com` erweitert.
+- Automatisierte Metadaten- und Manifest-Paritätstestsuite in `_tests/metadata.test.mjs` um internationale README-Titel/Badges, Zero-Egress Offline-Laufzeitinvarianten und Manifest-Plattformintegrität erweitert (11/11 bestanden).
+- `llms.txt`-Zeitstempel `Last-checked: 2026-08-23` synchronisiert.
+- Node.js Testsuite-Parität verifiziert (235 bestanden, 1 übersprungen, 100% grün).
 - Technischer Hygiene-, CI-Matrix- und Sicherheitsrichtlinien-Paritätsprüflauf (Pfad A) durchgeführt.
 - GitHub Actions CI-Workflow (`.github/workflows/tests.yml`) um Node.js Matrix `[18, 20, 22, 24]` über Ubuntu, Windows und macOS mit `npm`-Caching gehärtet.
 - Zweisprachige Sicherheitsrichtlinie `SECURITY.md` um direkte Kontaktadressen (`security@ellmos.ai`, `support@lukasgeiger.com`), direkte GitHub Security Advisories Links und Local-First-Sicherheitsgarantien erweitert.
