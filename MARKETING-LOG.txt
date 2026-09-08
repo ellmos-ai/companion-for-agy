@@ -1,0 +1,82 @@
+================================================================================
+MARKETING & DISCOVERABILITY LOG: companion-for-agy (dev-bricks / ellmos-ai)
+================================================================================
+Kanonischer Pfad: C:\_Local_DEVepos\companion-for-agy
+Remote URL:       https://github.com/ellmos-ai/companion-for-agy.git
+Branch:           master
+Version:          2.1.0
+Prüfdatum:        2026-09-08
+Automation:       Pfad B (Marketing, Discoverability & Visual Architecture)
+Akteur:           Antigravity / Gemini Agent (Plan D)
+
+1. AUSGANGSLAGE & MOTIVATION
+--------------------------------------------------------------------------------
+- Cooldown-Check: Letzter Pfad B Check laut CHECK-REG.txt am 2026-08-20 (19 Tage her).
+- Lokaler Git-Zustand: 100% sauber auf Branch master.
+- Lock-Status: 0 aktive Locks auf Projektverzeichnis (lock_status.py clean).
+- Bisherige Visualisierung: Text-Box ohne interaktive Mermaid-Diagramme.
+- Bisherige Struktur: Keine 14-Punkte-Schnellnavigation und keine tabellarische
+  Governance- & Laufzeit-Invarianten-Matrix.
+
+2. DURCHGEFÜHRTE MASSNAHMEN (PFAD B)
+--------------------------------------------------------------------------------
+(1) Zweisprachige README-Architektur (README.md & README_de.md):
+    - Strukturierte 14-Punkte-Schnellnavigation mit Quick-Jump-Ankern in Deutsch
+      und Englisch verankert.
+    - Synchronisierte Shields.io Badges: Version, CI-Status, Test-Status,
+      Node.js >= 18, Plattformen (Windows, macOS, Linux), PTY-Engine (ConPTY,
+      forkpty), Lizenz (MIT), Ökosystem (dev-bricks, ellmos-ai), Umbrella
+      (open-bricks), Privacy (100% Offline / Zero-Egress), Security (Local-First /
+      Non-Elevation), SLA (48h Response / 5d Triage) und LLM-Ready (llms.txt).
+
+(2) Dual-Mermaid-Diagramme:
+    - 5-Schichten Systemarchitektur (flowchart TD):
+      Host OS & PTY Layer, Companion Engine Core, Virtual Terminal Stream Parser,
+      Upstream agy Subprocess und Dual-Output Dispatcher.
+    - Vollständiges operatives Ausführungs- & Diagnose-Sequenzdiagramm
+      (sequenceDiagram mit autonumber):
+      Caller -> Companion CLI -> PTY Process -> Upstream agy -> Stdout/FS Stream
+      mit 5-Phasen-Lebenszyklus (Trust, Startup, Init, Prompt, Stream-Filterung),
+      Signal-/Timeout-Handling und deterministischem Ressourcen-Cleanup.
+
+(3) Tabelle der Governance- & Laufzeit-Invarianten:
+    - 10 Kern-Invarianten tabellarisch verankert:
+      1. 100% Local-First & Zero-Egress
+      2. Non-Elevation (User-Mode Only / RunAsInvoker)
+      3. PTY-Prozess-Isolation (node-pty ConPTY/forkpty)
+      4. Eingabe-Sanitierung (sanitizeForPty gegen Terminal-Injections)
+      5. Deterministische Temp-Workspace-Bereinigung (os.tmpdir())
+      6. Native Berechtigungsweitergabe (--sandbox, --skip-permissions)
+      7. Deterministische ANSI-Truecolor-Stream-Extraktion (RGB(232,234,237))
+      8. Geordnete Prozessbaum-Terminierung (SIGINT/SIGTERM, Anti-Zombie)
+      9. Plattformübergreifende Diagnose-Preflights (--doctor, --platform-smoke)
+      10. Zwei-Rückgabepfade-Zuverlässigkeit (stdout vs. --add-dir)
+
+(4) Geschwister-Ökosystem & Partner-Matrix:
+    - 13 Partner-Repositories über dev-bricks, ellmos-ai und open-bricks verlinkt:
+      safe-start-for-codex, automizer-for-claude-desktop, DevCenter, CodeBox,
+      CareCenter-for-Codex, automation-master, ellmos-filecommander-mcp,
+      ellmos-codecommander-mcp, ellmos-controlcenter-mcp, ellmos-clatcher-mcp,
+      n8n-manager-mcp, skills, open-bricks.
+
+(5) Zweisprachige Sicherheitsrichtlinie (SECURITY.md):
+    - Supported Versions Matrix (2.1.x, 2.0.x, < 2.0 EoL).
+    - 48h Reaktions-SLA und 5-Werktage-Triage-Zusage.
+    - Umbrella Security Contact security@open-bricks.org sowie direkte Maintainer.
+    - Verlinkung der GitHub Security Advisories.
+
+(6) Automatisierte Vertragstestsuite (_tests/metadata.test.mjs):
+    - Erweiterung um 5 neue Vertragstests für Schnellnavigation, Dual-Mermaid-
+      Diagramme, Invarianten-Matrix, Sicherheits-SLAs und lokales MARKETING-LOG.txt.
+
+(7) Kontext & Changelog:
+    - llms.txt Last-checked Timestamp auf 2026-09-08 aktualisiert.
+    - CHANGELOG.md und CHANGELOG_de.md um Release-Eintrag 2026-09-08 erweitert.
+
+3. TESTVERIFIKATION & QUALITÄTSSICHERUNG
+--------------------------------------------------------------------------------
+- Test Runner: Node.js native test runner (node --test)
+- Gesamtergebnis: Alle Tests bestanden (100% pass, 1 skipped)
+- Paketierung: npm pack --dry-run clean (14 Whitelist-Dateien)
+- Git Tree: Clean
+================================================================================

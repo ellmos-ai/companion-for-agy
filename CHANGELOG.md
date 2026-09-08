@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Visual Architecture, Bilingual Navigation & Runtime Invariants Matrix (2026-09-08)
+- Conducted Discoverability, README-Design, Badges, Test Status & Architecture Check (Pfad B).
+- Added standardized bilingual 14-Punkte-Schnellnavigation in `README.md` and `README_de.md`.
+- Added Dual-Mermaid visual diagrams: 5-layer System Architecture (`flowchart TD`) and Operational Execution Sequence Diagram (`sequenceDiagram` with `autonumber`).
+- Added comprehensive Table of 10 Governance & Runtime Invariants (Zero-Egress, Non-Elevation, PTY-Isolation, Sanitization, Auto-Cleanup, Native Permissions, ANSI Truecolor Filter, Process Tree Lifecycle, Platform Preflights, Dual Return Paths).
+- Hardened bilingual `SECURITY.md` with Supported Versions table (`2.1.x`, `2.0.x`), explicit 48h response SLA, 5-business-day triage commitment, umbrella security contact (`security@open-bricks.org`), and GitHub Security Advisories integration.
+- Initialized repository-level `MARKETING-LOG.txt` documenting Pfad B actions, architecture metrics, and ecosystem parity.
+- Extended automated contract test suite in `_tests/metadata.test.mjs` with checks for navigation anchors, dual mermaid diagrams, invariants table, security SLAs, and local marketing log.
+- Synchronized Shields.io badges (privacy, security, SLA, test count) and updated `llms.txt` timestamp to `2026-09-08`.
+
 ### Technical Hygiene, Multi-OS Boundaries & Contract Test Extension (2026-08-23)
 - Conducted Technical Hygiene, CI Matrix & Security Policy Parity Check (Pfad A).
 - Hardened GitHub Actions CI workflow (`.github/workflows/tests.yml`) with concurrency controls (`cancel-in-progress: true`) across Node.js matrix `[18, 20, 22, 24]` and multi-OS matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`).

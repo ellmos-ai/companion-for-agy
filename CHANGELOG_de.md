@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Visuelle Architektur, zweisprachige Schnellnavigation & Laufzeit-Invarianten (2026-09-08)
+- Discoverability, README-Design, Badges, Test-Status & Architektur-Check (Pfad B) durchgeführt.
+- Standardisierte 14-Punkte-Schnellnavigation in `README.md` und `README_de.md` implementiert.
+- Dual-Mermaid-Diagramme integriert: 5-Schichten-Systemarchitektur (`flowchart TD`) und operatives Ausführungssequenz-Diagramm (`sequenceDiagram` mit `autonumber`).
+- Umfassende Tabelle der 10 Governance- & Laufzeit-Invarianten verankert (Zero-Egress, Non-Elevation, PTY-Isolation, Sanitization, Auto-Cleanup, Native Berechtigungen, ANSI-Truecolor-Filter, Prozessbaum-Lebenszyklus, Plattform-Preflights, Zwei Rückgabepfade).
+- Zweisprachige Sicherheitsrichtlinie `SECURITY.md` um Unterstützte Versionen (`2.1.x`, `2.0.x`), 48h Reaktions-SLA, 5-Werktage-Triage-Zusage, Dachverband-Sicherheitskontakt (`security@open-bricks.org`) und GitHub Security Advisories erweitert.
+- Repository-weites `MARKETING-LOG.txt` mit Pfad-B-Dokumentation, Architektur-Metriken und Ökosystem-Parität initialisiert.
+- Automatisierte Vertragstestsuite in `_tests/metadata.test.mjs` um Checks für Navigationsanker, Dual-Mermaid-Diagramme, Invarianten-Matrix, Sicherheits-SLAs und lokales Marketing-Log erweitert.
+- Shields.io Badges (Datenschutz, Sicherheit, SLA, Test-Counter) synchronisiert und `llms.txt`-Zeitstempel auf `2026-09-08` aktualisiert.
+
 ### Technische Hygiene, Multi-OS-Grenzen & Vertragstest-Erweiterung (2026-08-23)
 - Technischer Hygiene-, CI-Matrix- und Sicherheitsrichtlinien-Paritätsprüflauf (Pfad A) durchgeführt.
 - GitHub Actions CI-Workflow (`.github/workflows/tests.yml`) um Concurrency-Steuerung (`cancel-in-progress: true`) über Node.js Matrix `[18, 20, 22, 24]` und Multi-OS Matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`) gehärtet.

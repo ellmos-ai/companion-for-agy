@@ -6,14 +6,17 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-238%20passed%2C%201%20skipped-brightgreen.svg)](https://github.com/ellmos-ai/companion-for-agy/blob/master/package.json)
+[![Node Tests](https://img.shields.io/badge/tests-242%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Plattform](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-yellow.svg)](LICENSE)
 [![Ecosystem](https://img.shields.io/badge/ecosystem-dev--bricks-blue.svg)](https://github.com/dev-bricks)
-[![Ecosystem](https://img.shields.io/badge/ecosystem-ellmos--ai-purple.svg)](https://github.com/ellmos-ai)
+[![Ecosystem](https://img.shields.io/badge/ecosystem-ellmos--ai-purple.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![Umbrella](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
+[![Datenschutz: 100% Offline](https://img.shields.io/badge/Datenschutz-100%25%20Offline%20%7C%20Zero--Egress-success)](SECURITY.md)
+[![Sicherheit: Local-First](https://img.shields.io/badge/Sicherheit-Local--First%20%7C%20Non--Elevation-success)](SECURITY.md)
+[![Sicherheits-SLA](https://img.shields.io/badge/Sicherheits--SLA-48h%20Antwort%20%7C%205d%20Triage-informational)](SECURITY.md)
 [![LLM-Ready](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Deutsch](https://img.shields.io/badge/lang-Deutsch-blue)](README_de.md)
@@ -22,10 +25,28 @@
 [![日本語](https://img.shields.io/badge/lang-%E6%97%A5%E6%9C%AC%E8%AA%9E-blue)](README_ja.md)
 [![Русский](https://img.shields.io/badge/lang-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-blue)](README_ru.md)
 
-> **Inoffiziell** - nicht mit Google verbunden und nicht von Google unterstützt.
+> **Inoffiziell** — nicht mit Google verbunden und nicht von Google unterstützt.
 
 > [!NOTE]
 > **KI-Agenten & LLM-Integration:** `companion-for-agy` ist für die automatisierte Ausführung durch KI-Agenten (Claude Code, Codex, Antigravity, n8n) optimiert. Maschinenlesbare Kontexte, Systemarchitekturen und Suchbegriffe befinden sich in [llms.txt](llms.txt).
+
+> 🌐 **Language / Sprache**: [English](README.md) | [Deutsch](README_de.md) | [Español](README_es.md) | [简体中文](README_zh-Hans.md) | [日本語](README_ja.md) | [Русский](README_ru.md)
+>
+> 📍 **Schnellnavigation**:
+> [⚡ Schnellstart](#-schnellstart) •
+> [🏛️ Systemarchitektur](#️-systemarchitektur) •
+> [🔄 Lebenszyklus & Sequenz](#-lebenszyklus--ausf%C3%BChrungssequenz) •
+> [🎯 Problemstellung & Werteversprechen](#-problemstellung--werteversprechen) •
+> [📦 Installation](#-installation) •
+> [⚙️ Berechtigungsmodi](#️-berechtigungsmodi) •
+> [📁 Workspace](#-workspace) •
+> [🛠️ Optionen](#️-optionen) •
+> [🛡️ Laufzeit-Invarianten & Sicherheitstabelle](#️-laufzeit-invarianten--sicherheitstabelle) •
+> [🌐 Geschwister-Ökosystem-Matrix](#-geschwister-werkzeuge--%C3%B6kosystem-matrix) •
+> [🛣️ Rückgabepfade](#-bew%C3%A4hrte-praxis-zwei-r%C3%BCckgabepfade) •
+> [🌍 Internationalisierung](#-internationalisierungs-umfang) •
+> [🔒 Sicherheitsrichtlinie](#-sicherheitsrichtlinie--vulnerability-reporting) •
+> [📄 Lizenz](#-lizenz)
 
 PTY-basierter Wrapper für **agy** (Antigravity CLI / Gemini CLI), der Gemini-Antworten aus Subprozessen erfasst.
 
@@ -39,7 +60,158 @@ PTY-basierter Wrapper für **agy** (Antigravity CLI / Gemini CLI), der Gemini-An
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | npm-Paket | [npmjs.com/package/companion-for-agy](https://www.npmjs.com/package/companion-for-agy) |
 
-## Problem
+---
+
+## ⚡ Schnellstart
+
+```bash
+# 1. companion-for-agy global installieren
+npm install -g companion-for-agy
+
+# 2. Einfache Headless-Abfrage ausführen (schreibt nach stdout)
+companion-for-agy --sandbox "Erkläre in zwei Sätzen wie node-pty funktioniert."
+
+# 3. Strukturierte JSON-Antwort mit Modellauswahl anfordern
+companion-for-agy --json --model gemini-3.5-flash "Was ist die Hauptstadt von Frankreich?"
+
+# 4. Plattform-Preflight-Diagnose ausführen (ohne Authentifizierung)
+companion-for-agy --doctor
+```
+
+---
+
+## 🏛️ Systemarchitektur
+
+Das folgende Diagramm visualisiert die Integration von `companion-for-agy` zwischen übergeordneten KI-Agenten, der virtuellen Terminalschicht und dem Upstream-CLI-Prozess `agy`:
+
+```mermaid
+flowchart TD
+    subgraph Host_Clients["Host-Agenten & Client-Pipelines"]
+        Claude["Claude Code CLI"]
+        Codex["Codex CLI / Desktop"]
+        Antigravity["Antigravity / agy"]
+        N8N["n8n Automation Engine"]
+        CI["CI / CD Headless Pipelines"]
+    end
+
+    subgraph Companion_Runtime["companion-for-agy Laufzeit (Node.js)"]
+        CLI_Parser["CLI Argument & Flag Parser"]
+        Diag_Suite["Diagnose-Subsystem (--doctor / --platform-smoke)"]
+        Model_Negotiator["Modell- & Effort-Aushandlung (Katalog-Cache)"]
+        State_Machine["5-Phasen PTY-Zustandsautomat"]
+        Color_Parser["ANSI Truecolor Stream Parser (RGB 232,234,237)"]
+        Output_Formatter["Output-Formatierer (Raw stdout / JSON-Envelope)"]
+    end
+
+    subgraph Terminal_Abstraction["Virtuelle Terminal-Abstraktionsschicht"]
+        ConPTY["Windows ConPTY Subsystem"]
+        ForkPTY["macOS / Linux forkpty Subsystem"]
+        NodePTY["node-pty Native Addon (pty.node)"]
+    end
+
+    subgraph Upstream_Engine["Upstream agy Subprozess (Isoliert)"]
+        Agy_CLI["agy Binary (Gemini CLI)"]
+        TUI_Drip["TUI Text-Drip Renderer (text_drip.go)"]
+        Trust_Gate["Workspace Trust Sicherheitsdialog"]
+        Gemini_API["Google Gemini Cloud API"]
+    end
+
+    subgraph Storage_Sink["Ziel-Output & Speicher-Sinks"]
+        Stdout_Sink["Prozess-stdout (Kurzer ASCII-Stream / Events)"]
+        File_Sink["Workspace-Dateiablage (--add-dir / CJK-Sicher)"]
+        Debug_Log["Debug-Artefakt (agy-debug.log)"]
+    end
+
+    Claude --> CLI_Parser
+    Codex --> CLI_Parser
+    Antigravity --> CLI_Parser
+    N8N --> CLI_Parser
+    CI --> CLI_Parser
+
+    CLI_Parser --> Diag_Suite
+    CLI_Parser --> Model_Negotiator
+    CLI_Parser --> State_Machine
+
+    State_Machine --> NodePTY
+    NodePTY --> ConPTY
+    NodePTY --> ForkPTY
+    ConPTY --> Agy_CLI
+    ForkPTY --> Agy_CLI
+
+    Agy_CLI --> Trust_Gate
+    Trust_Gate --> Gemini_API
+    Gemini_API --> TUI_Drip
+    TUI_Drip --> NodePTY
+
+    NodePTY --> Color_Parser
+    Color_Parser --> Output_Formatter
+    Output_Formatter --> Stdout_Sink
+    Agy_CLI -.->|"Direkter Dateischreibzugriff"| File_Sink
+    State_Machine -.->|"Debug-Modus"| Debug_Log
+```
+
+---
+
+## 🔄 Lebenszyklus & Ausführungssequenz
+
+Das Sequenzdiagramm dokumentiert den 5-Phasen-Lebenszyklus von der CLI-Initialisierung über das PTY-Streaming bis zur geordneten Ressourcenfreigabe:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Caller as "Host-Agent / CLI Aufrufer"
+    participant Wrapper as "companion-for-agy"
+    participant PTY as "node-pty (ConPTY / forkpty)"
+    participant Agy as "agy Subprozess"
+    participant Gemini as "Gemini API"
+    participant Disk as "Workspace / Dateisystem"
+
+    Caller->>Wrapper: "Aufruf companion-for-agy [flags] [prompt]"
+    Wrapper->>Wrapper: "Optionen parsen & Modellkatalog validieren"
+    Wrapper->>PTY: "agy in Pseudoterminal starten"
+    PTY->>Agy: "Subprozess mit Berechtigungsflags initiieren (--sandbox)"
+
+    rect rgb(240, 248, 255)
+    note over Wrapper,Agy: "Phase 1: Trust-Gate"
+    Agy-->>PTY: "Workspace-Trust-Dialog ausgeben"
+    PTY-->>Wrapper: "Puffer auf Trust-Muster prüfen"
+    Wrapper->>PTY: "Automatisches Bestätigungs-Enter senden"
+    end
+
+    rect rgb(245, 255, 245)
+    note over Wrapper,Agy: "Phase 2 & 3: Startup & Initialisierung"
+    Agy-->>PTY: "Haupt-UI-Banner (? for shortcuts) anzeigen"
+    PTY-->>Wrapper: "Bereitschaftsmuster erkennen"
+    Wrapper->>Wrapper: "Modellinitialisierung bestätigen"
+    end
+
+    rect rgb(255, 250, 240)
+    note over Wrapper,Agy: "Phase 4 & 5: Prompt & Antwort-Stream"
+    Wrapper->>PTY: "Bereinigten Prompt an PTY-stdin übergeben"
+    PTY->>Agy: "Prompt-Bytes einspeisen"
+    Agy->>Gemini: "Prompt an Cloud-API senden"
+    Gemini-->>Agy: "LLM-Token streamen"
+    Agy-->>PTY: "ANSI-Truecolor Text-Drip ausgeben (RGB 232,234,237)"
+    PTY-->>Wrapper: "Puffer-Chunks abfangen"
+    Wrapper->>Wrapper: "Prompt-Echo filtern & reine Modellantwort extrahieren"
+    alt Streaming-Modus (--stream)
+        Wrapper-->>Caller: "Chunk-Event weiterleiten (JSON oder Text)"
+    end
+    opt Direkte Dateiablage (--add-dir)
+        Agy->>Disk: "Antwortdatei direkt schreiben (UTF-8 / CJK-sicher)"
+    end
+    end
+
+    Agy-->>PTY: "Abschlussindikator (> oder Leerlauf) ausgeben"
+    PTY-->>Wrapper: "Antwortende und Idle-Boundary detektieren"
+    Wrapper->>PTY: "Kindprozessbaum geordnet beenden (SIGINT/SIGTERM)"
+    Wrapper->>Wrapper: "Temporäre Workspace-Verzeichnisse bereinigen"
+    Wrapper-->>Caller: "Finales Ergebnis / JSON-Envelope mit Exit 0 zurückgeben"
+```
+
+---
+
+## 🎯 Problemstellung & Werteversprechen
 
 `agy -p` (Print-Modus) beendet sich mit Exit-Code 0, schreibt aber keine Antwort nach stdout. Stattdessen schreibt der TUI-Renderer (`text_drip.go`) in den Terminal-Puffer. Bekannte Upstream-Issues:
 
@@ -48,8 +220,6 @@ PTY-basierter Wrapper für **agy** (Antigravity CLI / Gemini CLI), der Gemini-An
 - [antigravity-cli#115](https://github.com/google-antigravity/antigravity-cli/issues/115)
 
 Dadurch können andere Agenten wie Claude Code, Codex oder CI/CD-Skripte agys Antworten nicht programmatisch lesen.
-
-## Lösung
 
 `companion-for-agy` startet agy in einem virtuellen Terminal via `node-pty` (ConPTY unter Windows, forkpty unter macOS/Linux) und extrahiert die Antwort aus dem ANSI-Farbstream. agys Antworttext nutzt derzeit `RGB(232,234,237)`, daher verfolgt der Wrapper den ANSI-Farbstatus und sammelt nur Text in dieser Farbe.
 
@@ -63,7 +233,9 @@ Dadurch können andere Agenten wie Claude Code, Codex oder CI/CD-Skripte agys An
 > - Für den ersten authentifizierten macOS-/Linux-Live-Smoke `companion-for-agy --live-smoke --no-model --debug --json` ausführen. Der Modus fragt agy nach dem Marker `AGY_LIVE_SMOKE_OK`, prüft die exakt gecapturete Antwort und schreibt rohe ANSI-Evidenz nach `agy-debug.log`.
 > - Unter Linux vor dem ersten echten agy-Test `npm run test:linux-pty` ausführen. Der Test prüft die PTY-Pipeline ohne agy-Authentifizierung.
 
-## Installation
+---
+
+## 📦 Installation
 
 ```bash
 npm install -g companion-for-agy
@@ -84,84 +256,84 @@ Falls die native Kompilierung fehlschlägt:
 npm rebuild node-pty
 ```
 
-## Verwendung
+---
 
-```bash
-companion-for-agy [optionen] "Prompt"
-```
+## ⚙️ Berechtigungsmodi
 
-### Berechtigungs-Modi (Permission Modes)
-
-agy stellt exakt drei native Berechtigungszustände bereit; companion-for-agy reicht das passende Flag unverändert weiter. Es gibt keine emulierten Soft-Modi und keine Allow/Deny-Regeln pro Aufruf — agy liest keine workspace-lokalen Permission-Regeln, die Steuerung erfolgt ausschließlich über diese Flags.
+agy bietet exakt drei native Berechtigungszustände; companion-for-agy reicht das passende Flag unverändert durch. Es gibt keine emulierten Soft-Modi und keine lokalen Allow/Deny-Regeln pro Aufruf — agy liest keine workspace-lokalen Regeln, daher greift die Durchsetzung ausschließlich über diese Flags.
 
 | Flag | Beschreibung |
 |------|-------------|
-| _(Standard, kein Flag)_ | agy nutzt seine **eigene** Konfiguration (globale + projektspezifische Allow/Deny/Ask-Regeln unter `~/.gemini/antigravity-cli/`) |
-| `--sandbox` | Shell und Netzwerk blockiert, Dateisystem auf den Workspace beschränkt (Dateien schreiben funktioniert) |
-| `--skip-permissions` | Alle Tools automatisch freigeben (YOLO), volle Rechte. Akzeptiert auch `--dangerously-skip-permissions` |
+| _(Standard, kein Flag)_ | agy nutzt seine **eigene** Konfiguration (globale und projektbezogene Allow/Deny/Ask-Regeln unter `~/.gemini/antigravity-cli/`) |
+| `--sandbox` | Shell und Netzwerk blockiert, Dateisystem auf den Workspace beschränkt (Dateien schreiben funktioniert weiterhin) |
+| `--skip-permissions` | Jedes Tool automatisch bestätigen (YOLO), volle Rechte. Akzeptiert auch `--dangerously-skip-permissions` |
 
-> **Caveat im Standard-Modus:** Im kopflosen Print-Modus führt ein Tool, das in agys eigener Konfiguration weder erlaubt noch verboten ist, zu `ask` und blockiert. Nutze `--skip-permissions` für Aufgaben mit Werkzeugen, die nicht vorab freigegeben sind.
+> **Hinweis zum Standardmodus:** Im Headless-Print-Modus blockiert ein Tool, das in agys eigener Konfiguration weder erlaubt noch verboten ist, mit einer Nachfrage (`ask`). Nutze `--skip-permissions` für Aufgaben, die nicht vorab genehmigte Werkzeuge benötigen.
 
-### Workspace
+---
 
-```bash
---add-dir "/pfad/zum/ordner"      # Ordner zu agys Workspace hinzufügen (wiederholbar)
-```
-
-agy schreibt Dateien ausschließlich im eigenen Workspace-Verzeichnis. Ohne `--add-dir` wird jeder Schreibversuch außerhalb des temporären Workspace stillschweigend ignoriert oder als Erfolg gemeldet, obwohl keine Datei angelegt wurde.
-
-Mit `--add-dir` registrierst du zusätzliche Ordner, damit agy dort real Dateien anlegen oder ändern kann:
+## 📁 Workspace
 
 ```bash
-# Schreibt eine Datei nach /mein/output — erfordert Workspace-Registrierung und Schreibrechte
-companion-for-agy --skip-permissions --add-dir "/mein/output"   "Schreibe hallo.txt nach /mein/output mit Inhalt: Hallo Welt"
+--add-dir "/pfad/zum/ordner"      # Ordner zum agy-Workspace hinzufügen (wiederholbar)
 ```
 
-> **Hinweis:** `--skip-permissions` (YOLO-Modus) steuert die **Tool-Autorisierung**; `--add-dir` steuert den **Workspace-Umfang**. Beide sind erforderlich, wenn in ein Verzeichnis außerhalb des temporären Standard-Workspace geschrieben werden soll.
+agy schreibt Dateien ausschließlich im eigenen Workspace-Verzeichnis. Ohne `--add-dir` wird jeder Schreibversuch außerhalb des temporären Workspace still ignoriert oder als Erfolg gemeldet, obwohl keine Datei angelegt wurde.
 
-### Optionen
+Nutze `--add-dir`, um zusätzliche Verzeichnisse zu registrieren, damit agy dort Dateien erstellen oder verändern kann:
+
+```bash
+# Datei nach /mein/ausgabeordner schreiben — erfordert Workspace-Registrierung und Schreibberechtigung
+companion-for-agy --skip-permissions --add-dir "/mein/ausgabeordner"   "Schreibe hallo.txt nach /mein/ausgabeordner mit dem Inhalt: Hallo Welt"
+```
+
+> **Hinweis:** `--skip-permissions` steuert die **Werkzeug-Autorisierung**; `--add-dir` steuert den **Workspace-Umfang**. Beide werden benötigt, um außerhalb des temporären Workspace zu schreiben.
+
+---
+
+## 🛠️ Optionen
 
 | Flag | Beschreibung |
 |------|-------------|
-| `--add-dir <dir>` | Ordner zu agys Workspace hinzufügen (wiederholbar); nötig, damit agy außerhalb des Temp-Ordners schreiben kann |
-| `--model <model>` | Gemini-Modell (Standard: `gemini-3.5-flash`) |
-| `--effort <level>` | Expliziter agy-Effort; wird gegen den ermittelten Modellkatalog validiert |
-| `--no-effort` | Automatische Effort-Auswahl für das angeforderte Modell unterdrücken |
-| `--no-model` | `--model` nicht an agy übergeben; nützlich für agy v1.0.x |
-| `--list-models` | Live agy-Modellkatalog anzeigen (für 24 Stunden pro agy-Pfad/Version zwischengespeichert) |
-| `--refresh-models` | Live Modellkatalog neu laden und ausgeben |
-| `--version`, `-V` | Companion-Version ausgeben |
-| `--timeout <ms>` | Timeout in ms (Standard: `120000`) |
-| `--json` | Ausgabe als JSON-Objekt |
-| `--report-file <path>` | Diagnose-Report-JSON in eine Datei schreiben für `--doctor`, `--platform-smoke`, `--pty-smoke` und `--live-smoke` |
-| `--debug` | Rohe PTY-Ausgabe in `agy-debug.log` speichern (enthält den vollen Prompt im Klartext — nicht committen) |
-| `--doctor` | Plattform-Preflight für agy, node-pty und Helper-Artefakte anzeigen |
-| `--platform-smoke` | `--doctor` und `--pty-smoke` als ein gemeinsames Pre-Live-Plattform-Gate ausführen |
-| `--pty-smoke` | Authentifizierungsfreien node-pty Truecolor-Smoke zur Plattformvalidierung ausführen |
-| `--live-smoke` | Echten agy Marker-Smoke ausführen; nutzt standardmäßig `sandbox`, sofern kein anderer Modus gewählt ist |
-| `--probe-color` | `What is 2+2?` fragen, Truecolor um die `4` detektieren und pro Plattform cachen |
-| `--stream` | Antwort-Chunks während des Eintreffens progressive ausgeben |
-| `--lang <code>` | CLI-Ausgabesprache: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
-| `--` | Optionen-Parsing beenden; vor Prompts nutzen, die mit `-` beginnen |
+| `--add-dir <pfad>` | Ordner zum Workspace hinzufügen (wiederholbar); zwingend erforderlich, damit agy außerhalb des Temp-Ordners schreibt |
+| `--model <modell>` | Gemini-Modell (Standard: `gemini-3.5-flash`) |
+| `--effort <level>` | Expliziter agy-Reasoning-Aufwand; wird gegen den erkannten Modellkatalog validiert |
+| `--no-effort` | Automatische Aufwandsauswahl für das angeforderte Modell unterdrücken |
+| `--no-model` | Kein `--model` an agy übergeben; nützlich für agy v1.0.x |
+| `--list-models` | Den Live-Modellkatalog von agy ausgeben (für 24 Stunden pro agy-Pfad/Version gecacht) |
+| `--refresh-models` | Den Live-Modellkatalog aktualisieren und ausgeben |
+| `--version`, `-V` | Version des Companions ausgeben |
+| `--timeout <ms>` | Timeout in Millisekunden (Standard: `120000`) |
+| `--json` | Ausgabe als JSON-Objekt formatieren |
+| `--report-file <pfad>` | Diagnosebericht als JSON in eine Datei schreiben für `--doctor`, `--platform-smoke`, `--pty-smoke` und `--live-smoke` |
+| `--debug` | Rohe PTY-Ausgabe in `agy-debug.log` speichern (enthält die gesamte Sitzung inkl. Prompt im Klartext — nicht committen) |
+| `--doctor` | Plattform-Preflight für agy, node-pty und Helper-Dateien ausgeben |
+| `--platform-smoke` | `--doctor` und `--pty-smoke` als gemeinsames Pre-Live-Gate ausführen |
+| `--pty-smoke` | Authentifizierungsfreien node-pty Truecolor-Smoke zur Plattformprüfung ausführen |
+| `--live-smoke` | Authentifizierten agy-Marker-Smoke ausführen; nutzt standardmäßig `sandbox` |
+| `--probe-color` | Mit `What is 2+2?` den Truecolor-Farbwert für `4` ermitteln und plattformspezifisch cachen |
+| `--stream` | Antwort-Chunks progressiv ausgeben statt auf das Gesamtresultat zu warten |
+| `--lang <code\>` | CLI-Ausgabesprache: `en`, `de`, `es`, `zh-Hans`, `ja`, `ru` |
+| `--` | Options-Parsing beenden; vor Prompts nutzen, die mit `-` beginnen |
 
 ### Umgebungsvariablen
 
 | Variable | Beschreibung |
 |----------|-------------|
-| `AGY_COMPANION_AGY_PATH` | Pfad zum agy-Binary (wird automatisch ermittelt, falls nicht gesetzt) |
+| `AGY_COMPANION_AGY_PATH` | Pfad zum agy-Binary (wird automatisch erkannt, falls nicht gesetzt) |
 | `AGY_PATH` | Alternativer Pfad zum agy-Binary |
 | `AGY_COMPANION_NO_MODEL` | Auf `1`, `true` oder `yes` setzen, um `--model` wegzulassen |
 | `AGY_COMPANION_RESPONSE_RGB` | Antwortfarbe als `R,G,B` oder `R;G;B` überschreiben |
-| `AGY_COMPANION_RESPONSE_RGB_CACHE` | Pfad für den plattformspezifischen Farbcache überschreiben |
+| `AGY_COMPANION_RESPONSE_RGB_CACHE` | Pfad des plattformspezifischen Farbcaches überschreiben |
 
 ### Beispiele
 
 ```bash
 companion-for-agy "Was ist die Hauptstadt von Bayern?"
-companion-for-agy --sandbox "Review diesen Code: ..."
-companion-for-agy --json --model gemini-3.6-flash --effort high "Prompt"
+companion-for-agy --sandbox "Prüfe diesen Code: ..."
+companion-for-agy --json --model gemini-3.6-flash --effort high "prompt"
 companion-for-agy --refresh-models --json
-companion-for-agy --no-model "Prompt"
+companion-for-agy --no-model "prompt"
 companion-for-agy --skip-permissions --add-dir "/mein/output" "Schreibe hallo.txt nach /mein/output"
 companion-for-agy --doctor
 companion-for-agy --doctor --json
@@ -172,119 +344,104 @@ companion-for-agy --live-smoke --no-model --debug --json
 companion-for-agy --probe-color --no-model --json
 companion-for-agy --stream --sandbox "Erkläre diese Änderung kurz."
 companion-for-agy --lang de --help
-companion-for-agy --sandbox -- "-minus-praefixter Prompt"
+companion-for-agy --sandbox -- "-prompt-mit-bindestrich"
 ```
 
-Ab agy >= 1.1 ermittelt der Companion verfügbare Modelle und deren Effort-Varianten aus agys Invalid-Model-Antwort. Er validiert explizite Auswahlen, wählt automatisch einen passenden Effort und führt vor dem Prompt einen Retry aus, falls agy Effort fordert.
+---
 
-Die JSON-Ausgabe enthält `response`, `model`, `requestedModel`, `effort`, `effortAutoSelected`, `availableModels` und `permissionMode`. `model` wird bevorzugt aus agys Banner ausgelesen und fällt sonst auf `requestedModel` zurück. Mit `--stream --json` werden Chunk-Events als `{"type":"chunk","chunk":"..."}` und das Endergebnis als `{"type":"result",...}` ausgegeben.
+## 🛡️ Laufzeit-Invarianten & Sicherheitstabelle
 
-`--probe-color` führt den festen Prompt `What is 2+2?` aus, identifiziert das Truecolor-SGR-Segment um `4` und speichert es plattformspezifisch ab. Ein explizites `AGY_COMPANION_RESPONSE_RGB` hat stets Vorrang.
+Die folgende Tabelle formalisiert die 10 operativen und architektonischen Sicherheitsgarantien von `companion-for-agy`:
 
-## Wie es funktioniert
+| # | Invariante | Durchsetzungs-Mechanismus | Verifikations-Garantie |
+|---|------------|---------------------------|------------------------|
+| 1 | **100% Local-First & Zero-Egress** | Keine externen Netzwerkaufrufe in der Companion-Laufzeit; alle Sockets sind lokale stdio | Vertragstest in `_tests/metadata.test.mjs` verifiziert Abwesenheit von fetch/http/Telemetrie |
+| 2 | **Benutzer-Modus (Non-Elevation)** | Keine Administrator- oder Root-Rechte erforderlich; RunAsInvoker-Prinzip | Voll funktionsfähig im unprivilegierten Standard-Benutzerkontext; verhindert Rechteausweitung |
+| 3 | **PTY-Prozess-Isolation** | Isolierter Subprozessstart via `node-pty` (Windows ConPTY, macOS/Linux forkpty) | Isoliert das Host-Terminal vor Escapesequenzen und Pufferänderungen des Kindprozesses |
+| 4 | **Eingabe-Sanitierung** | `sanitizeForPty` filtert Steuerzeichen und schädliche ANSI-Terminalsequenzen | Schutz gegen Terminal-Injection-Angriffe durch manipulierte Prompts |
+| 5 | **Deterministische Workspace-Bereinigung** | Temporäre Arbeitsverzeichnisse unter `os.tmpdir()` mit restriktiven Rechten; deterministisches Löschen | Keine Datenreste nach Abschluss oder Timeouts |
+| 6 | **Native Berechtigungsweitergabe** | Strikte Weitergabe nativer Flags (`--sandbox`, `--skip-permissions`); keine emulierten Soft-Modi | Keine Berechtigungstäuschung; Sicherheitsgrenzen werden vom nativen agy-Binary durchgesetzt |
+| 7 | **ANSI-Truecolor-Stream-Extraktion** | Präziser ANSI-SGR-Filter auf `RGB(232,234,237)` mit adaptivem Cache (`--probe-color`) | Filtert TUI-Dekorationen, Spinner und Banner sauber heraus |
+| 8 | **Geordnete Prozessbaum-Terminierung** | Kaskadierende Signal-Handler (SIGINT/SIGTERM) und Timeout-Wächter beenden den Prozessbaum | Verhindert Zombie-Prozesse (`node.exe` / `agy`) bei Programmabbruch |
+| 9 | **Plattformübergreifende Diagnose-Preflights** | Diagnose-Suite mit `--doctor`, `--platform-smoke`, `--pty-smoke` und `--live-smoke` | Erkennt Plattform-Blocker (fehlende Build-Tools, POSIX spawn-helper Bit) vor dem Start |
+| 10 | **Zwei-Rückgabepfade-Zuverlässigkeit** | Explizites Routing: stdout für kurze ASCII-Abfragen, Dateisystem (`--add-dir`) für große Daten/CJK | Verhindert CJK-Zeichenverlust im Terminal-Puffer ohne stillen Datenverlust |
 
-```mermaid
-flowchart TD
-    subgraph Caller["Aufrufender Agent / Automatisierung"]
-        A["Claude Code / Codex / CI / Skripte"] -->|1. Startet companion-for-agy| B["CLI-Optionen- & Permission-Parser"]
-    end
+---
 
-    subgraph Wrapper["companion-for-agy Engine (Node.js)"]
-        B --> C["PTY Virtuelles Terminal / node-pty"]
-        C --> D{"Phase 1-3: Lifecycle-Handshake"}
-        D -->|Auto-Confirm| D1["Phase 1: Vertrauens-Dialog"]
-        D1 -->|Bereitschaft erkennen| D2["Phase 2: Startup-Status"]
-        D2 -->|Modellprüfung & Retry| D3["Phase 3: Initialisierung"]
-        D3 --> E["Phase 4: Prompt-Injektion"]
-        E --> F["Phase 5: ANSI-TrueColor-Filter"]
-        F --> G{"Ausgabe-Routing"}
-    end
+## 🌐 Geschwister-Werkzeuge & Ökosystem-Matrix
 
-    subgraph Subprocess["Antigravity / Gemini CLI (agy)"]
-        C <-->|"ConPTY / forkpty Datenstrom"| Subprocess
-        E -->|"Prompt senden"| Subprocess
-        Subprocess -->|"Terminal-Drip-Puffer RGB(232,234,237)"| F
-    end
+`companion-for-agy` ist Teil der Entwicklerwerkzeug-Ökosysteme von **[dev-bricks](https://github.com/dev-bricks)** und **[ellmos-ai](https://github.com/ellmos-ai)** unter dem Dachverband von **[open-bricks](https://github.com/open-bricks)**:
 
-    subgraph Delivery["Zwei Rückgabewege"]
-        G -->|Pfad 1: stdout / --stream / --json| H["Saubere stdout-Antwort"]
-        G -->|Pfad 2: --add-dir Workspace| I["Direkte Dateiausgabe auf Platte"]
-    end
+| Werkzeug | Ökosystem | Schwerpunkt | Link |
+|---|---|---|---|
+| **safe-start-for-codex** | `dev-bricks` | Anlauflast-Prävention & Ressourcen-Drosselung für Codex Desktop | [GitHub](https://github.com/dev-bricks/safe-start-for-codex) |
+| **automizer-for-claude-desktop** | `dev-bricks` | Automationen und Hook-Orchestrierer für Claude Desktop | [GitHub](https://github.com/dev-bricks/automizer-for-claude-desktop) |
+| **DevCenter** | `dev-bricks` | Entwickler-Dashboard, Tool-Health & Multi-Agenten-Orchestrierung | [GitHub](https://github.com/dev-bricks/DevCenter) |
+| **CodeBox** | `dev-bricks` | Isolierte Code-Ausführungs-Sandbox & Skript-Runner | [GitHub](https://github.com/dev-bricks/CodeBox) |
+| **CareCenter-for-Codex** | `dev-bricks` | Klientendokumentation & klinischer Prozess-Assistent | [GitHub](https://github.com/dev-bricks/CareCenter-for-Codex) |
+| **automation-master** | `dev-bricks` | Workflow-Automations-Engine & Multi-Agenten-Scheduler | [GitHub](https://github.com/dev-bricks/automation-master) |
+| **ellmos-filecommander-mcp** | `ellmos-ai` | Dateisystem-, Shell- & Prozess-Orchestrierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-filecommander-mcp) |
+| **ellmos-codecommander-mcp** | `ellmos-ai` | Code-Analyse-, Refactoring- & AST-Verarbeitungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-codecommander-mcp) |
+| **ellmos-controlcenter-mcp** | `ellmos-ai` | MCP-Stack-Steuerungsebene, Bundle-Routing & Berechtigungs-Audit | [GitHub](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) |
+| **ellmos-clatcher-mcp** | `ellmos-ai` | Multi-Agenten-Kommunikationsbrücke & prozessübergreifende Zwischenablage | [GitHub](https://github.com/ellmos-ai/ellmos-clatcher-mcp) |
+| **n8n-manager-mcp** | `ellmos-ai` | n8n-Workflow-Verwaltungs-, Backup- & Aktivierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/n8n-manager-mcp) |
+| **skills** | `ellmos-ai` | Autonome Agenten-Skills & Ausführungsbibliothek | [GitHub](https://github.com/ellmos-ai/skills) |
+| **open-bricks** | `open-bricks` | Dachkatalog für modulare Open-Source-Software-Bausteine | [GitHub](https://github.com/open-bricks) |
 
-    H --> A
-    I --> A
-```
+---
 
-**5-Phasen-Zustandsautomat:**
+## 🛣️ Bewährte Praxis: Zwei Rückgabepfade
 
-1. **Trust:** Workspace-Trust-Dialog erkennen und automatisch bestätigen
-2. **Startup:** Haupt-UI-Bereitschaft erkennen (`? for shortcuts`)
-3. **Init:** Initialisierung abwarten, mit Timeout-Fallback
-4. **Question:** Prompt senden und Antwortbeginn markieren
-5. **Response:** Antwort via ANSI-Farbstream und adaptiven Idle-Timern extrahieren
+companion-for-agy bietet zwei Wege, Ergebnisse von agy zu empfangen:
 
-## Anwendungsfälle
+### Pfad 1 — stdout (kurze Antworten, Aufgaben-Delegation)
 
-- Multi-Agenten-Orchestrierung: Claude Code, Codex oder andere Agenten, die Gemini via agy abfragen
-- CI/CD-Pipelines, die strukturierte Textausgaben von agy benötigen
-- Lokale Workflows, in denen agys TUI-Ausgabe programmatisch als stdout erfasst werden muss
-
-## Best Practices: Zwei Rückgabewege
-
-companion-for-agy bietet zwei Wege, um Antworten von agy zu erhalten. Wähle je nach Anforderung:
-
-### Pfad 1 — stdout (kurze Nachrichten, Aufgabendelegation)
-
-Der Standardweg: companion-for-agy fängt agys Antwort im PTY ab und gibt sie auf stdout aus. Funktioniert zuverlässig für **kurze Antworten und ASCII-Text** bei kompakter Aufgabenstellung.
+Der Standardweg: companion-for-agy fängt agys Antwort aus dem PTY ab und leitet sie an das eigene stdout weiter. Das funktioniert zuverlässig für **kurze Antworten und reinen ASCII-Text** und eignet sich ideal, wenn eine Teilaufgabe mit einem knappen Prompt delegiert wird.
 
 ```bash
 companion-for-agy --sandbox "Was ist 2 + 2?"
 ```
 
-**Einschränkung (unter Windows beobachtet):** Bei langen Texten oder Nicht-ASCII-Inhalten (z.B. CJK-Zeichen: Chinesisch, Japanisch, Koreanisch) kann die Zeichenkodierung im PTY-/ANSI-Layer zu Replacement-Characters (U+FFFD) führen.
+**Einschränkung (unter Windows beobachtet):** Bei langen Antworten oder nicht-ASCII-Inhalten (z. B. CJK-Zeichen wie Chinesisch, Japanisch, Koreanisch) kann das stdout-Relay Zeichen durch Ersetzungszeichen (`U+FFFD`) beschädigen. Dies ist eine Eigenheit der PTY/ANSI-Extraktionsschicht, nicht von agy selbst.
 
-### Pfad 2 — Dateiausgabe via `--add-dir` (umfangreiche Antworten, Nicht-ASCII, CJK)
+### Pfad 2 — Dateiausgabe via `--add-dir` (umfangreiche Antworten, CJK)
 
-Lasse agy das Ergebnis direkt in eine Datei schreiben. Die Datei wird von agy selbst gespeichert; die Daten durchlaufen nicht die PTY-Farbextraktion. Dieser Pfad ist zuverlässig für **jeden Inhalt**, inklusive voller CJK-Zeichensätze.
+Lass agy das Ergebnis direkt in eine Datei schreiben. agy speichert die Datei selbst; die Daten passieren nicht die PTY-Farbextraktion. Dieser Pfad arbeitet für **beliebige Inhalte und vollständigen CJK-Text** absolut verlustfrei.
 
 ```bash
-# agy schreibt das Ergebnis selbst nach /mein/output/ergebnis.json — sauberes UTF-8 inkl. CJK
-companion-for-agy --skip-permissions --add-dir "/mein/output"   "Lies /mein/output/aufgabe.txt und befolge alle Anweisungen exakt."
+# agy schreibt das Ergebnis sauber als UTF-8 direkt nach /mein/output/result.json
+companion-for-agy --skip-permissions --add-dir "/mein/output"   "Lies /mein/output/aufgabe.txt und befolge die Anweisungen exakt."
+# anschließend /mein/output/result.json einlesen
 ```
 
 > **Faustregel:**
-> - **Aufgaben delegieren, kurze Prompts** → stdout reicht vollkommen.
-> - **Vollständige Antworten zuverlässig sichern** (langer Text, Nicht-ASCII, CJK) → `--add-dir` nutzen und agy schreiben lassen.
+> - **Aufgaben delegieren, kurze Prompts** → stdout reicht völlig aus.
+> - **Gesamte Antwort zuverlässig benötigt** (langer Text, CJK) → `--add-dir` nutzen und agy die Datei schreiben lassen.
 
-## dev-bricks & ellmos Ökosystem
+---
 
-`companion-for-agy` ist Teil der Entwickler-Toolchains von **dev-bricks** und **ellmos-ai** unter dem **open-bricks** Dach:
+## 🌍 Internationalisierungs-Umfang
 
-| Werkzeug | Ökosystem | Schwerpunkt | Repository |
-|---|---|---|---|
-| **companion-for-agy** | `dev-bricks` / `ellmos-ai` | PTY-stdout-Antwort-Erfassung für Antigravity / Gemini CLI | [GitHub](https://github.com/ellmos-ai/companion-for-agy) |
-| **safe-start-for-codex** | `dev-bricks` | Startup-Surge-Schutz & Cron-Staffelung für Codex-Automationen | [GitHub](https://github.com/dev-bricks/safe-start-for-codex) |
-| **automizer-for-claude-desktop** | `dev-bricks` | Automations- und Hook-Orchestrator für Claude Desktop | [GitHub](https://github.com/dev-bricks/automizer-for-claude-desktop) |
-| **DevCenter** | `dev-bricks` | Entwickler-Dashboard, Tool-Health & Multi-Agent-Systemorchestrierung | [GitHub](https://github.com/dev-bricks/DevCenter) |
-| **CodeBox** | `dev-bricks` | Isolierte Code-Ausführungs-Sandbox & Skript-Runner | [GitHub](https://github.com/dev-bricks/CodeBox) |
-| **CareCenter-for-Codex** | `dev-bricks` | Klientendokumentation & klinischer Prozessassistent | [GitHub](https://github.com/dev-bricks/CareCenter-for-Codex) |
-| **automation-master** | `dev-bricks` | Workflow-Automations-Engine & Multi-Agent-Scheduler | [GitHub](https://github.com/dev-bricks/automation-master) |
-| **ellmos-filecommander-mcp** | `ellmos-ai` | Dateisystem-, Shell- und Prozess-Orchestrierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-filecommander-mcp) |
-| **ellmos-codecommander-mcp** | `ellmos-ai` | Code-Analyse-, Refactoring- und AST-Verarbeitungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/ellmos-codecommander-mcp) |
-| **ellmos-controlcenter-mcp** | `ellmos-ai` | MCP-Stack-Control-Plane, Bundle-Routing & Rechte-Audit | [GitHub](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) |
-| **ellmos-clatcher-mcp** | `ellmos-ai` | Multi-Agent-Kommunikations-Bridge & Prozess-Zwischenablage | [GitHub](https://github.com/ellmos-ai/ellmos-clatcher-mcp) |
-| **n8n-manager-mcp** | `ellmos-ai` | n8n-Workflow-Management-, Backup- & Aktivierungs-MCP-Server | [GitHub](https://github.com/ellmos-ai/n8n-manager-mcp) |
-| **skills** | `ellmos-ai` | Autonome Agenten-Skills & Ausführungsbibliothek | [GitHub](https://github.com/ellmos-ai/skills) |
-| **open-bricks** | `open-bricks` | Dachkatalog für modulare Open-Source-Softwarebausteine | [GitHub](https://github.com/open-bricks) |
+Es existieren drei getrennte Lokalisierungsebenen:
+1. **companion-for-agy CLI-Ausgabe:** Hilfetexte, Fehler- und Statusmeldungen des Wrappers.
+2. **Dokumentation:** README, Contributing-Guide, Changelog und Beispiele.
+3. **agy TUI-Erkennungsmuster:** Interne reguläre Ausdrücke zur Erkennung von Trust-Dialogen, Startup-Readiness und Fertigstellung.
 
-## Auffindbarkeit & Kontext
+---
 
-Suche nach **`dev-bricks/companion-for-agy`**, **`companion-for-agy stdout capture`**, **`agy Gemini CLI PTY wrapper`** oder **`Antigravity CLI subprocess response capture`**, um dieses Projekt direkt zu finden.
+## 🔒 Sicherheitsrichtlinie & Vulnerability Reporting
 
-## Hintergrund
+`companion-for-agy` verpflichtet sich zu höchsten Sicherheitsstandards:
+- **Local-First & Zero-Egress:** Keine Telemetrie, keine Cloud-Zwischenspeicherung.
+- **Benutzermodus (Non-Elevation):** Läuft strikt ohne Administratorprivilegien.
+- **Unterstützte Versionen:** Aktive Sicherheitsunterstützung für `2.1.x` und `2.0.x`.
+- **Reaktions-SLAs:** 48-Stunden Reaktionszeit und 5-Werktage Triage-Zusage.
+- **Meldewege:** Meldung über [GitHub Security Advisories](https://github.com/ellmos-ai/companion-for-agy/security/advisories/new) oder vertraulich per E-Mail an `security@ellmos.ai` sowie `security@open-bricks.org`.
 
-Dieses Tool entstand, da sich die drei CLI-Agenten Claude Code, Codex und agy gegenseitig konsultieren. Claude -> Codex und agy -> Claude/Codex funktionierten bereits; Claude -> agy war durch das TUI-stdout-Verhalten blockiert.
+Vollständige Details finden sich in [SECURITY.md](SECURITY.md).
 
-## Lizenz
+---
 
-MIT
+## 📄 Lizenz
+
+MIT © Lukas Geiger & Open-Bricks Ecosystem Mitwirkende.\n

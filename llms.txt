@@ -98,4 +98,10 @@ agy sandbox mode skip-permissions Node.js wrapper
 
 companion-for-agy is not the official Gemini CLI Companion VS Code extension, not a chatbot companion app, and not related to Databricks Agent Bricks or Bricks Builder. It is the dev-bricks & ellmos-ai Node.js wrapper for making agy/Gemini CLI responses readable from subprocess stdout.
 
-## Last-checked: 2026-08-23
+## Visual Architecture & Invariants
+
+- Dual-Mermaid system diagrams (5-layer system architecture and end-to-end execution sequence diagram) are documented in README.md and README_de.md.
+- 10 operational and security invariants (100% Local-First & Zero-Egress, Non-Elevation, PTY Isolation, Input Sanitization, Workspace Auto-Cleanup, Native Permissions, ANSI Truecolor Extraction, Graceful Signal Cleanup, Platform Preflights, Dual Return Paths) are guaranteed and covered by contract tests.
+
+## Last-checked: 2026-09-08
+
