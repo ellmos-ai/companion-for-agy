@@ -12,12 +12,11 @@
 
 ### Sicherheitsphilosophie & Leitlinien
 
-companion-for-agy ist eine leichtgewichtige, quelloffene PTY-Wrapper-Laufzeitumgebung für gy (Antigravity CLI / Gemini CLI). Die Architektur folgt strikten Sicherheitsprinzipien:
+companion-for-agy ist eine leichtgewichtige, quelloffene PTY-Wrapper-Laufzeitumgebung für agy (Antigravity CLI / Gemini CLI). Die Architektur folgt strikten Sicherheitsprinzipien:
 
 - **Local-First & Zero-Egress:** Der Wrapper agiert zu 100% lokal auf der Maschine des Nutzers. Es findet keinerlei Telemetrie, Datenabfluss oder externe Netzwerkkommunikation durch companion-for-agy statt. Alle Prompts und Antworten verbleiben im lokalen Prozesskontext.
 - **Benutzer-Modus (Non-Elevation):** companion-for-agy erfordert keine administrativen Berechtigungen (kein Root / kein sudo / kein Administrator) und läuft nach dem RunAsInvoker-Prinzip ausschließlich im unprivilegierten Benutzerkontext.
-- **PTY-Isolation & Input-Sanitization:** Subprozesse werden isoliert über 
-ode-pty (ConPTY unter Windows, forkpty unter macOS/Linux) gestartet. Die PTY-Eingabe wird über sanitizeForPty gegen Steuerzeichen-Injektionen und schädliche Terminal-Escapesequenzen gehärtet.
+- **PTY-Isolation & Input-Sanitization:** Subprozesse werden isoliert über node-pty (ConPTY unter Windows, forkpty unter macOS/Linux) gestartet. Die PTY-Eingabe wird über sanitizeForPty gegen Steuerzeichen-Injektionen und schädliche Terminal-Escapesequenzen gehärtet.
 - **Temporäre Verzeichnisse & Dateiberechtigungen:** Temporäre Arbeitsumgebungen werden unter os.tmpdir() mit restriktiven Zugriffsberechtigungen angelegt und nach Abschluss des Vorgangs deterministisch bereinigt.
 - **Robuste Prozessbaum-Verwaltung:** Signale (Ctrl+C, SIGINT, SIGTERM) und Timeouts triggern eine geordnete Beendigung des Subprozessbaums, um verwaiste Hintergrundprozesse (Zombie-Prozesse) zuverlässig zu verhindern.
 - **Native Berechtigungsweitergabe:** Sicherheitsrelevante Flags (--sandbox, --skip-permissions) werden unverändert an agy durchgereicht; es gibt keine emulierten Soft-Modi oder gefälschten Berechtigungszusagen.
@@ -65,12 +64,11 @@ Sicherheitsberichte werden prioritär und vertraulich behandelt:
 
 ### Security Philosophy & Principles
 
-companion-for-agy is a lightweight, open-source PTY wrapper runtime for gy (Antigravity CLI / Gemini CLI). The architecture adheres to strict security standards:
+companion-for-agy is a lightweight, open-source PTY wrapper runtime for agy (Antigravity CLI / Gemini CLI). The architecture adheres to strict security standards:
 
 - **Local-First & Zero-Egress:** The wrapper operates 100% locally on the user machine. companion-for-agy contains zero telemetry, zero analytics, and zero external network egress. All prompts and response streams remain strictly within local process boundaries.
 - **Non-Elevation (User-Mode Execution):** companion-for-agy requires no administrative privileges (no root / no sudo / no elevated administrator rights) and strictly follows RunAsInvoker semantics in user space.
-- **PTY Isolation & Input Sanitization:** Subprocesses are spawned in isolation via 
-ode-pty (ConPTY on Windows, forkpty on macOS/Linux). Input sent to the PTY is sanitized against control-character injection via sanitizeForPty.
+- **PTY Isolation & Input Sanitization:** Subprocesses are spawned in isolation via node-pty (ConPTY on Windows, forkpty on macOS/Linux). Input sent to the PTY is sanitized against control-character injection via sanitizeForPty.
 - **Temporary Workspaces & File Permissions:** Temporary workspace directories are created under os.tmpdir() with restrictive access permissions and deterministically cleaned up on completion.
 - **Robust Process Tree Lifecycle:** Signals (Ctrl+C, SIGINT, SIGTERM) and timeouts enforce graceful process tree termination to prevent orphan background processes (zombies).
 - **Native Permission Pass-Through:** Security flags (--sandbox, --skip-permissions) are passed directly through to native agy; no soft or emulated modes are fabricated.

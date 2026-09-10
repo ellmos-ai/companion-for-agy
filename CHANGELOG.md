@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-09-10
+
+### Technical Hygiene, .gitignore Hardening & Security SLA Parity (Pfad A)
+- Hardened `.gitignore` against multi-host sync conflicts (`*-conflict-*`, `*.sync-conflict-*`, `*.conflict`, `*-CONFLIT-*`, `*.sync-temp-*`, `*-ASUS-GEI.*`, `*-WORKSTATION-LG.*`), multi-agent locks (`LOCK`, `LOCK.*`, `*.lock`, `LOCK*.txt`, `LOCK.permissions.json` with `!package-lock.json`), and coverage/cache directories.
+- Cleaned and fixed typography and newline formatting artifacts in `SECURITY.md`.
+- Verified Supported Versions table (`2.1.x`), 48h response SLA, 5-business-day triage commitment, and security contact points.
+- Expanded contract test suites in `_tests/repository-hygiene.test.mjs` and `_tests/metadata.test.mjs` covering version parity, gitignore hardening, and synchronized metadata timestamps.
+- Updated `llms.txt` timestamp to `2026-09-10`.
+- Bumped package version to `2.1.1` in `package.json` and synchronized test badges.
+
 ### Visual Architecture, Bilingual Navigation & Runtime Invariants Matrix (2026-09-08)
 - Conducted Discoverability, README-Design, Badges, Test Status & Architecture Check (Pfad B).
 - Added standardized bilingual 14-Punkte-Schnellnavigation in `README.md` and `README_de.md`.

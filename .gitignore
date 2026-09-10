@@ -18,7 +18,22 @@ TESTERGEBNISSE.txt
 BUGREPORT.md
 DIAGNOSE_REPORT.md
 PORTIERUNGSPLAN.md
+# Multi-Agent Lock-System & Governance
+LOCK
+LOCK.*
+*.lock
+!package-lock.json
 LOCK*.txt
+LOCK.permissions.json
+
+# Multi-Host-Synchronisationskonflikte
+*-conflict-*
+*.sync-conflict-*
+*.conflict
+*-CONFLIT-*
+*.sync-temp-*
+*-ASUS-GEI.*
+*-WORKSTATION-LG.*
 
 # Sensible Daten
 .env
@@ -52,8 +67,17 @@ releases/
 .idea/
 *.swp
 
-# Test-Ergebnisse (lokal, nicht committen)
+# Test-Ergebnisse & Coverage (lokal, nicht committen)
 _results/
+coverage/
+.nyc_output/
+.pytest_cache/
+.ruff_cache/
+
+# Temporäre Dateien & Backups
+*.tmp
+*.bak
+*~
 
 # Betriebssystem
 desktop.ini

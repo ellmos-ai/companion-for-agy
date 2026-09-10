@@ -14,6 +14,7 @@ describe('repository metadata & manifest parity', () => {
 
     assert.equal(pkg.name, 'companion-for-agy');
     assert.equal(typeof pkg.version, 'string');
+    assert.equal(pkg.version, '2.1.1');
     assert.match(pkg.version, /^\d+\.\d+\.\d+/);
     assert.equal(pkg.main, 'src/agy-companion.mjs');
     assert.equal(pkg.bin['companion-for-agy'], 'src/agy-companion.mjs');
@@ -127,7 +128,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-09-08'));
+    assert.ok(llms.includes('Last-checked: 2026-09-10'));
     assert.ok(llms.includes('SECURITY.md'));
   });
 
@@ -295,5 +296,17 @@ describe('repository metadata & manifest parity', () => {
     const manifest = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'ellmos-module.v2.json'), 'utf8'));
     assert.deepEqual(manifest.boundaries.platforms, ['windows', 'linux', 'macos']);
     assert.equal(manifest.boundaries.network, 'optional');
+  });
+
+  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.1 and Pfad A hygiene', () => {
+    const changelogEn = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG.md'), 'utf8');
+    const changelogDe = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG_de.md'), 'utf8');
+
+    for (const cl of [changelogEn, changelogDe]) {
+      assert.ok(cl.includes('[2.1.1]'));
+      assert.ok(cl.includes('2026-09-10'));
+      assert.ok(cl.includes('Pfad A'));
+      assert.ok(cl.includes('.gitignore'));
+    }
   });
 });

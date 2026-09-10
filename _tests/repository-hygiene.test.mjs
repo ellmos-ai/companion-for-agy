@@ -86,10 +86,60 @@ describe('repository hygiene', () => {
       '.env.sample',
       'README.md',
       'package.json',
+      'package-lock.json',
+      'SECURITY.md',
+      'LICENSE',
     ];
 
     for (const allowedPath of allowedPaths) {
       assert.equal(isGitIgnored(allowedPath), false, `${allowedPath} should remain trackable`);
+    }
+  });
+
+  it('keeps multi-agent locks and permissions out of git', () => {
+    const lockPaths = [
+      'LOCK',
+      'LOCK.user.agent',
+      'LOCK.permissions.json',
+      'LOCK.txt',
+      'LOCK_test.txt',
+      'arbitrary.lock',
+    ];
+
+    for (const lockPath of lockPaths) {
+      assert.equal(isGitIgnored(lockPath), true, `${lockPath} should be ignored`);
+    }
+  });
+
+  it('keeps multi-host sync conflicts, temp syncs and host tokens out of git', () => {
+    const syncConflictPaths = [
+      'file-conflict-2026.md',
+      'state.sync-conflict-abc.json',
+      'file.conflict',
+      'doc-CONFLIT-copy.txt',
+      'data.sync-temp-42',
+      'report-ASUS-GEI.txt',
+      'report-WORKSTATION-LG.json',
+    ];
+
+    for (const syncPath of syncConflictPaths) {
+      assert.equal(isGitIgnored(syncPath), true, `${syncPath} should be ignored`);
+    }
+  });
+
+  it('keeps coverage, test cache directories, backups and temp files out of git', () => {
+    const tempPaths = [
+      'coverage/lcov.info',
+      '.nyc_output/test.json',
+      '.pytest_cache/cache',
+      '.ruff_cache/content',
+      'scratch.tmp',
+      'backup.bak',
+      'editor.swp',
+    ];
+
+    for (const tempPath of tempPaths) {
+      assert.equal(isGitIgnored(tempPath), true, `${tempPath} should be ignored`);
     }
   });
 
