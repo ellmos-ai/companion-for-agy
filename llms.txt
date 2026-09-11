@@ -13,6 +13,8 @@ Part of the dev-bricks & ellmos-ai ecosystem. Node.js, MIT.
 - [README_ru.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_ru.md): Russian localization.
 - [README_zh-Hans.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/README_zh-Hans.md): Simplified Chinese localization.
 - [SECURITY.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/SECURITY.md): Security policy, vulnerability reporting guidelines, and local-first execution guarantees.
+- [THIRD_PARTY_LICENSES.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/THIRD_PARTY_LICENSES.md): Audited 100% permissive third-party dependency inventory and invariants mapping.
+- [MARKETING-LOG.txt](https://github.com/ellmos-ai/companion-for-agy/blob/master/MARKETING-LOG.txt): Target personas, competitive matrix, sibling tools, and discoverability log.
 - [CHANGELOG.md](https://github.com/ellmos-ai/companion-for-agy/blob/master/CHANGELOG.md): Project version history.
 - [LICENSE](https://github.com/ellmos-ai/companion-for-agy/blob/master/LICENSE): MIT license text.
 
@@ -53,6 +55,10 @@ companion-for-agy [options] "prompt"
 - [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp): MCP stack control plane & tool discovery.
 - [ellmos-clatcher-mcp](https://github.com/ellmos-ai/ellmos-clatcher-mcp): Multi-agent bridge & message coordination MCP server.
 - [n8n-manager-mcp](https://github.com/ellmos-ai/n8n-manager-mcp): n8n workflow management & execution MCP server.
+- [skills](https://github.com/ellmos-ai/skills): Autonomous agent skills & execution library.
+- [sqlite-transit-sync](https://github.com/ellmos-ai/sqlite-transit-sync): Resilient SQLite database transit, schema migration & synchronization.
+- [workflowhooker](https://github.com/ellmos-ai/workflowhooker): Git and filesystem event hook dispatcher for multi-agent workflows.
+- [system-auditor](https://github.com/dev-bricks/system-auditor): Host health, conflict detection & environment compliance auditor.
 - [open-bricks](https://github.com/open-bricks): Umbrella ecosystem for modular open-source software bricks.
 
 ## Best Practices: Two Return Paths
@@ -101,6 +107,6 @@ companion-for-agy is not the official Gemini CLI Companion VS Code extension, no
 ## Visual Architecture & Invariants
 
 - Dual-Mermaid system diagrams (5-layer system architecture and end-to-end execution sequence diagram) are documented in README.md and README_de.md.
-- 10 operational and security invariants (100% Local-First & Zero-Egress, Non-Elevation, PTY Isolation, Input Sanitization, Workspace Auto-Cleanup, Native Permissions, ANSI Truecolor Extraction, Graceful Signal Cleanup, Platform Preflights, Dual Return Paths) are guaranteed and covered by contract tests.
+- 10 operational and security invariants (INV-LOCAL-01: 100% Local-First & Zero-Egress, INV-PRIV-02: Non-Elevation RunAsInvoker, INV-PTY-03: PTY Isolation, INV-SAN-04: Input Sanitization, INV-TEMP-05: Workspace Auto-Cleanup, INV-PERM-06: Native Permissions, INV-ANSI-07: ANSI Truecolor Extraction, INV-PROC-08: Graceful Process Tree Termination, INV-DIAG-09: Platform Preflights, INV-SLA-10: Dual Return Paths & 48h Security SLA) are guaranteed and covered by contract tests.
 
-## Last-checked: 2026-09-10
+## Last-checked: 2026-09-12

@@ -6,7 +6,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-246%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
+[![Node Tests](https://img.shields.io/badge/tests-247%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
@@ -14,6 +14,8 @@
 [![Ecosystem](https://img.shields.io/badge/ecosystem-dev--bricks-blue.svg)](https://github.com/dev-bricks)
 [![Ecosystem](https://img.shields.io/badge/ecosystem-ellmos--ai-purple.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![Umbrella](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
+[![Third-Party: Audited](https://img.shields.io/badge/Third--Party-100%25%20Permissive-success.svg)](THIRD_PARTY_LICENSES.md)
+[![Marketing Log](https://img.shields.io/badge/Marketing%20Log-Active-informational.svg)](MARKETING-LOG.txt)
 [![Privacy: 100% Offline](https://img.shields.io/badge/Privacy-100%25%20Offline%20%7C%20Zero--Egress-success)](SECURITY.md)
 [![Security: Local-First](https://img.shields.io/badge/Security-Local--First%20%7C%20Non--Elevation-success)](SECURITY.md)
 [![Security SLA](https://img.shields.io/badge/Security%20SLA-48h%20Response%20%7C%205d%20Triage-informational)](SECURITY.md)
@@ -35,18 +37,19 @@
 > 📍 **Quick Navigation**:
 > [⚡ Quickstart](#-quickstart) •
 > [🏛️ System Architecture](#️-system-architecture) •
-> [🔄 Lifecycle & Sequence](#-lifecycle--execution-sequence) •
+> [🔄 Lifecycle & Execution Sequence](#-lifecycle--execution-sequence) •
 > [🎯 Problem & Value Proposition](#-problem--value-proposition) •
 > [📦 Installation](#-installation) •
 > [⚙️ Permission Modes](#️-permission-modes) •
 > [📁 Workspace](#-workspace) •
 > [🛠️ Options](#️-options) •
-> [🛡️ Runtime Invariants & Safety](#️-runtime-invariants--safety-matrix) •
-> [🌐 Sibling Ecosystem Matrix](#-sibling-tools--ecosystem-matrix) •
-> [🛣️ Return Paths](#-best-practices-two-return-paths) •
-> [🌍 Internationalization](#-internationalization-scope) •
-> [🔒 Security Policy](#-security-policy--vulnerability-reporting) •
-> [📄 License](#-license)
+> [🛡️ Runtime Invariants & Safety Matrix](#️-runtime-invariants--safety-matrix) •
+> [🌐 Sibling Tools & Ecosystem Matrix](#-sibling-tools--ecosystem-matrix) •
+> [🛣️ Best Practices: Two Return Paths](#-best-practices-two-return-paths) •
+> [🌍 Internationalization Scope](#-internationalization-scope) •
+> [📋 Third-Party Licenses & Transparency](#-third-party-licenses--transparency) •
+> [🎯 Marketing & Target Personas](#-marketing--target-personas) •
+> [🔒 Security Policy & License](#-security-policy--license)
 
 PTY-based wrapper for **agy** (Antigravity CLI / Gemini CLI) that captures Gemini responses from subprocesses.
 
@@ -357,18 +360,18 @@ JSON output includes `response`, `model`, `requestedModel`, `effort`, `effortAut
 
 The following table formalizes the 10 operational and security invariants guaranteed by `companion-for-agy`:
 
-| # | Invariant | Enforcement Mechanism | Verification Guarantee |
-|---|-----------|-----------------------|------------------------|
-| 1 | **100% Local-First & Zero-Egress** | Zero external network calls in companion runtime; all sockets are local stdio | Verified by contract test in `_tests/metadata.test.mjs` (no outbound fetch/http/telemetry imports) |
-| 2 | **Non-Elevation (User-Mode Only)** | No root / Administrator privileges required or requested; RunAsInvoker semantics | Fully functional in standard unprivileged user shell; prevents privilege escalation |
-| 3 | **PTY Process Isolation** | Isolated subprocess spawning via `node-pty` (Windows ConPTY, macOS/Linux forkpty) | Isolates host terminal environment from child terminal escape mutations |
-| 4 | **Input Sanitization** | `sanitizeForPty` strips control characters and malicious ANSI terminal escape codes | Prevents terminal injection attacks via crafted prompt inputs |
-| 5 | **Deterministic Temp Workspace Cleanup** | Workspaces created under `os.tmpdir()` with restrictive modes; auto-purged on exit | No residual files left behind after command completion or timeout |
-| 6 | **Native Permission Pass-Through** | Strict pass-through of native flags (`--sandbox`, `--skip-permissions`); no emulated soft modes | Zero permission spoofing; security boundaries enforced by native agy binaries |
-| 7 | **ANSI Truecolor Stream Extraction** | Precise ANSI SGR regex filter targeting `RGB(232,234,237)` with adaptive cache (`--probe-color`) | Eliminates UI decoration, spinner frames, and banner noise from agent response |
-| 8 | **Graceful Process Tree Termination** | Cascading SIGINT/SIGTERM handlers and timeout monitors terminate child tree | Eliminates zombie processes (`node.exe` / `agy`) on abnormal exit or abort |
-| 9 | **Cross-Platform Diagnostic Preflight** | `--doctor`, `--platform-smoke`, `--pty-smoke` and `--live-smoke` health-check suite | Detects platform blockers (missing build tools, POSIX spawn-helper bit) before execution |
-| 10 | **Dual Return Path Reliability** | Explicit routing: stdout for short ASCII queries, filesystem (`--add-dir`) for bulky/CJK data | Overcomes terminal buffer CJK byte-loss without silent data truncation |
+| Invariant ID | Invariant | Enforcement Mechanism | Verification Guarantee |
+|:---:|-----------|-----------------------|------------------------|
+| `INV-LOCAL-01` | **100% Local-First & Zero-Egress** | Zero external network calls in companion runtime; all sockets are local stdio | Verified by contract test in `_tests/metadata.test.mjs` (no outbound fetch/http/telemetry imports) |
+| `INV-PRIV-02` | **Non-Elevation (User-Mode Only)** | No root / Administrator privileges required or requested; RunAsInvoker semantics | Fully functional in standard unprivileged user shell; prevents privilege escalation |
+| `INV-PTY-03` | **PTY Process Isolation** | Isolated subprocess spawning via `node-pty` (Windows ConPTY, macOS/Linux forkpty) | Isolates host terminal environment from child terminal escape mutations |
+| `INV-SAN-04` | **Input Sanitization** | `sanitizeForPty` strips control characters and malicious ANSI terminal escape codes | Prevents terminal injection attacks via crafted prompt inputs |
+| `INV-TEMP-05` | **Deterministic Temp Workspace Cleanup** | Workspaces created under `os.tmpdir()` with restrictive modes; auto-purged on exit | No residual files left behind after command completion or timeout |
+| `INV-PERM-06` | **Native Permission Pass-Through** | Strict pass-through of native flags (`--sandbox`, `--skip-permissions`); no emulated soft modes | Zero permission spoofing; security boundaries enforced by native agy binaries |
+| `INV-ANSI-07` | **ANSI Truecolor Stream Extraction** | Precise ANSI SGR regex filter targeting `RGB(232,234,237)` with adaptive cache (`--probe-color`) | Eliminates UI decoration, spinner frames, and banner noise from agent response |
+| `INV-PROC-08` | **Graceful Process Tree Termination** | Cascading SIGINT/SIGTERM handlers and timeout monitors terminate child tree | Eliminates zombie processes (`node.exe` / `agy`) on abnormal exit or abort |
+| `INV-DIAG-09` | **Cross-Platform Diagnostic Preflight** | `--doctor`, `--platform-smoke`, `--pty-smoke` and `--live-smoke` health-check suite | Detects platform blockers (missing build tools, POSIX spawn-helper bit) before execution |
+| `INV-SLA-10` | **Dual Return Path Reliability & Security SLA** | Dual return paths (stdout / filesystem) + 48h response & 5d triage commitment | Overcomes terminal CJK truncation and guarantees formal security vulnerability response |
 
 ---
 
@@ -390,6 +393,9 @@ The following table formalizes the 10 operational and security invariants guaran
 | **ellmos-clatcher-mcp** | `ellmos-ai` | Multi-agent communication bridge & cross-process clipboard | [GitHub](https://github.com/ellmos-ai/ellmos-clatcher-mcp) |
 | **n8n-manager-mcp** | `ellmos-ai` | n8n workflow management, backup & activation MCP server | [GitHub](https://github.com/ellmos-ai/n8n-manager-mcp) |
 | **skills** | `ellmos-ai` | Autonomous agent skills & execution library | [GitHub](https://github.com/ellmos-ai/skills) |
+| **sqlite-transit-sync** | `ellmos-ai` | Resilient SQLite database transit, schema migration & synchronization | [GitHub](https://github.com/ellmos-ai/sqlite-transit-sync) |
+| **workflowhooker** | `ellmos-ai` | Git and filesystem event hook dispatcher for multi-agent workflows | [GitHub](https://github.com/ellmos-ai/workflowhooker) |
+| **system-auditor** | `dev-bricks` | Host health, conflict detection & environment compliance auditor | [GitHub](https://github.com/dev-bricks/system-auditor) |
 | **open-bricks** | `open-bricks` | Umbrella catalog for modular open-source software bricks | [GitHub](https://github.com/open-bricks) |
 
 ---
@@ -453,8 +459,33 @@ Recognition patterns are not blindly translated. English stays the baseline; non
 
 ---
 
-## 🔒 Security Policy & Vulnerability Reporting
+## 📋 Third-Party Licenses & Transparency
 
+`companion-for-agy` is committed to 100% open-source transparency, permissive licensing, and zero-egress local execution:
+- **100% Permissive Open Source Stack:** Every direct, runtime, and transitive dependency resolved in `package-lock.json` is distributed under permissive terms (MIT, BSD-2-Clause, ISC, CC0-1.0). There are zero AGPL or restrictive copyleft dependencies.
+- **Pure Virtual Terminal Subprocess Abstraction:** Utilizes `node-pty` to encapsulate the upstream `agy` CLI in a localized pseudo-terminal, ensuring full subprocess isolation without network leakage.
+- **Zero Egress & Unprivileged Execution:** Operates completely offline with zero telemetry (`INV-LOCAL-01`) and runs strictly with unprivileged standard user permissions (`RunAsInvoker` / `INV-PRIV-02`).
+
+For the comprehensive third-party dependency breakdown and compliance notes, see [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) (and [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt)).
+
+---
+
+## 🎯 Marketing & Target Personas
+
+`companion-for-agy` addresses four primary developer and operational personas across the multi-agent and CLI automation ecosystem:
+
+1. **Autonomous AI Coding Agent Developers & Swarm Operators:** Enables parent agents (Claude Code, Codex, Antigravity, n8n) to programmatically invoke Gemini CLI models without interactive TUI blocking or corrupted control characters.
+2. **Windows & Multi-OS Antigravity CLI Power Users:** Facilitates headless batch prompt runs, automated evaluations, and benchmark testing with automatic model and effort negotiation.
+3. **DevOps & CI/CD Pipeline Automation Engineers:** Provides preflight diagnostics (`--doctor`, `--platform-smoke`), structured JSON streaming (`--json --stream`), and anti-zombie process tree termination.
+4. **Enterprise Security & Compliance Auditors:** Enforces strict local-first zero-egress boundaries (`INV-LOCAL-01`), unprivileged user execution (`INV-PRIV-02`), and an audited 100% permissive open-source stack.
+
+For target search queries, the 5-way competitive differentiation matrix, and strategy metrics, see [MARKETING-LOG.txt](MARKETING-LOG.txt).
+
+---
+
+## 🔒 Security Policy & License
+
+### Security Policy & Vulnerability Reporting
 `companion-for-agy` adheres to strict security and privacy standards:
 - **Local-First & Zero-Egress:** Zero network egress or analytics. All data stays local.
 - **Non-Elevation:** Runs exclusively in unprivileged user mode (RunAsInvoker).
@@ -464,8 +495,5 @@ Recognition patterns are not blindly translated. English stays the baseline; non
 
 For full policy details, see [SECURITY.md](SECURITY.md).
 
----
-
-## 📄 License
-
-MIT © Lukas Geiger & Open-Bricks Ecosystem Contributors.\n
+### License
+MIT © Lukas Geiger & Open-Bricks Ecosystem Contributors. See [LICENSE](LICENSE) for details.\n

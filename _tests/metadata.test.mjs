@@ -14,7 +14,7 @@ describe('repository metadata & manifest parity', () => {
 
     assert.equal(pkg.name, 'companion-for-agy');
     assert.equal(typeof pkg.version, 'string');
-    assert.equal(pkg.version, '2.1.1');
+    assert.equal(pkg.version, '2.1.2');
     assert.match(pkg.version, /^\d+\.\d+\.\d+/);
     assert.equal(pkg.main, 'src/agy-companion.mjs');
     assert.equal(pkg.bin['companion-for-agy'], 'src/agy-companion.mjs');
@@ -53,6 +53,7 @@ describe('repository metadata & manifest parity', () => {
       'CONTRIBUTING.md',
       'LICENSE',
       'THIRD_PARTY_LICENSES.txt',
+      'THIRD_PARTY_LICENSES.md',
       'MARKETING-LOG.txt',
       'llms.txt',
     ];
@@ -128,8 +129,12 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-09-10'));
+    assert.ok(llms.includes('Last-checked: 2026-09-12'));
     assert.ok(llms.includes('SECURITY.md'));
+    assert.ok(llms.includes('THIRD_PARTY_LICENSES.md'));
+    assert.ok(llms.includes('MARKETING-LOG.txt'));
+    assert.ok(llms.includes('INV-LOCAL-01'));
+    assert.ok(llms.includes('INV-SLA-10'));
   });
 
   it('verifies README and README_de contain required badges and ecosystem matrices', () => {
@@ -138,12 +143,14 @@ describe('repository metadata & manifest parity', () => {
 
     for (const content of [readmeEn, readmeDe]) {
       assert.match(content, /img\.shields\.io\/npm\/v\/companion-for-agy/);
-      assert.match(content, /tests-24\d%20passed/);
+      assert.match(content, /tests-2\d{2}%20passed/);
       assert.match(content, /node-%3E%3D18\.0\.0/);
       assert.match(content, /(platform|plattform)-Windows/i);
       assert.match(content, /ecosystem-dev--bricks/);
       assert.match(content, /ecosystem-ellmos--ai/);
       assert.match(content, /umbrella-open--bricks/);
+      assert.match(content, /Third--Party/);
+      assert.match(content, /Marketing%20Log/);
       assert.match(content, /LLM--Ready-llms\.txt/);
       assert.match(content, /(Privacy-100%25%20Offline|Datenschutz-100%25%20Offline)/);
       assert.match(content, /(Security-Local--First|Sicherheit-Local--First)/);
@@ -160,11 +167,14 @@ describe('repository metadata & manifest parity', () => {
       assert.ok(content.includes('ellmos-clatcher-mcp'));
       assert.ok(content.includes('n8n-manager-mcp'));
       assert.ok(content.includes('skills'));
+      assert.ok(content.includes('sqlite-transit-sync'));
+      assert.ok(content.includes('workflowhooker'));
+      assert.ok(content.includes('system-auditor'));
       assert.ok(content.includes('open-bricks'));
     }
   });
 
-  it('verifies 14-point quick navigation in README and README_de', () => {
+  it('verifies 15-point quick navigation in README and README_de', () => {
     const readmeEn = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
     const readmeDe = fs.readFileSync(path.join(REPO_ROOT, 'README_de.md'), 'utf8');
 
@@ -181,8 +191,9 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeEn.includes('(#-sibling-tools--ecosystem-matrix)'));
     assert.ok(readmeEn.includes('(#-best-practices-two-return-paths)'));
     assert.ok(readmeEn.includes('(#-internationalization-scope)'));
-    assert.ok(readmeEn.includes('(#-security-policy--vulnerability-reporting)'));
-    assert.ok(readmeEn.includes('(#-license)'));
+    assert.ok(readmeEn.includes('(#-third-party-licenses--transparency)'));
+    assert.ok(readmeEn.includes('(#-marketing--target-personas)'));
+    assert.ok(readmeEn.includes('(#-security-policy--license)'));
 
     assert.ok(readmeDe.includes('Schnellnavigation'));
     assert.ok(readmeDe.includes('(#-schnellstart)'));
@@ -197,8 +208,9 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeDe.includes('(#-geschwister-werkzeuge--%C3%B6kosystem-matrix)'));
     assert.ok(readmeDe.includes('(#-bew%C3%A4hrte-praxis-zwei-r%C3%BCckgabepfade)'));
     assert.ok(readmeDe.includes('(#-internationalisierungs-umfang)'));
-    assert.ok(readmeDe.includes('(#-sicherheitsrichtlinie--vulnerability-reporting)'));
-    assert.ok(readmeDe.includes('(#-lizenz)'));
+    assert.ok(readmeDe.includes('(#-drittanbieter-lizenzen--transparenz)'));
+    assert.ok(readmeDe.includes('(#-marketing--zielgruppen)'));
+    assert.ok(readmeDe.includes('(#-sicherheitsrichtlinie--lizenz)'));
   });
 
   it('verifies dual Mermaid diagrams (flowchart and sequenceDiagram) in README and README_de', () => {
@@ -225,6 +237,16 @@ describe('repository metadata & manifest parity', () => {
     const readmeDe = fs.readFileSync(path.join(REPO_ROOT, 'README_de.md'), 'utf8');
 
     assert.ok(readmeEn.includes('## 🛡️ Runtime Invariants & Safety Matrix'));
+    assert.ok(readmeEn.includes('INV-LOCAL-01'));
+    assert.ok(readmeEn.includes('INV-PRIV-02'));
+    assert.ok(readmeEn.includes('INV-PTY-03'));
+    assert.ok(readmeEn.includes('INV-SAN-04'));
+    assert.ok(readmeEn.includes('INV-TEMP-05'));
+    assert.ok(readmeEn.includes('INV-PERM-06'));
+    assert.ok(readmeEn.includes('INV-ANSI-07'));
+    assert.ok(readmeEn.includes('INV-PROC-08'));
+    assert.ok(readmeEn.includes('INV-DIAG-09'));
+    assert.ok(readmeEn.includes('INV-SLA-10'));
     assert.ok(readmeEn.includes('100% Local-First & Zero-Egress'));
     assert.ok(readmeEn.includes('Non-Elevation (User-Mode Only)'));
     assert.ok(readmeEn.includes('PTY Process Isolation'));
@@ -234,9 +256,19 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeEn.includes('ANSI Truecolor Stream Extraction'));
     assert.ok(readmeEn.includes('Graceful Process Tree Termination'));
     assert.ok(readmeEn.includes('Cross-Platform Diagnostic Preflight'));
-    assert.ok(readmeEn.includes('Dual Return Path Reliability'));
+    assert.ok(readmeEn.includes('Dual Return Path Reliability & Security SLA'));
 
     assert.ok(readmeDe.includes('## 🛡️ Laufzeit-Invarianten & Sicherheitstabelle'));
+    assert.ok(readmeDe.includes('INV-LOCAL-01'));
+    assert.ok(readmeDe.includes('INV-PRIV-02'));
+    assert.ok(readmeDe.includes('INV-PTY-03'));
+    assert.ok(readmeDe.includes('INV-SAN-04'));
+    assert.ok(readmeDe.includes('INV-TEMP-05'));
+    assert.ok(readmeDe.includes('INV-PERM-06'));
+    assert.ok(readmeDe.includes('INV-ANSI-07'));
+    assert.ok(readmeDe.includes('INV-PROC-08'));
+    assert.ok(readmeDe.includes('INV-DIAG-09'));
+    assert.ok(readmeDe.includes('INV-SLA-10'));
     assert.ok(readmeDe.includes('100% Local-First & Zero-Egress'));
     assert.ok(readmeDe.includes('Benutzer-Modus (Non-Elevation)'));
     assert.ok(readmeDe.includes('PTY-Prozess-Isolation'));
@@ -246,7 +278,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeDe.includes('ANSI-Truecolor-Stream-Extraktion'));
     assert.ok(readmeDe.includes('Geordnete Prozessbaum-Terminierung'));
     assert.ok(readmeDe.includes('Plattformübergreifende Diagnose-Preflights'));
-    assert.ok(readmeDe.includes('Zwei-Rückgabepfade-Zuverlässigkeit'));
+    assert.ok(readmeDe.includes('Zwei-Rückgabepfade-Zuverlässigkeit & Sicherheits-SLA'));
   });
 
   it('verifies local MARKETING-LOG.txt is present and documents Pfad B automation', () => {
@@ -255,10 +287,12 @@ describe('repository metadata & manifest parity', () => {
     const logContent = fs.readFileSync(logPath, 'utf8');
 
     assert.ok(logContent.includes('companion-for-agy'));
-    assert.ok(logContent.includes('2026-09-08'));
+    assert.ok(logContent.includes('2026-09-12'));
     assert.ok(logContent.includes('Pfad B'));
-    assert.ok(logContent.includes('Dual-Mermaid'));
-    assert.ok(logContent.includes('14-Punkte-Schnellnavigation'));
+    assert.ok(logContent.includes('TARGET PERSONAS'));
+    assert.ok(logContent.includes('COMPETITIVE DIFFERENTIATION MATRIX'));
+    assert.ok(logContent.includes('INV-LOCAL-01'));
+    assert.ok(logContent.includes('INV-SLA-10'));
   });
 
   it('verifies all internationalized README files have consistent titles and badge anchors', () => {
@@ -298,15 +332,29 @@ describe('repository metadata & manifest parity', () => {
     assert.equal(manifest.boundaries.network, 'optional');
   });
 
-  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.1 and Pfad A hygiene', () => {
+  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.2 and Pfad B upgrade', () => {
     const changelogEn = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG.md'), 'utf8');
     const changelogDe = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG_de.md'), 'utf8');
 
     for (const cl of [changelogEn, changelogDe]) {
-      assert.ok(cl.includes('[2.1.1]'));
-      assert.ok(cl.includes('2026-09-10'));
-      assert.ok(cl.includes('Pfad A'));
-      assert.ok(cl.includes('.gitignore'));
+      assert.ok(cl.includes('[2.1.2]'));
+      assert.ok(cl.includes('2026-09-12'));
+      assert.ok(cl.includes('Pfad B'));
+      assert.ok(cl.includes('15-Point') || cl.includes('15-Punkte'));
     }
+  });
+
+  it('verifies THIRD_PARTY_LICENSES.md contains audited permissive inventory and invariants mapping', () => {
+    const licenseDocPath = path.join(REPO_ROOT, 'THIRD_PARTY_LICENSES.md');
+    assert.ok(fs.existsSync(licenseDocPath), 'Missing THIRD_PARTY_LICENSES.md');
+    const licenseContent = fs.readFileSync(licenseDocPath, 'utf8');
+
+    assert.ok(licenseContent.includes('100% Permissive Open Source Stack'));
+    assert.ok(licenseContent.includes('node-pty'));
+    assert.ok(licenseContent.includes('update-notifier'));
+    assert.ok(licenseContent.includes('INV-LOCAL-01'));
+    assert.ok(licenseContent.includes('INV-PRIV-02'));
+    assert.ok(licenseContent.includes('INV-SLA-10'));
+    assert.ok(licenseContent.includes('Zero Third-Party Dev Dependency Footprint'));
   });
 });

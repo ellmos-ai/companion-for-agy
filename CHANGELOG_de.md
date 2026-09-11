@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [2.1.2] - 2026-09-12
+
+### 15-Punkte-Navigation, Lizenz-Audit, Marketing-Log & Invarianten-Verträge (Pfad B)
+- Schnellnavigation auf standardisierte 15-Punkte-Architektur in `README.md` und `README_de.md` mit 100% wechselseitiger Ankerparität angehoben (`# 📋 Drittanbieter-Lizenzen & Transparenz`, `# 🎯 Marketing & Zielgruppen`, `# 🔒 Sicherheitsrichtlinie & Lizenz`).
+- Alle 10 Governance- & Laufzeit-Invarianten mit kanonischen IDs (`INV-LOCAL-01` bis `INV-SLA-10`) in Dokumentation, Metadaten und Vertragstests formalisiert.
+- Drittanbieter-Abhängigkeiten auditiert und `THIRD_PARTY_LICENSES.md` erstellt; verifiziert 100% permissive Lizenzen (MIT, BSD-2-Clause, ISC, CC0-1.0) ohne AGPL/Copyleft-Risiken.
+- Repository-weites `MARKETING-LOG.txt` um 4 Entwickler-Zielgruppen, zweisprachige Suchbegriffe (EN & DE), 5-Wege-Wettbewerbsmatrix, 16 Geschwister-Werkzeuge und Invarianten-Zuordnungen erweitert.
+- Geschwister-Werkzeuge- & Ökosystem-Matrix auf 16 Werkzeuge über dev-bricks, ellmos-ai und open-bricks ausgebaut.
+- `llms.txt`-Ökosystemreferenzen, formale Invarianten-IDs und `Last-checked: 2026-09-12`-Zeitstempel synchronisiert.
+- Paketversion in `package.json` auf `2.1.2` angehoben und `THIRD_PARTY_LICENSES.md` sowie `MARKETING-LOG.txt` in die npm-Dateiliste aufgenommen.
+- Automatisierte Vertragstestsuite in `_tests/metadata.test.mjs` um Prüfungen für 15-Punkte-Navigation, Invarianten-IDs, Lizenz-Audit-Existenz und Marketing-Log-Integrität erweitert.
+
 ## [2.1.1] - 2026-09-10
 
 ### Technische Hygiene, .gitignore-Härtung & Sicherheits-SLA-Parität (Pfad A)

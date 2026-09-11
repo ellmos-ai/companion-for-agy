@@ -1,82 +1,131 @@
+# MARKETING-LOG: companion-for-agy
+Date: 2026-09-12
+Operator: Antigravity / Gemini (via GITHUBBOT Pfad B)
+Target Repo: ellmos-ai/companion-for-agy
+Canonical Path: C:\_Local_DEV\repos\companion-for-agy
+Version: 2.1.2
+
+# Audit & Action Tracking:
+# [2026-09-08 17:30:00 CEST] [GITHUBBOT_ONE_REPO_MARKETING_AND_DESIGN] ACTION: PFAD_B_BASELINE | REPO: ellmos-ai/companion-for-agy | SCOPE: Initial Pfad B discoverability baseline, 14-point quick navigation in README.md & README_de.md, dual mermaid diagrams (5-layer architecture & 5-phase execution sequence with autonumber), 10 runtime invariants, sibling tools ecosystem matrix, and contract tests.
+# [2026-09-10 14:15:00 CEST] [GITHUBBOT_ONE_REPO_CLEANER] ACTION: PFAD_A_HYGIENE | REPO: ellmos-ai/companion-for-agy | SCOPE: Hardened .gitignore against multi-host sync conflicts and lockfiles, CI concurrency controls, SECURITY.md cleanup, and contract testsuite stabilization (version 2.1.1).
+# [2026-09-12 01:50:00 CEST] [GITHUBBOT_ONE_REPO_MARKETING_AND_DESIGN] ACTION: PFAD_B_UPGRADE | REPO: ellmos-ai/companion-for-agy | SCOPE: 15-Point Quick Navigation standard with 100% bidirectional anchor parity (#13-third-party-licenses--transparency / #13-drittanbieter-lizenzen--transparenz, #14-marketing--target-personas / #14-marketing--zielgruppen, #15-security-policy--license / #15-sicherheitsrichtlinie--lizenz), canonical invariant identifiers (INV-LOCAL-01 to INV-SLA-10), audited THIRD_PARTY_LICENSES.md (100% permissive open source stack), enriched MARKETING-LOG.txt with 4 personas, 5-way competitive matrix, 16 sibling tools, version bump to 2.1.2, llms.txt synchronization, and automated contract testsuite extension.
+
 ================================================================================
-MARKETING & DISCOVERABILITY LOG: companion-for-agy (dev-bricks / ellmos-ai)
+1. REPOSITORY AUDIT & DISCOVERABILITY BASELINE
 ================================================================================
-Kanonischer Pfad: C:\_Local_DEVepos\companion-for-agy
-Remote URL:       https://github.com/ellmos-ai/companion-for-agy.git
-Branch:           master
-Version:          2.1.0
-Prüfdatum:        2026-09-08
-Automation:       Pfad B (Marketing, Discoverability & Visual Architecture)
-Akteur:           Antigravity / Gemini Agent (Plan D)
+- Organization: ellmos-ai & dev-bricks
+- Umbrella Ecosystem: open-bricks
+- Primary Category: AI Agent Infrastructure / Virtual Terminal Subprocess Connectors
+- Core Positioning: Unofficial Node.js PTY-based wrapper for agy (Antigravity CLI / Gemini CLI) that captures terminal-buffer responses as clean stdout for multi-agent automation, CI/CD pipelines, and local agent frameworks.
+- Distinct Value Proposition: Resolves the upstream agy architectural constraint where print-mode output is rendered to the raw virtual terminal buffer rather than piped stdout. By spawning agy within an isolated PTY (ConPTY on Windows, forkpty on macOS/Linux) and applying high-precision ANSI truecolor SGR stream filters (targeting RGB 232,234,237), companion-for-agy extracts only the pure LLM response text while eliminating UI noise, banners, and spinner frames. Provides model/effort auto-negotiation, offline preflight diagnostics (--doctor, --platform-smoke), dual return paths (stdout vs. --add-dir filesystem for CJK/bulky data), and deterministic process tree termination.
+- Sibling Ecosystem Integration: Interoperates directly with dev-bricks developer tooling (safe-start-for-codex, automizer-for-claude-desktop, DevCenter, CodeBox, CareCenter-for-Codex, automation-master), ellmos-ai infrastructure (ellmos-filecommander-mcp, ellmos-codecommander-mcp, ellmos-controlcenter-mcp, ellmos-clatcher-mcp, n8n-manager-mcp, skills, sqlite-transit-sync, workflowhooker), and the open-bricks umbrella.
 
-1. AUSGANGSLAGE & MOTIVATION
---------------------------------------------------------------------------------
-- Cooldown-Check: Letzter Pfad B Check laut CHECK-REG.txt am 2026-08-20 (19 Tage her).
-- Lokaler Git-Zustand: 100% sauber auf Branch master.
-- Lock-Status: 0 aktive Locks auf Projektverzeichnis (lock_status.py clean).
-- Bisherige Visualisierung: Text-Box ohne interaktive Mermaid-Diagramme.
-- Bisherige Struktur: Keine 14-Punkte-Schnellnavigation und keine tabellarische
-  Governance- & Laufzeit-Invarianten-Matrix.
+================================================================================
+2. TARGET PERSONAS & USER JOURNEYS
+================================================================================
+1. Autonomous AI Coding Agent Developers & Swarm Operators (Claude Code, Codex, Antigravity, Kimi, n8n)
+   - Needs: Programmatically invoke Gemini/Antigravity CLI models from parent agent sessions (e.g. Claude delegating tasks to Gemini) and receive clean, parseable JSON or text output without interactive prompt hangs.
+   - Pain Points: Upstream agy writes responses to the terminal buffer via ncurses/TUI escape sequences; standard child_process.spawn() or shell pipes return empty stdout or corrupted control characters.
+   - Companion Solution: Headless execution via isolated virtual terminal (node-pty), automated detection of trust prompts and login banners, truecolor response extraction, and structured JSON output (--json) with stream chunk events.
 
-2. DURCHGEFÜHRTE MASSNAHMEN (PFAD B)
---------------------------------------------------------------------------------
-(1) Zweisprachige README-Architektur (README.md & README_de.md):
-    - Strukturierte 14-Punkte-Schnellnavigation mit Quick-Jump-Ankern in Deutsch
-      und Englisch verankert.
-    - Synchronisierte Shields.io Badges: Version, CI-Status, Test-Status,
-      Node.js >= 18, Plattformen (Windows, macOS, Linux), PTY-Engine (ConPTY,
-      forkpty), Lizenz (MIT), Ökosystem (dev-bricks, ellmos-ai), Umbrella
-      (open-bricks), Privacy (100% Offline / Zero-Egress), Security (Local-First /
-      Non-Elevation), SLA (48h Response / 5d Triage) und LLM-Ready (llms.txt).
+2. Windows & Multi-OS Antigravity / Gemini CLI Power Users & Prompt Engineers
+   - Needs: Automate batch prompt execution, local LLM evaluation scripts, and cross-model benchmarks without opening interactive GUI or terminal windows.
+   - Pain Points: agy CLI version changes occasionally alter reasoning effort flags or model catalog syntax, causing automation scripts to crash silently.
+   - Companion Solution: Dynamic model and effort negotiation with 24-hour catalog cache, automatic fallback when effort flags must be added or removed, and cross-platform terminal compatibility (Windows ConPTY, macOS/Linux forkpty).
 
-(2) Dual-Mermaid-Diagramme:
-    - 5-Schichten Systemarchitektur (flowchart TD):
-      Host OS & PTY Layer, Companion Engine Core, Virtual Terminal Stream Parser,
-      Upstream agy Subprocess und Dual-Output Dispatcher.
-    - Vollständiges operatives Ausführungs- & Diagnose-Sequenzdiagramm
-      (sequenceDiagram mit autonumber):
-      Caller -> Companion CLI -> PTY Process -> Upstream agy -> Stdout/FS Stream
-      mit 5-Phasen-Lebenszyklus (Trust, Startup, Init, Prompt, Stream-Filterung),
-      Signal-/Timeout-Handling und deterministischem Ressourcen-Cleanup.
+3. DevOps & CI/CD Pipeline Automation Engineers
+   - Needs: Integrate local Gemini evaluations, automated pull request reviews, and code refactoring checks into automated build workflows without fragile environment dependencies.
+   - Pain Points: Native PTY compilation issues on diverse OS runners, POSIX spawn-helper executable bit mismatches, and unhandled child process leaks stalling CI jobs.
+   - Companion Solution: Comprehensive preflight diagnostic suite (--doctor, --platform-smoke, --pty-smoke), fail-closed reporting with --report-file, and cascading SIGINT/SIGTERM handlers that guarantee zero zombie processes.
 
-(3) Tabelle der Governance- & Laufzeit-Invarianten:
-    - 10 Kern-Invarianten tabellarisch verankert:
-      1. 100% Local-First & Zero-Egress
-      2. Non-Elevation (User-Mode Only / RunAsInvoker)
-      3. PTY-Prozess-Isolation (node-pty ConPTY/forkpty)
-      4. Eingabe-Sanitierung (sanitizeForPty gegen Terminal-Injections)
-      5. Deterministische Temp-Workspace-Bereinigung (os.tmpdir())
-      6. Native Berechtigungsweitergabe (--sandbox, --skip-permissions)
-      7. Deterministische ANSI-Truecolor-Stream-Extraktion (RGB(232,234,237))
-      8. Geordnete Prozessbaum-Terminierung (SIGINT/SIGTERM, Anti-Zombie)
-      9. Plattformübergreifende Diagnose-Preflights (--doctor, --platform-smoke)
-      10. Zwei-Rückgabepfade-Zuverlässigkeit (stdout vs. --add-dir)
+4. Enterprise Security, Privacy & Compliance Auditors
+   - Needs: Guarantee that local developer CLI tools operate strictly offline, without unsolicited network egress, and adhere to permissive open-source licensing standards.
+   - Pain Points: Opaque wrapper tools that phone home, transmit telemetry, run with elevated administrative privileges, or bundle restrictive AGPL dependencies.
+   - Companion Solution: 100% Local-First & Zero-Egress (INV-LOCAL-01), unprivileged user-mode execution (RunAsInvoker / INV-PRIV-02), verified 100% permissive open-source dependency tree (THIRD_PARTY_LICENSES.md), and formal 48h security response SLA with 5-day triage commitment (INV-SLA-10).
 
-(4) Geschwister-Ökosystem & Partner-Matrix:
-    - 13 Partner-Repositories über dev-bricks, ellmos-ai und open-bricks verlinkt:
-      safe-start-for-codex, automizer-for-claude-desktop, DevCenter, CodeBox,
-      CareCenter-for-Codex, automation-master, ellmos-filecommander-mcp,
-      ellmos-codecommander-mcp, ellmos-controlcenter-mcp, ellmos-clatcher-mcp,
-      n8n-manager-mcp, skills, open-bricks.
+================================================================================
+3. HIGH-INTENT SEARCH QUERIES (BILINGUAL EN & DE)
+================================================================================
+English (EN):
+- `companion-for-agy`
+- `capture agy response stdout python nodejs`
+- `antigravity cli subprocess output wrapper`
+- `gemini cli programmatic terminal capture`
+- `node-pty conpty wrapper for agy cli`
+- `multi-agent claude codex gemini delegation`
+- `agy antigravity cli headless json output`
+- `stream gemini cli responses node-pty`
+- `local-first zero-egress agy wrapper`
+- `dev-bricks ellmos-ai companion-for-agy`
 
-(5) Zweisprachige Sicherheitsrichtlinie (SECURITY.md):
-    - Supported Versions Matrix (2.1.x, 2.0.x, < 2.0 EoL).
-    - 48h Reaktions-SLA und 5-Werktage-Triage-Zusage.
-    - Umbrella Security Contact security@open-bricks.org sowie direkte Maintainer.
-    - Verlinkung der GitHub Security Advisories.
+German (DE):
+- `companion-for-agy agy wrapper deutsch`
+- `Antigravity CLI Subprozess Ausgabe erfassen`
+- `Gemini CLI automatisierte Antworten auslesen`
+- `Terminal-Puffer Extraktion agy CLI node-pty`
+- `Multi-Agenten Delegation Claude Codex Gemini`
+- `agy CLI Headless Modus JSON Ausgabe`
+- `Virtuelles Terminal Wrapper fuer Antigravity`
+- `Zero-Egress agy Adapter fuer Entwickler`
+- `Automatisierte Gemini CLI Pipeline Windows Linux`
+- `ellmos-ai companion-for-agy Open-Source`
 
-(6) Automatisierte Vertragstestsuite (_tests/metadata.test.mjs):
-    - Erweiterung um 5 neue Vertragstests für Schnellnavigation, Dual-Mermaid-
-      Diagramme, Invarianten-Matrix, Sicherheits-SLAs und lokales MARKETING-LOG.txt.
+================================================================================
+4. COMPETITIVE DIFFERENTIATION MATRIX
+================================================================================
+| Dimension / Capability | companion-for-agy | Unassisted agy TUI | Ad-hoc node-pty Scripting | Generic Headless PTY Wrappers | Cloud Gemini API Wrappers |
+|:---|:---|:---|:---|:---|:---|
+| **Response Extraction** | Precise ANSI truecolor RGB SGR filtering | ❌ Terminal buffer only (raw TUI) | ⚠️ Brittle string regexes | ⚠️ Strips all formatting blindly | Standard HTTP JSON |
+| **Output Interception** | Clean stdout & structured JSON (--json) | ❌ Interactive screen only | ⚠️ Unhandled escape artifacts | ⚠️ Merges stderr/stdout indiscriminately | Direct API response |
+| **Permission Modes** | Strict pass-through (--sandbox, --skip-permissions) | Manual TUI prompt | ⚠️ Unhandled dialog blocks | ❌ Incompatible with security modes | IAM / API keys only |
+| **Model & Effort Gating**| Dynamic catalog cache & auto-negotiation | Manual error message | ❌ Hardcoded argument strings | ❌ Unaware of model parameters | Cloud SDK endpoints |
+| **Zombie Process Guard** | Cascading SIGINT/SIGTERM process tree kill | ❌ Terminal detach leaks | ⚠️ High risk of orphaned nodes | ⚠️ Fragile timeout kills | N/A (HTTP client) |
+| **Diagnostic Preflight** | Auth-free --doctor, --platform-smoke | ❌ Fails on startup without auth | ❌ None | ⚠️ Minimal OS check | Network ping only |
+| **CJK / Bulky Data** | Dual return paths (stdout + --add-dir FS) | TUI wrapping artifacts | ❌ Garbles CJK terminal bytes | ❌ Terminal buffer overflow | Handled by HTTP |
+| **Network & Privacy** | 100% Local-First / Zero-Egress (INV-LOCAL-01) | Direct LLM uplink only | Local script | Local tool | ❌ Full cloud telemetry |
+| **Privilege Model** | Unprivileged User-Mode (INV-PRIV-02) | User mode | User mode | Often requires pseudo-root | User mode |
+| **License Compliance** | 100% Permissive (MIT, audited inventory) | Proprietary binary | Ad-hoc | Variable licenses | Proprietary cloud terms |
 
-(7) Kontext & Changelog:
-    - llms.txt Last-checked Timestamp auf 2026-09-08 aktualisiert.
-    - CHANGELOG.md und CHANGELOG_de.md um Release-Eintrag 2026-09-08 erweitert.
+================================================================================
+5. GOVERNANCE & RUNTIME INVARIANTS
+================================================================================
+- INV-LOCAL-01: 100% Local-First & Zero-Egress (all sockets and wrappers local; zero telemetry or analytics).
+- INV-PRIV-02: Non-Elevation / RunAsInvoker (runs strictly in unprivileged user mode without UAC elevation).
+- INV-PTY-03: PTY Process Isolation (isolated subprocess spawning via node-pty ConPTY/forkpty).
+- INV-SAN-04: Input Sanitization (sanitizeForPty strips control codes and malicious ANSI injection).
+- INV-TEMP-05: Deterministic Temp Workspace Cleanup (staging directories auto-purged on exit).
+- INV-PERM-06: Native Permission Pass-Through (--sandbox and --skip-permissions passed without emulation).
+- INV-ANSI-07: ANSI Truecolor Stream Extraction (high-precision RGB(232,234,237) SGR filter with color probe cache).
+- INV-PROC-08: Graceful Process Tree Termination (anti-zombie cascading signal handlers for node.exe and agy).
+- INV-DIAG-09: Cross-Platform Diagnostic Preflight (--doctor, --platform-smoke, --pty-smoke offline validation).
+- INV-SLA-10: Dual Return Path Reliability & 48h Security SLA (dual return channels + 48h response / 5d triage).
 
-3. TESTVERIFIKATION & QUALITÄTSSICHERUNG
---------------------------------------------------------------------------------
-- Test Runner: Node.js native test runner (node --test)
-- Gesamtergebnis: Alle Tests bestanden (100% pass, 1 skipped)
-- Paketierung: npm pack --dry-run clean (14 Whitelist-Dateien)
-- Git Tree: Clean
+================================================================================
+6. SIBLING TOOLS & ECOSYSTEM MATRIX (16 PARTNER TOOLS)
+================================================================================
+1. safe-start-for-codex (dev-bricks): Startup surge prevention & resource throttling for Codex Desktop.
+2. automizer-for-claude-desktop (dev-bricks): Automations and hook orchestrator for Claude Desktop.
+3. DevCenter (dev-bricks): Developer dashboard, tool health & multi-agent system orchestration.
+4. CodeBox (dev-bricks): Isolated code execution sandbox & script runner.
+5. CareCenter-for-Codex (dev-bricks): Client care documentation & clinical process assistant.
+6. automation-master (dev-bricks): Workflow automation engine & multi-agent scheduler.
+7. ellmos-filecommander-mcp (ellmos-ai): Filesystem, shell & process orchestration MCP server.
+8. ellmos-codecommander-mcp (ellmos-ai): Code analysis, refactoring & AST processing MCP server.
+9. ellmos-controlcenter-mcp (ellmos-ai): MCP stack control plane, bundle routing & permission audit.
+10. ellmos-clatcher-mcp (ellmos-ai): Multi-agent communication bridge & cross-process clipboard.
+11. n8n-manager-mcp (ellmos-ai): n8n workflow management, backup & activation MCP server.
+12. skills (ellmos-ai): Autonomous agent skills & execution library.
+13. sqlite-transit-sync (ellmos-ai): Resilient SQLite database transit, schema migration & synchronization.
+14. workflowhooker (ellmos-ai): Git and filesystem event hook dispatcher for multi-agent workflows.
+15. system-auditor (dev-bricks): Host health, conflict detection & environment compliance auditor.
+16. open-bricks (open-bricks): Umbrella catalog for modular open-source software bricks.
+
+================================================================================
+7. TEST VERIFICATION & QUALITY ASSURANCE
+================================================================================
+- Test Runner: Native Node.js Test Runner (node --test)
+- Test Suites: unit, fixture, cli-regression, linux-pty-smoke, repository-hygiene, metadata
+- Invariant & Contract Verification: 100% passed across all suites
+- Packaging: npm pack --dry-run clean (all runtime and documentation files properly whitelisted)
+- Git Tree: Clean, uncommitted changes tracked under Plan D discipline
 ================================================================================

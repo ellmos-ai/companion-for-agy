@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [2.1.2] - 2026-09-12
+
+### 15-Point Navigation, License Audit, Marketing Log & Invariant Contracts (Pfad B)
+- Upgraded quick navigation to standardized 15-point architecture in `README.md` and `README_de.md` with 100% reciprocal anchor parity (`# 📋 Third-Party Licenses & Transparency`, `# 🎯 Marketing & Target Personas`, `# 🔒 Security Policy & License`).
+- Formalized all 10 Governance & Runtime Invariants with canonical identifiers (`INV-LOCAL-01` through `INV-SLA-10`) across docs, metadata, and automated contract tests.
+- Audited third-party dependencies and generated `THIRD_PARTY_LICENSES.md` verifying 100% permissive licensing (MIT, BSD-2-Clause, ISC, CC0-1.0) and zero copyleft/AGPL footprint.
+- Enriched repository-level `MARKETING-LOG.txt` with 4 target developer personas, bilingual search phrases (EN & DE), 5-way competitive differentiation matrix, 16 sibling tools, and invariant mappings.
+- Expanded Sibling Tools & Ecosystem Matrix to 16 tools across dev-bricks, ellmos-ai, and open-bricks.
+- Synchronized `llms.txt` ecosystem references, formal invariant IDs, and updated `Last-checked: 2026-09-12`.
+- Bumped package version to `2.1.2` in `package.json` and added `THIRD_PARTY_LICENSES.md` and `MARKETING-LOG.txt` to npm files whitelist.
+- Extended automated contract test suite in `_tests/metadata.test.mjs` verifying 15-point navigation, invariant IDs, license audit presence, and marketing log consistency.
+
 ## [2.1.1] - 2026-09-10
 
 ### Technical Hygiene, .gitignore Hardening & Security SLA Parity (Pfad A)

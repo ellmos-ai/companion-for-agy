@@ -1,6 +1,6 @@
 {
   "name": "companion-for-agy",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Unofficial node-pty/ConPTY wrapper for agy (Antigravity CLI / Gemini CLI) that captures terminal-buffer responses as stdout for automation",
   "type": "module",
   "main": "src/agy-companion.mjs",
@@ -21,6 +21,8 @@
     "CHANGELOG_de.md",
     "ROADMAP.md",
     "THIRD_PARTY_LICENSES.txt",
+    "THIRD_PARTY_LICENSES.md",
+    "MARKETING-LOG.txt",
     "LICENSE"
   ],
   "scripts": {
