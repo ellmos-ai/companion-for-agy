@@ -14,7 +14,7 @@ describe('repository metadata & manifest parity', () => {
 
     assert.equal(pkg.name, 'companion-for-agy');
     assert.equal(typeof pkg.version, 'string');
-    assert.equal(pkg.version, '2.1.2');
+    assert.equal(pkg.version, '2.1.3');
     assert.match(pkg.version, /^\d+\.\d+\.\d+/);
     assert.equal(pkg.main, 'src/agy-companion.mjs');
     assert.equal(pkg.bin['companion-for-agy'], 'src/agy-companion.mjs');
@@ -129,7 +129,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-09-12'));
+    assert.ok(llms.includes('Last-checked: 2026-09-13'));
     assert.ok(llms.includes('SECURITY.md'));
     assert.ok(llms.includes('THIRD_PARTY_LICENSES.md'));
     assert.ok(llms.includes('MARKETING-LOG.txt'));
@@ -174,7 +174,7 @@ describe('repository metadata & manifest parity', () => {
     }
   });
 
-  it('verifies 15-point quick navigation in README and README_de', () => {
+  it('verifies 16-point quick navigation in README and README_de', () => {
     const readmeEn = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
     const readmeDe = fs.readFileSync(path.join(REPO_ROOT, 'README_de.md'), 'utf8');
 
@@ -188,6 +188,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeEn.includes('(#-workspace)'));
     assert.ok(readmeEn.includes('(#️-options)'));
     assert.ok(readmeEn.includes('(#️-runtime-invariants--safety-matrix)'));
+    assert.ok(readmeEn.includes('(#-comparative-matrix--alternatives)'));
     assert.ok(readmeEn.includes('(#-sibling-tools--ecosystem-matrix)'));
     assert.ok(readmeEn.includes('(#-best-practices-two-return-paths)'));
     assert.ok(readmeEn.includes('(#-internationalization-scope)'));
@@ -205,6 +206,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeDe.includes('(#-workspace)'));
     assert.ok(readmeDe.includes('(#️-optionen)'));
     assert.ok(readmeDe.includes('(#️-laufzeit-invarianten--sicherheitstabelle)'));
+    assert.ok(readmeDe.includes('(#-vergleichsmatrix--alternativen)'));
     assert.ok(readmeDe.includes('(#-geschwister-werkzeuge--%C3%B6kosystem-matrix)'));
     assert.ok(readmeDe.includes('(#-bew%C3%A4hrte-praxis-zwei-r%C3%BCckgabepfade)'));
     assert.ok(readmeDe.includes('(#-internationalisierungs-umfang)'));
@@ -281,13 +283,37 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(readmeDe.includes('Zwei-Rückgabepfade-Zuverlässigkeit & Sicherheits-SLA'));
   });
 
+  it('verifies 5-way comparative differentiation matrix in README and README_de', () => {
+    const readmeEn = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
+    const readmeDe = fs.readFileSync(path.join(REPO_ROOT, 'README_de.md'), 'utf8');
+
+    assert.ok(readmeEn.includes('## 📊 Comparative Matrix & Alternatives'));
+    assert.ok(readmeEn.includes('companion-for-agy'));
+    assert.ok(readmeEn.includes('Unassisted agy TUI'));
+    assert.ok(readmeEn.includes('Ad-hoc node-pty Scripting'));
+    assert.ok(readmeEn.includes('Generic Headless PTY Wrappers'));
+    assert.ok(readmeEn.includes('Cloud Gemini API Wrappers'));
+    assert.ok(readmeEn.includes('Response Extraction'));
+    assert.ok(readmeEn.includes('Precise ANSI truecolor RGB SGR filtering'));
+
+    assert.ok(readmeDe.includes('## 📊 Vergleichsmatrix & Alternativen'));
+    assert.ok(readmeDe.includes('companion-for-agy'));
+    assert.ok(readmeDe.includes('Unbegleitetes agy TUI'));
+    assert.ok(readmeDe.includes('Ad-hoc node-pty Skripte'));
+    assert.ok(readmeDe.includes('Generische Headless PTY-Wrapper'));
+    assert.ok(readmeDe.includes('Cloud Gemini API Wrapper'));
+    assert.ok(readmeDe.includes('Antwort-Extraktion'));
+    assert.ok(readmeDe.includes('Präziser ANSI Truecolor RGB SGR-Filter'));
+  });
+
   it('verifies local MARKETING-LOG.txt is present and documents Pfad B automation', () => {
     const logPath = path.join(REPO_ROOT, 'MARKETING-LOG.txt');
     assert.ok(fs.existsSync(logPath), 'Missing MARKETING-LOG.txt');
     const logContent = fs.readFileSync(logPath, 'utf8');
 
     assert.ok(logContent.includes('companion-for-agy'));
-    assert.ok(logContent.includes('2026-09-12'));
+    assert.ok(logContent.includes('2026-09-13'));
+    assert.ok(logContent.includes('2.1.3'));
     assert.ok(logContent.includes('Pfad B'));
     assert.ok(logContent.includes('TARGET PERSONAS'));
     assert.ok(logContent.includes('COMPETITIVE DIFFERENTIATION MATRIX'));
@@ -332,16 +358,30 @@ describe('repository metadata & manifest parity', () => {
     assert.equal(manifest.boundaries.network, 'optional');
   });
 
-  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.2 and Pfad B upgrade', () => {
+  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.3 and Pfad B upgrade', () => {
     const changelogEn = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG.md'), 'utf8');
     const changelogDe = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG_de.md'), 'utf8');
 
     for (const cl of [changelogEn, changelogDe]) {
-      assert.ok(cl.includes('[2.1.2]'));
-      assert.ok(cl.includes('2026-09-12'));
+      assert.ok(cl.includes('[2.1.3]'));
+      assert.ok(cl.includes('2026-09-13'));
       assert.ok(cl.includes('Pfad B'));
-      assert.ok(cl.includes('15-Point') || cl.includes('15-Punkte'));
+      assert.ok(cl.includes('16-Point') || cl.includes('16-Punkte'));
+      assert.ok(cl.includes('Comparative Matrix') || cl.includes('Vergleichsmatrix'));
     }
+  });
+
+  it('verifies llms.txt machine-readable specification parity', () => {
+    const llmsPath = path.join(REPO_ROOT, 'llms.txt');
+    assert.ok(fs.existsSync(llmsPath), 'Missing llms.txt');
+    const llmsContent = fs.readFileSync(llmsPath, 'utf8');
+
+    assert.ok(llmsContent.includes('companion-for-agy'));
+    assert.ok(llmsContent.includes('Last-checked: 2026-09-13'));
+    assert.ok(llmsContent.includes('16-point quick navigation'));
+    assert.ok(llmsContent.includes('5-way comparative differentiation matrix'));
+    assert.ok(llmsContent.includes('INV-LOCAL-01'));
+    assert.ok(llmsContent.includes('INV-SLA-10'));
   });
 
   it('verifies THIRD_PARTY_LICENSES.md contains audited permissive inventory and invariants mapping', () => {

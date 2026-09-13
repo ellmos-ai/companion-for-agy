@@ -6,7 +6,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-247%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
+[![Node Tests](https://img.shields.io/badge/tests-249%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
@@ -44,6 +44,7 @@
 > [📁 Workspace](#-workspace) •
 > [🛠️ Options](#️-options) •
 > [🛡️ Runtime Invariants & Safety Matrix](#️-runtime-invariants--safety-matrix) •
+> [📊 Comparative Matrix & Alternatives](#-comparative-matrix--alternatives) •
 > [🌐 Sibling Tools & Ecosystem Matrix](#-sibling-tools--ecosystem-matrix) •
 > [🛣️ Best Practices: Two Return Paths](#-best-practices-two-return-paths) •
 > [🌍 Internationalization Scope](#-internationalization-scope) •
@@ -372,6 +373,25 @@ The following table formalizes the 10 operational and security invariants guaran
 | `INV-PROC-08` | **Graceful Process Tree Termination** | Cascading SIGINT/SIGTERM handlers and timeout monitors terminate child tree | Eliminates zombie processes (`node.exe` / `agy`) on abnormal exit or abort |
 | `INV-DIAG-09` | **Cross-Platform Diagnostic Preflight** | `--doctor`, `--platform-smoke`, `--pty-smoke` and `--live-smoke` health-check suite | Detects platform blockers (missing build tools, POSIX spawn-helper bit) before execution |
 | `INV-SLA-10` | **Dual Return Path Reliability & Security SLA** | Dual return paths (stdout / filesystem) + 48h response & 5d triage commitment | Overcomes terminal CJK truncation and guarantees formal security vulnerability response |
+
+---
+
+## 📊 Comparative Matrix & Alternatives
+
+The following 5-way comparative matrix benchmarks `companion-for-agy` against alternative integration strategies across 10 operational dimensions:
+
+| Dimension / Capability | companion-for-agy | Unassisted agy TUI | Ad-hoc node-pty Scripting | Generic Headless PTY Wrappers | Cloud Gemini API Wrappers |
+|:---|:---|:---|:---|:---|:---|
+| **Response Extraction** | Precise ANSI truecolor RGB SGR filtering | ❌ Terminal buffer only (raw TUI) | ⚠️ Brittle string regexes | ⚠️ Strips all formatting blindly | Standard HTTP JSON |
+| **Output Interception** | Clean stdout & structured JSON (`--json`) | ❌ Interactive screen only | ⚠️ Unhandled escape artifacts | ⚠️ Merges stderr/stdout indiscriminately | Direct API response |
+| **Permission Modes** | Strict pass-through (`--sandbox`, `--skip-permissions`) | Manual TUI prompt | ⚠️ Unhandled dialog blocks | ❌ Incompatible with security modes | IAM / API keys only |
+| **Model & Effort Gating**| Dynamic catalog cache & auto-negotiation | Manual error message | ❌ Hardcoded argument strings | ❌ Unaware of model parameters | Cloud SDK endpoints |
+| **Zombie Process Guard** | Cascading SIGINT/SIGTERM process tree kill | ❌ Terminal detach leaks | ⚠️ High risk of orphaned nodes | ⚠️ Fragile timeout kills | N/A (HTTP client) |
+| **Diagnostic Preflight** | Auth-free `--doctor`, `--platform-smoke` | ❌ Fails on startup without auth | ❌ None | ⚠️ Minimal OS check | Network ping only |
+| **CJK / Bulky Data** | Dual return paths (stdout + `--add-dir` FS) | TUI wrapping artifacts | ❌ Garbles CJK terminal bytes | ❌ Terminal buffer overflow | Handled by HTTP |
+| **Network & Privacy** | 100% Local-First / Zero-Egress (`INV-LOCAL-01`) | Direct LLM uplink only | Local script | Local tool | ❌ Full cloud telemetry |
+| **Privilege Model** | Unprivileged User-Mode (`INV-PRIV-02`) | User mode | User mode | Often requires pseudo-root | User mode |
+| **License Compliance** | 100% Permissive (MIT, audited inventory) | Proprietary binary | Ad-hoc | Variable licenses | Proprietary cloud terms |
 
 ---
 

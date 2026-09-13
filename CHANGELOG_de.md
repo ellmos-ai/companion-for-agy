@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [2.1.3] - 2026-09-13
+
+### 16-Punkte-Navigation, eingebettete 5-Wege-Vergleichsmatrix & Discoverability-Upgrade (Pfad B)
+- Schnellnavigation auf standardisierte 16-Punkte-Architektur in `README.md` und `README_de.md` mit 100% wechselseitiger Ankerparität angehoben (`# 📊 Comparative Matrix & Alternatives` / `# 📊 Vergleichsmatrix & Alternativen`).
+- Umfassende 5-Wege-Vergleichsmatrix über 10 operationelle Dimensionen (Vergleich von companion-for-agy mit unbegleitetem agy TUI, Ad-hoc node-pty Skripting, generischen Headless PTY-Wrappern und Cloud Gemini API Wrappern) direkt in die englische und deutsche README-Dokumentation eingebettet.
+- Paketversion in `package.json` auf `2.1.3` angehoben und Test-Badges synchronisiert.
+- Maschinenlesbare LLM-Kontextspezifikation (`llms.txt`) mit `Last-checked: 2026-09-13` aktualisiert, inklusive Verweis auf 16-Punkte-Navigation und eingebettete Vergleichsmatrix.
+- Repository-weites `MARKETING-LOG.txt` um Audit-Eintrag für das Pfad-B-Flagship-Upgrade ergänzt.
+- Automatisierte Vertragstestsuite in `_tests/metadata.test.mjs` um Prüfungen für 16-Punkte-Navigation, zweisprachige Vergleichsmatrix-Einbettung und Versionsparität `2.1.3` erweitert.
+
 ## [2.1.2] - 2026-09-12
 
 ### 15-Punkte-Navigation, Lizenz-Audit, Marketing-Log & Invarianten-Verträge (Pfad B)

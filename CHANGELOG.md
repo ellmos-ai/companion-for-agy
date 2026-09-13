@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [2.1.3] - 2026-09-13
+
+### 16-Point Navigation, Embedded 5-Way Comparative Matrix & Discoverability Upgrade (Pfad B)
+- Upgraded quick navigation to standardized 16-point architecture in `README.md` and `README_de.md` with 100% reciprocal anchor parity (`# 📊 Comparative Matrix & Alternatives` / `# 📊 Vergleichsmatrix & Alternativen`).
+- Embedded the comprehensive 5-way comparative differentiation matrix directly into both English and German README documentation across 10 operational dimensions (benchmarking companion-for-agy against Unassisted agy TUI, Ad-hoc node-pty Scripting, Generic Headless PTY Wrappers, and Cloud Gemini API Wrappers).
+- Bumped package version to `2.1.3` in `package.json` and synchronized test badges.
+- Updated machine-readable LLM context specification (`llms.txt`) with `Last-checked: 2026-09-13`, referencing the 16-point navigation and embedded comparative matrix.
+- Enriched repository-level `MARKETING-LOG.txt` with audit entry tracking the Pfad B flagship upgrade.
+- Extended automated contract test suite in `_tests/metadata.test.mjs` verifying the 16-point navigation, comparative matrix embedding in both languages, and version `2.1.3` parity.
+
 ## [2.1.2] - 2026-09-12
 
 ### 15-Point Navigation, License Audit, Marketing Log & Invariant Contracts (Pfad B)

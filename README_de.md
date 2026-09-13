@@ -6,7 +6,7 @@
 
 [![npm](https://img.shields.io/npm/v/companion-for-agy)](https://www.npmjs.com/package/companion-for-agy)
 [![CI](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml/badge.svg)](https://github.com/ellmos-ai/companion-for-agy/actions/workflows/tests.yml)
-[![Node Tests](https://img.shields.io/badge/tests-247%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
+[![Node Tests](https://img.shields.io/badge/tests-249%20passed%2C%201%20skipped-brightgreen.svg)](_tests/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Plattform](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/ellmos-ai/companion-for-agy)
 [![PTY Engine](https://img.shields.io/badge/pty-ConPTY%20%7C%20forkpty-informational.svg)](https://github.com/ellmos-ai/companion-for-agy)
@@ -44,6 +44,7 @@
 > [📁 Workspace](#-workspace) •
 > [🛠️ Optionen](#️-optionen) •
 > [🛡️ Laufzeit-Invarianten & Sicherheitstabelle](#️-laufzeit-invarianten--sicherheitstabelle) •
+> [📊 Vergleichsmatrix & Alternativen](#-vergleichsmatrix--alternativen) •
 > [🌐 Geschwister-Werkzeuge & Ökosystem-Matrix](#-geschwister-werkzeuge--%C3%B6kosystem-matrix) •
 > [🛣️ Bewährte Praxis: Zwei Rückgabepfade](#-bew%C3%A4hrte-praxis-zwei-r%C3%BCckgabepfade) •
 > [🌍 Internationalisierungs-Umfang](#-internationalisierungs-umfang) •
@@ -368,6 +369,25 @@ Die folgende Tabelle formalisiert die 10 operativen und architektonischen Sicher
 | `INV-PROC-08` | **Geordnete Prozessbaum-Terminierung** | Kaskadierende Signal-Handler (SIGINT/SIGTERM) und Timeout-Wächter beenden den Prozessbaum | Verhindert Zombie-Prozesse (`node.exe` / `agy`) bei Programmabbruch |
 | `INV-DIAG-09` | **Plattformübergreifende Diagnose-Preflights** | Diagnose-Suite mit `--doctor`, `--platform-smoke`, `--pty-smoke` und `--live-smoke` | Erkennt Plattform-Blocker (fehlende Build-Tools, POSIX spawn-helper Bit) vor dem Start |
 | `INV-SLA-10` | **Zwei-Rückgabepfade-Zuverlässigkeit & Sicherheits-SLA** | Explizites Routing (stdout / Dateisystem) + 48h Antwort- & 5-Werktage-Triage-Garantie | Verhindert CJK-Zeichenverlust im Terminal-Puffer und garantiert verbindliche Schwachstellen-Triage |
+
+---
+
+## 📊 Vergleichsmatrix & Alternativen
+
+Die folgende 5-Wege-Vergleichsmatrix bewertet `companion-for-agy` gegenüber alternativen Integrationsansätzen über 10 operationelle Dimensionen:
+
+| Dimension / Fähigkeit | companion-for-agy | Unbegleitetes agy TUI | Ad-hoc node-pty Skripte | Generische Headless PTY-Wrapper | Cloud Gemini API Wrapper |
+|:---|:---|:---|:---|:---|:---|
+| **Antwort-Extraktion** | Präziser ANSI Truecolor RGB SGR-Filter | ❌ Nur Terminal-Puffer (rohes TUI) | ⚠️ Fragile String-Regex-Muster | ⚠️ Entfernt alle Formatierungen blind | Standard HTTP JSON |
+| **Ausgabe-Abfangen** | Sauberes stdout & strukturiertes JSON (`--json`) | ❌ Nur interaktiver Bildschirm | ⚠️ Unbehandelte Escape-Artefakte | ⚠️ Vermischt stderr/stdout unkontrolliert | Direkte API-Antwort |
+| **Berechtigungsmodi** | Strikte Weitergabe (`--sandbox`, `--skip-permissions`) | Manuelle TUI-Abfrage | ⚠️ Unbehandelte Dialog-Blockaden | ❌ Inkompatibel mit Sicherheitsmodi | Nur IAM / API-Keys |
+| **Modell- & Effort-Gating**| Dynamischer Katalog-Cache & Auto-Aushandlung | Manuelle Fehlermeldung | ❌ Fest verdrahtete Argument-Strings | ❌ Kennt keine Modellparameter | Cloud SDK Endpunkte |
+| **Zombie-Prozess-Schutz** | Kaskadierendes SIGINT/SIGTERM Prozessbaum-Kill | ❌ Verwaiste Terminal-Prozesse | ⚠️ Hohes Risiko verwaister Node-Prozesse | ⚠️ Fragile Timeout-Kills | Entfällt (HTTP-Client) |
+| **Diagnose-Preflight** | Authentifizierungsfreies `--doctor`, `--platform-smoke` | ❌ Bricht beim Start ohne Auth ab | ❌ Keine | ⚠️ Minimaler OS-Check | Nur Netzwerk-Ping |
+| **CJK / Umfangreiche Daten** | Zwei Rückgabepfade (stdout + `--add-dir` Dateisystem) | TUI-Zeilenumbruch-Artefakte | ❌ Beschädigt CJK-Terminal-Bytes | ❌ Terminal-Puffer-Überlauf | Durch HTTP gelöst |
+| **Netzwerk & Privatsphäre** | 100% Local-First / Zero-Egress (`INV-LOCAL-01`) | Direkte LLM-Verbindung | Lokales Skript | Lokales Tool | ❌ Vollständige Cloud-Telemetrie |
+| **Berechtigungsmodell** | Benutzer-Modus ohne Elevation (`INV-PRIV-02`) | Benutzermodus | Benutzermodus | Häufig Pseudo-Root erforderlich | Benutzermodus |
+| **Lizenz-Konformität** | 100% Permissiv (MIT, auditiertes Inventar) | Proprietäre Binärdatei | Ad-hoc | Variable Lizenzen | Proprietäre Cloud-Bedingungen |
 
 ---
 
