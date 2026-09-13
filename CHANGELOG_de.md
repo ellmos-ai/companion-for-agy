@@ -148,6 +148,13 @@
 - `dev-bricks`-Ökosystem- und `open-bricks`-Dachorganisations-Badges sowie Querverweise zu Geschwisterwerkzeugen (`DevCenter`, `CodeBox`, `MethodenAnalyser`, `CareCenter-for-Codex`) ergänzt.
 - Vollständige Metadaten- & Manifest-Paritäts-Testsuite in `_tests/metadata.test.mjs` integriert.
 - `llms.txt` Last-checked-Zeitstempel auf `2026-08-16` aktualisiert.
+### Dokumentation
+- agys Farbschema-Verhalten anhand des installierten agy-1.1.9-Binarys und des
+  tatsächlichen Extraktionscodes geprüft. `colorblind-friendly dark` behält die
+  erwartete Antwort-Vordergrundfarbe `RGB(232,234,237)` bei; andere Schemas benötigen
+  weiterhin eine explizite Überschreibung oder eine künftige Kalibrierung. Präzise
+  TODOs für Setter und Laufzeitkalibrierung in `ROADMAP.md` ergänzt; das
+  Produktivverhalten wurde nicht geändert.
 
 ### Sicherheit
 - Repository-Hygiene für lokale npm-Zugangsdaten, Token-/Recovery-Dateien, private Schlüssel und Zertifikat-Bundles gehärtet. Ein Regressionstest prüft die wirksamen Git-Ignore-Regeln und defensive npm-Ignore-Muster.
