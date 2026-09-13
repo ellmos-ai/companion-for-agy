@@ -47,12 +47,36 @@ The tool is currently **Windows-only verified**. macOS and Linux are expected to
 - `--live-smoke --no-model --debug --json` is the repeatable authenticated gate after `--doctor` and `--pty-smoke` on macOS/Linux
 
 ### Color Fallback / Auto-Probe
-The current ANSI color extraction relies on `RGB(232,234,237)` as the response color. This has been verified on Windows (ConPTY). If agy changes its color scheme or uses different values on macOS/Linux, extraction silently fails.
+The primary ANSI extraction matches `RGB(232,234,237)` exactly, with a manual
+`AGY_COMPANION_RESPONSE_RGB` override. `extractResponse()` falls back to stripped,
+noise-filtered text when that color is absent, so a mismatch is not guaranteed to
+return an empty response; complex TUI redraws can still make that fallback incomplete
+or noisy because it lacks color-defined response boundaries.
 
 **Implemented:**
 - [x] `--probe-color`: Run a known-answer prompt ("What is 2+2?"), scan the raw ANSI stream for the color that wraps "4", and cache it per platform/architecture
 - [x] Platform-specific RGB override via environment variable (`AGY_COMPANION_RESPONSE_RGB`)
 - Heuristic: find the most frequent non-UI color in the stream
+Static inspection of the installed agy 1.1.9 palettes on Windows (2026-08-03) found
+that both `dark` and the currently configured `colorblind-friendly dark` use
+`RGB(232,234,237)` for the normal foreground/response field. `light`, both solarized
+variants, `colorblind-friendly light`, and `tokyo night` use different foreground
+values; `terminal` has no fixed RGB value. The authenticated live marker measurement
+was blocked by agy's login gate, so the exact runtime stream still needs a signed-in
+verification. See `_FARBSCHEMA-BEFUND.md`.
+
+**TODO:**
+- [x] Platform-specific RGB override via environment variable (`AGY_COMPANION_RESPONSE_RGB`).
+- [ ] **Known-schema setter:** add an explicit opt-in mode that reads agy's current
+  `colorScheme`, sets a documented compatible scheme for the subprocess, and restores
+  the original value safely. It must avoid concurrent settings races and must never
+  silently overwrite the user's global preference.
+- [ ] **Runtime calibration:** run a marker prompt, identify the SGR foreground that
+  wraps the unique marker in the raw PTY stream, reject ambiguous/no-marker results,
+  and cache only a validated value keyed by agy version, platform, and color scheme.
+  Extraction must retain a safe fallback when calibration cannot be completed.
+- [ ] Add authenticated fixtures/live evidence for every fixed agy scheme and for
+  `terminal`; keep the raw ANSI evidence beside the expected extraction result.
 
 ### Internationalization (i18n)
 

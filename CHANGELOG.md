@@ -91,6 +91,12 @@
 - Model-aware automatic effort selection and one pre-prompt retry when agy requires effort to be added or removed.
 - `--no-effort` to explicitly suppress automatic selection and `--version` / `-V` for machine-readable version checks.
 - JSON metadata for effective effort and the discovered model catalog.
+### Documentation
+- Audited agy color-scheme handling against the installed agy 1.1.9 binary and the
+  actual extraction code. Documented that `colorblind-friendly dark` retains the
+  expected `RGB(232,234,237)` response foreground, while other schemes still require
+  an explicit override or future calibration. Added precise setter and runtime-probe
+  TODOs in `ROADMAP.md`; no production behavior changed.
 
 ## [2.0.2] - 2026-07-23
 
