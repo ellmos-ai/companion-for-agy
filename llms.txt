@@ -109,5 +109,6 @@ companion-for-agy is not the official Gemini CLI Companion VS Code extension, no
 - Dual-Mermaid system diagrams (5-layer system architecture and end-to-end execution sequence diagram) and a 16-point quick navigation architecture are documented in README.md and README_de.md.
 - A 5-way comparative differentiation matrix benchmarking companion-for-agy across 10 operational dimensions against raw TUI, ad-hoc PTY, generic wrappers, and cloud APIs is embedded directly in README.md and README_de.md.
 - 10 operational and security invariants (INV-LOCAL-01: 100% Local-First & Zero-Egress, INV-PRIV-02: Non-Elevation RunAsInvoker, INV-PTY-03: PTY Isolation, INV-SAN-04: Input Sanitization, INV-TEMP-05: Workspace Auto-Cleanup, INV-PERM-06: Native Permissions, INV-ANSI-07: ANSI Truecolor Extraction, INV-PROC-08: Graceful Process Tree Termination, INV-DIAG-09: Platform Preflights, INV-SLA-10: Dual Return Paths & 48h Security SLA) are guaranteed and covered by contract tests.
+- CI pipeline execution timeout guardrails (15-minute job timeout), daily scheduled stale issue/PR lifecycle automation, and multi-host cloud-sync collision protections are strictly enforced.
 
-## Last-checked: 2026-09-13
+## Last-checked: 2026-09-14

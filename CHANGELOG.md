@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [2.1.4] - 2026-09-14
+
+### CI Hardening, Multi-Host Sync Defense, Lifecycle Automation & Version Parity (Pfad A)
+- Hardened GitHub Actions CI test workflow (`.github/workflows/tests.yml`) with strict job execution timeout guardrail (`timeout-minutes: 15`) across all runner OS environments (Ubuntu, Windows, macOS) and Node versions (18, 20, 22, 24).
+- Added GitHub Actions stale workflow (`.github/workflows/stale.yml`) with daily scheduled lifecycle automation (`cron: '30 1 * * *'`), concurrency group isolation, least-privilege permissions, and a 10-minute job timeout.
+- Hardened `.gitignore` against multi-host cloud-sync collision patterns (`* (kopie)*`, `* (copy)*`, `* (Kopie)*`, `* (Copy)*`, `*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, `*.orig`), canonical multi-agent locks (`LOCK`, `LOCK.*`, `uv.lock`), and coverage/cache directories (`.coverage.*`, `htmlcov/`, `.tox/`, `.turbo/`, `.hypothesis/`).
+- Bumped package version to `2.1.4` in `package.json` and `package-lock.json`, and updated `MARKETING-LOG.txt` and `llms.txt` (`Last-checked: 2026-09-14`).
+- Expanded automated contract test suites in `_tests/repository-hygiene.test.mjs` and `_tests/metadata.test.mjs` verifying CI timeouts, stale workflow lifecycle, gitignore patterns, and version parity.
+
 ## [2.1.3] - 2026-09-13
 
 ### 16-Point Navigation, Embedded 5-Way Comparative Matrix & Discoverability Upgrade (Pfad B)

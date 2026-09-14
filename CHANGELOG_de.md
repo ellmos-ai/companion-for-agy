@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [2.1.4] - 2026-09-14
+
+### CI-Härtung, Multi-Host Sync-Schutz, Lifecycle-Automation & Versionsparität (Pfad A)
+- GitHub Actions CI-Test-Workflow (`.github/workflows/tests.yml`) mit striktem Ausführungs-Timeout (`timeout-minutes: 15`) über alle Runner-Betriebssysteme (Ubuntu, Windows, macOS) und Node-Versionen (18, 20, 22, 24) gehärtet.
+- GitHub Actions Stale-Workflow (`.github/workflows/stale.yml`) mit täglicher Lifecycle-Automation (`cron: '30 1 * * *'`), Concurrency-Gruppen-Isolation, Least-Privilege-Rechten und 10-minütigem Job-Timeout integriert.
+- `.gitignore` gegen Multi-Host Cloud-Sync-Konfliktmuster (`* (kopie)*`, `* (copy)*`, `* (Kopie)*`, `* (Copy)*`, `*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, `*.orig`), kanonische Multi-Agenten-Locks (`LOCK`, `LOCK.*`, `uv.lock`) sowie Coverage-/Cache-Verzeichnisse (`.coverage.*`, `htmlcov/`, `.tox/`, `.turbo/`, `.hypothesis/`) gehärtet.
+- Paketversion in `package.json` und `package-lock.json` auf `2.1.4` angehoben sowie `MARKETING-LOG.txt` und `llms.txt` (`Last-checked: 2026-09-14`) synchronisiert.
+- Automatisierte Vertragstestsuiten in `_tests/repository-hygiene.test.mjs` und `_tests/metadata.test.mjs` um Prüfungen für CI-Timeouts, Stale-Workflow-Lifecycle, Gitignore-Muster und Versionsparität erweitert.
+
 ## [2.1.3] - 2026-09-13
 
 ### 16-Punkte-Navigation, eingebettete 5-Wege-Vergleichsmatrix & Discoverability-Upgrade (Pfad B)

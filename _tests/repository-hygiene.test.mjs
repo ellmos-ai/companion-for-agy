@@ -104,6 +104,7 @@ describe('repository hygiene', () => {
       'LOCK.txt',
       'LOCK_test.txt',
       'arbitrary.lock',
+      'uv.lock',
     ];
 
     for (const lockPath of lockPaths) {
@@ -120,6 +121,16 @@ describe('repository hygiene', () => {
       'data.sync-temp-42',
       'report-ASUS-GEI.txt',
       'report-WORKSTATION-LG.json',
+      'document (kopie).txt',
+      'data (copy).json',
+      'notes (Kopie).md',
+      'bundle (Copy).zip',
+      'notes conflicted copy 2026.md',
+      'report-WORKSTATION.txt',
+      'report-ASUS.txt',
+      'status-LAPTOP.json',
+      'device-Mac Studio.log',
+      'patch.orig',
     ];
 
     for (const syncPath of syncConflictPaths) {
@@ -130,9 +141,14 @@ describe('repository hygiene', () => {
   it('keeps coverage, test cache directories, backups and temp files out of git', () => {
     const tempPaths = [
       'coverage/lcov.info',
+      '.coverage.2026',
+      'htmlcov/index.html',
       '.nyc_output/test.json',
       '.pytest_cache/cache',
       '.ruff_cache/content',
+      '.tox/py311',
+      '.turbo/cache',
+      '.hypothesis/examples',
       'scratch.tmp',
       'backup.bak',
       'editor.swp',

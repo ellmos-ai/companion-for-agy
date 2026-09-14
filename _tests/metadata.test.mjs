@@ -14,7 +14,7 @@ describe('repository metadata & manifest parity', () => {
 
     assert.equal(pkg.name, 'companion-for-agy');
     assert.equal(typeof pkg.version, 'string');
-    assert.equal(pkg.version, '2.1.3');
+    assert.equal(pkg.version, '2.1.4');
     assert.match(pkg.version, /^\d+\.\d+\.\d+/);
     assert.equal(pkg.main, 'src/agy-companion.mjs');
     assert.equal(pkg.bin['companion-for-agy'], 'src/agy-companion.mjs');
@@ -97,6 +97,7 @@ describe('repository metadata & manifest parity', () => {
     assert.match(ciContent, /ubuntu-latest/);
     assert.match(ciContent, /windows-latest/);
     assert.match(ciContent, /macos-latest/);
+    assert.match(ciContent, /timeout-minutes:\s*15/);
     assert.match(ciContent, /cache:\s*'npm'/);
     assert.match(ciContent, /npm ci/);
     assert.match(ciContent, /npm test/);
@@ -129,7 +130,7 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(llms.includes('ellmos-ai'));
     assert.ok(llms.includes('dev-bricks'));
     assert.match(llms, /https:\/\/github\.com\/(dev-bricks|ellmos-ai)\/companion-for-agy/);
-    assert.ok(llms.includes('Last-checked: 2026-09-13'));
+    assert.ok(llms.includes('Last-checked: 2026-09-14'));
     assert.ok(llms.includes('SECURITY.md'));
     assert.ok(llms.includes('THIRD_PARTY_LICENSES.md'));
     assert.ok(llms.includes('MARKETING-LOG.txt'));
@@ -312,8 +313,9 @@ describe('repository metadata & manifest parity', () => {
     const logContent = fs.readFileSync(logPath, 'utf8');
 
     assert.ok(logContent.includes('companion-for-agy'));
-    assert.ok(logContent.includes('2026-09-13'));
-    assert.ok(logContent.includes('2.1.3'));
+    assert.ok(logContent.includes('2026-09-14'));
+    assert.ok(logContent.includes('2.1.4'));
+    assert.ok(logContent.includes('Pfad A'));
     assert.ok(logContent.includes('Pfad B'));
     assert.ok(logContent.includes('TARGET PERSONAS'));
     assert.ok(logContent.includes('COMPETITIVE DIFFERENTIATION MATRIX'));
@@ -358,11 +360,14 @@ describe('repository metadata & manifest parity', () => {
     assert.equal(manifest.boundaries.network, 'optional');
   });
 
-  it('verifies CHANGELOG.md and CHANGELOG_de.md document release 2.1.3 and Pfad B upgrade', () => {
+  it('verifies CHANGELOG.md and CHANGELOG_de.md document releases 2.1.4, 2.1.3 and Pfad upgrades', () => {
     const changelogEn = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG.md'), 'utf8');
     const changelogDe = fs.readFileSync(path.join(REPO_ROOT, 'CHANGELOG_de.md'), 'utf8');
 
     for (const cl of [changelogEn, changelogDe]) {
+      assert.ok(cl.includes('[2.1.4]'));
+      assert.ok(cl.includes('2026-09-14'));
+      assert.ok(cl.includes('Pfad A'));
       assert.ok(cl.includes('[2.1.3]'));
       assert.ok(cl.includes('2026-09-13'));
       assert.ok(cl.includes('Pfad B'));
@@ -377,7 +382,7 @@ describe('repository metadata & manifest parity', () => {
     const llmsContent = fs.readFileSync(llmsPath, 'utf8');
 
     assert.ok(llmsContent.includes('companion-for-agy'));
-    assert.ok(llmsContent.includes('Last-checked: 2026-09-13'));
+    assert.ok(llmsContent.includes('Last-checked: 2026-09-14'));
     assert.ok(llmsContent.includes('16-point quick navigation'));
     assert.ok(llmsContent.includes('5-way comparative differentiation matrix'));
     assert.ok(llmsContent.includes('INV-LOCAL-01'));
@@ -396,5 +401,52 @@ describe('repository metadata & manifest parity', () => {
     assert.ok(licenseContent.includes('INV-PRIV-02'));
     assert.ok(licenseContent.includes('INV-SLA-10'));
     assert.ok(licenseContent.includes('Zero Third-Party Dev Dependency Footprint'));
+  });
+
+  it('verifies GitHub Actions stale workflow lifecycle and timeout configuration', () => {
+    const stalePath = path.join(REPO_ROOT, '.github', 'workflows', 'stale.yml');
+    assert.ok(fs.existsSync(stalePath), 'Missing stale.yml workflow');
+    const staleContent = fs.readFileSync(stalePath, 'utf8');
+
+    assert.match(staleContent, /cron:\s*'30 1 \* \* \*'/);
+    assert.match(staleContent, /workflow_dispatch/);
+    assert.match(staleContent, /issues:\s*write/);
+    assert.match(staleContent, /pull-requests:\s*write/);
+    assert.match(staleContent, /timeout-minutes:\s*10/);
+    assert.match(staleContent, /concurrency:/);
+    assert.match(staleContent, /actions\/stale@v9/);
+  });
+
+  it('verifies multi-host cloud-sync collision protection and canonical locks in .gitignore', () => {
+    const gitignorePath = path.join(REPO_ROOT, '.gitignore');
+    assert.ok(fs.existsSync(gitignorePath), 'Missing .gitignore');
+    const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+
+    const expectedPatterns = [
+      '* (kopie)*',
+      '* (copy)*',
+      '* (Kopie)*',
+      '* (Copy)*',
+      '*conflicted copy*',
+      '*-WORKSTATION*',
+      '*-ASUS*',
+      '*-LAPTOP*',
+      '*-Mac Studio*',
+      '*.orig',
+      'LOCK',
+      'LOCK.*',
+      '*.lock',
+      '!package-lock.json',
+      'uv.lock',
+      '.coverage.*',
+      'htmlcov/',
+      '.tox/',
+      '.turbo/',
+      '.hypothesis/',
+    ];
+
+    for (const pat of expectedPatterns) {
+      assert.ok(gitignoreContent.includes(pat), `Missing expected gitignore pattern: ${pat}`);
+    }
   });
 });
